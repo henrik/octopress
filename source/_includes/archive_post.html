@@ -7,6 +7,6 @@
   {% endif %}
   {% if category != '0' %}
   {% if linklog %} &bull; {% endif %}
-  <span class="categories">posted in {{ post.categories | category_links }}</span>
+  <span class="categories">Tagged {{ post.categories | category_links }}.</span>
   {% endif %}
 </footer>

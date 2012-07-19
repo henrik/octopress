@@ -1,6 +1,21 @@
-<hgroup>
-  <h1><a href="{{ root_url }}/">{{ site.title }}</a></h1>
-  {% if site.subtitle %}
-    <h2>{{ site.subtitle }}</h2>
+<header class="site-header">
+  <div class="pug">
+    <a href="{{ root_url }}/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="{{ root_url }}/">{{ site.title }}</a></h1>
+  <p class="site-intro">
+    A blog by <a href="{{ root_url }}/about/">Henrik Nyh</a>.
+    <a href="{{ site.subscribe_rss }}">Subscribe by RSS.</a>
+  </p>
+
+  {% if site.simple_search %}
+  <form action="{{ site.simple_search }}" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:{{ site.url | shorthand_url }}" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
   {% endif %}
-</hgroup>
+</header>

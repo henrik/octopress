@@ -9,18 +9,23 @@ single: true
   {% include article.html %}
   <footer>
     <p class="meta">
-      {% include post/meta.html %}
       {% include custom/post_meta.html %}
     </p>
     {% unless page.sharing == false %}
       {% include post/sharing.html %}
     {% endunless %}
     <p class="meta">
-      {% if page.previous.url %}
-        <a class="basic-alignment left" href="{{page.previous.url}}" title="Previous Post: {{page.previous.title}}">&laquo; {{page.previous.title}}</a>
-      {% endif %}
       {% if page.next.url %}
-        <a class="basic-alignment right" href="{{page.next.url}}" title="Next Post: {{page.next.title}}">{{page.next.title}} &raquo;</a>
+        <p>
+          <strong>Newer:</strong>
+          <a href="{{page.next.url}}">{{page.next.title}}</a>
+        </p>
+      {% endif %}
+      {% if page.previous.url %}
+        <p>
+          <strong>Older:</strong>
+          <a href="{{page.previous.url}}">{{page.previous.title}}</a>
+        </p>
       {% endif %}
     </p>
   </footer>

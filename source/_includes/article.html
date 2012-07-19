@@ -4,12 +4,14 @@
     {% unless page.meta == false %}
       <p class="meta">
         {% include post/date.html %}{{ time }}
-         &bull; <a rel="bookmark" href="{{ permalink }}">{{ site.permalink_label }}</a>
+        {% if page.categories %}{% include post/categories.html %}{% endif %}
       </p>
     {% endunless %}
   </header>
 {% endunless %}
+
 <div class="entry-content">{{ content }}</div>
+
 {% if index %}
   <footer>
     {% if site.disqus_short_name and page.comments != false and post.comments != false and site.disqus_show_comment_count == true %}

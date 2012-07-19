@@ -1,2 +1,130 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+
+html {
+  // We can't just set $page-bg since we also want to remove the image.
+  background: #FFF;
+}
+
+.toggle-sidebar {
+  display: none;
+}
+
+.blog-footer {
+  background: transparent;
+  text-shadow: none;
+}
+
+
+// Header
+
+.site-header {
+  text-align: center;
+}
+
+.pug {
+  a {
+    text-decoration: none;
+  }
+  img {
+    border: none;
+    @include box-shadow(none);
+    width: 172px;
+    height: 192px;
+  }
+}
+
+h1 a {
+  text-decoration: none;
+}
+
+.site-title {
+  font-size: 28px;
+  color: goldenrod;
+  margin-bottom: 0.5em;
+}
+
+.site-intro {
+  font-family: $sans;
+  font-size: 14px;
+  line-height: 1.4em;
+}
+
+.search {
+  width: 190px;
+  font-size: 16px;
+}
+
+
+// Sidebar
+
+#tweets {
+  font-size: 0.9em;
+  .twitter-date {
+    font-size: 80%;
+    display: block;
+  }
+}
+
+
+// Index
+
+@media only screen and (min-width: 768px) {
+  #index #blog-archives {
+    margin-top: 60px;
+  }
+}
+
+
+// Index/tag
+
+#blog-archives {
+  h2 {
+    top: -3px;
+  }
+  .entry-title {
+    font-size: 1em;
+  }
+  .categories {
+    font-size: 0.9em;
+  }
+  time {
+    font-size: 0.8em;
+    top: 1.3em;
+  }
+}
+
+
+// Entry
+
+.entry-title a {
+  text-decoration: none;
+  color: $text-color;
+}
+
+article header {
+  p.meta {
+    position: static;
+  }
+  time {
+    text-transform: none;
+  }
+}
+
+
+// About
+
+.my-photo {
+  margin: 0 0 1em 0;
+  a {
+    text-decoration: none;
+    white-space: normal;
+  }
+}
+
+@media only screen and (min-width: 550px) {
+  .my-photo {
+    float: left;
+    margin: 0 1em 1em 0;
+  }
+}

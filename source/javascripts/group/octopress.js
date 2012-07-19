@@ -206,7 +206,7 @@ var octopress = (function(){
           });
         }
       }
-    })()
+   })()
     
     , github: (function(){
 

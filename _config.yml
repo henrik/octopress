@@ -4,7 +4,6 @@
 
 url: http://henrik.nyh.se
 title: The Pug Automatic
-subtitle: A blog by Henrik Nyh mostly on Ruby, Rails, Vim and OS X.
 author: Henrik Nyh
 simple_search: http://google.com/search
 description:
@@ -13,7 +12,9 @@ description:
 # You can customize the format as defined in
 # http://www.ruby-doc.org/core-1.9.2/Time.html#method-i-strftime
 # Additionally, %o will give you the ordinal representation of the day
-date_format: "ordinal"
+date_format: "%B %e, %Y at %H:%M %Z"
+
+category_title_prefix: ""
 
 # RSS / Email (optional) subscription links (change if using something like Feedburner)
 subscribe_rss: /atom.xml
@@ -33,7 +34,7 @@ source: source
 destination: public
 plugins: plugins
 code_dir: downloads/code
-category_dir: blog/categories
+category_dir: tag
 markdown: rdiscount
 pygments: false # Jekyll's default Python Pygments have been replaced by pygments.rb. Set to true to use Albino + Pythong Pygments
 
@@ -53,9 +54,12 @@ titlecase: false       # Converts page and post titles to titlecase
 
 # To change the layout's default sidebar Add a new sidebar source/_includes/sidebars/your_sidebar.html
 # then make changes below, eg. post_sidebar: your_sidebar.html
-blog_index_sidebar: blog_index_default.html
-page_sidebar: page_default.html
-post_sidebar: post_default.html
+blog_index_sidebar: the_pug_automatic.html
+page_sidebar: the_pug_automatic.html
+post_sidebar: the_pug_automatic.html
+#blog_index_sidebar: blog_index_default.html
+#page_sidebar: page_default.html
+#post_sidebar: post_default.html
 
 # ----------------------- #
 #   3rd Party Settings    #
@@ -66,7 +70,7 @@ post_sidebar: post_default.html
 respectfully_social: true
 
 # Github repositories
-github_user: henrik
+github_user:
 github_repo_count: 4
 github_show_profile_link: true
 github_skip_forks: true
@@ -90,7 +94,7 @@ google_plus_hidden: false
 google_plus_image_size: 32
 
 # Pinboard
-pinboard_user: henrik
+pinboard_user:
 pinboard_count: 3
 
 # Delicious
