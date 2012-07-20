@@ -5,11 +5,13 @@ require 'rake/minify'
 
 ## -- Rsync Deploy config -- ##
 # Be sure your public key is listed in your server's ~/.ssh/authorized_keys file
-ssh_user       = "user@domain.com"
+ssh_user       = "poly"
 ssh_port       = "22"
-document_root  = "~/website.com/"
+document_root  = "/srv/www/henrik.nyh.se/public_html/octopress/"
 rsync_delete   = true
 deploy_default = "rsync"
+
+
 
 # Hidden "dot" files that should be included with the deployed site (see task copydot)
 copy_dot_files = []

@@ -5,14 +5,10 @@ This [Octopress](http://octopress.org)-powered blog can be seen here: <http://he
 
 ## TODO
 
-Major:
-- Verify RSS feeds
-- Deploy
-
-Minor:
-- Fix comments - maybe only work in prod?
 - title hover color
 - title/logo before content on small screens, not after
+- 404
+- sitemap
 
 
 ## Octopress license
