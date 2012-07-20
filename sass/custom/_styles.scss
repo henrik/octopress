@@ -63,11 +63,34 @@ html {
 
 // Sidebar
 
+.bird {
+  margin: 2em 0 0.5em;
+  text-align: center;
+  a {
+    display: inline-block;
+    text-decoration: none;
+  }
+  img {
+    border: none;
+    @include box-shadow(none);
+  }
+}
+
 #tweets {
   font-size: 0.9em;
+
   .twitter-date {
     font-size: 80%;
     display: block;
+  }
+
+  .loading {
+    padding: 0;
+
+    &:before {
+      background: none;
+      height: auto;
+    }
   }
 }
 
