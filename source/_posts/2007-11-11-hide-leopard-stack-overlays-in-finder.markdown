@@ -18,7 +18,7 @@ The log does not allow comments, so I'm blogging some minor improvements to this
 
 I want my <code>Downloads</code> stack to be sorted by date added, not date modified as in that post. Just change the <code>m</code> to an <code>a</code>:
 
-``` text
+``` bash
 touch -at 202001010101.01 " Icon"
 ```
 Note that I've named the icon " Icon" with an initial space. This is so that I can use the same naming scheme with stacks that I sort by name (in my case, my home folder). The reason for using a consistent naming scheme is revealed below.
@@ -31,12 +31,12 @@ A necessary evil to the overlay trick is that you need to keep an icon file sort
 
 You <em>can</em>, however, hide it from the Finder by toggling the file's invisible bit. It will still display in the expanded stack (alas) and as an icon overlay (w00t). You can do
 
-``` text
+``` bash
 chflags hidden " Icon"
 ```
 If you want to unhide it, do
 
-``` text
+``` bash
 chflags nohidden " Icon"
 ```
 

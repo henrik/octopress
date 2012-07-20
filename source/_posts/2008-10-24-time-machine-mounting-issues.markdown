@@ -24,10 +24,9 @@ or whatever the name is.
 
 If you get
 
-``` text
-Unmount blocked by dissenter with status code 0x0000c001 and message (null)
-Unmount failed for /Volumes/Backup
-```
+    Unmount blocked by dissenter with status code 0x0000c001 and message (null)
+    Unmount failed for /Volumes/Backup
+
 then try
 
 ``` bash

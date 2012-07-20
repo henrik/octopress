@@ -19,7 +19,7 @@ I figured the best vehicle for this piece of magic would be a <a href="http://en
 I can initiate a quoted reply, put "-snip-" or "-s-" wherever I want a word in, and then run the bookmarklet. It will insert the appropriate start and end tags, including any attributes to the start tag (e.g. <code>[QUOTE="Squid"]</code> or <code>[QUOTE from="Squid"]</code>), newlines to make room for my reply (after first removing superfluous whitespace around the snip point), and then put the caret in the first such slot.
 
 So
-``` text
+``` bbcode
 [QUOTE="Squid"]
 Blubb blubb!
 -s-
@@ -29,7 +29,7 @@ Hrull...
 [/QUOTE]
 ```
  becomes
-``` text
+``` bbcode
 [QUOTE="Squid"]
 Blubb blubb!
 [/QUOTE]

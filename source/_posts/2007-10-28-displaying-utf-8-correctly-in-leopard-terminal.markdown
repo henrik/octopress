@@ -19,9 +19,7 @@ If you haven't customized the formats, or you selected a region and later custom
 
 A file named <code>täst</code> was displayed by e.g. <code>ls</code> as
 
-``` text
-t??st
-```
+    t??st
 
 <!--more-->
 
@@ -50,7 +48,6 @@ LC_CTYPE="sv_SE.UTF-8"
 ```
 and <code>ls</code> now displays
 
-``` text
-täst
-```
+    täst
+
 as it should.

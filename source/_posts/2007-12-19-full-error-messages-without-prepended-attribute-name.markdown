@@ -44,7 +44,5 @@ errors.add('born_at', "You're too young") if age < AGE_LIMIT
 
 will result in the full error messages
 
-``` text
-Name is just silly
-You're too young
-```
+    Name is just silly
+    You're too young

@@ -26,7 +26,7 @@ These are shell scripts that have been made executable (<code>chmod +x filename.
 
 <code>hyper</code> is my SSH alias for the Mac Mini. My <code>~/.ssh/config</code> file contains something like
 
-``` text
+``` text ~/.ssh/config
 Host hyper
   Hostname hyperion.local
   User mini
@@ -134,12 +134,12 @@ The <code>M</code> flag is master mode for connection sharing. The <code>N</code
 
 To load this into launchd, run
 
-``` text
+``` bash
 launchctl load name.henriknyh.controlmaster.plist
 ```
 from that directory (otherwise specify the full path). Then run
 
-``` text
+``` bash
 launchctl start name.henriknyh.controlmaster
 ```
 to start it immediately, without waiting for next boot.

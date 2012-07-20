@@ -41,6 +41,6 @@ Here's the <code>diff</code> (<a href="http://henrik.nyh.se/uploads/partyshuffle
 ```
 Apply it with e.g.
 
-``` text
+``` bash
 patch /Applications/iTunes.app/Contents/ Resources/English.lproj/Localizable.strings < partyshufflebegone.diff
 ```

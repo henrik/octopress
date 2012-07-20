@@ -34,9 +34,8 @@ My plugin was originally configured to compile for OS X 10.4 Tiger. This is a go
 
 But I got these errors trying to build the plugin:
 
-``` text
-error: syntax error before 'NSUInteger'
-```
+    error: syntax error before 'NSUInteger'
+
 referencing the code
 
 ``` c
@@ -48,18 +47,17 @@ referencing the code
 
 and
 
-``` text
-fatal error: method definition not in @implementation context
-```
+    fatal error: method definition not in @implementation context
+
 referencing
 
-``` text
+``` obj-c
 - (void)listObject:(AIListObject *)listObject didSetOrderIndex:(float)inOrderIndex;
 ```
 
 To fix that, I had to include another header in my plugin's main <code>.h</code> file:
 
-``` c
+``` obj-c
 #import <AIUtilities/AITigerCompatibility.h>
 ```
 
@@ -67,15 +65,13 @@ To fix that, I had to include another header in my plugin's main <code>.h</code>
 
 When that was done, or if I built for OS X 10.5 Leopard only, I instead got a couple of
 
-``` text
-error: ‘adium’ undeclared (first use in this function)
-```
+    error: ‘adium’ undeclared (first use in this function)
 
 from lines trying to use that constant.
 
 That required another header:
 
-``` c
+``` obj-c
 #import <Adium/AISharedAdium.h>
 ```
 

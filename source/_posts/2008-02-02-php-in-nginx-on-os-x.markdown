@@ -17,20 +17,20 @@ I roughly followed <a href="http://blog.kovyrin.net/2006/05/30/nginx-php-fastcgi
 
 I installed php with <a href="http://www.macports.org/">MacPorts</a> like so:
 
-``` text
+``` bash
 sudo port install php5 +fastcgi +mysql5
 ```
 
 Obviously remove the <code>+mysql5</code> bit if you don't want MySQL; if you want MySQL to autostart, install it separately first with
 
-``` text
+``` bash
 sudo port install mysql5 +server
 ```
 and follow the instructions.
 
 It's possible that you need to get the fcgi port before installing PHP:
 
-``` text
+``` bash
 sudo port install fcgi
 ```
 

@@ -26,11 +26,9 @@ Blog posts on the subject that I found (like <a href="http://coderkitty.sweetper
 
 If you go that route (or a similar one using the new-fangled <a href="http://ryandaigle.com/articles/2007/9/24/what-s-new-in-edge-rails-better-exception-handling"><code>rescue_from</code></a>), these are the errors that Rails by default would render <code>public/404.html</code> for:
 
-``` text
-ActionController::RoutingError
-ActionController::UnknownAction
-ActiveRecord::RecordNotFound
-```
+    ActionController::RoutingError
+    ActionController::UnknownAction
+    ActiveRecord::RecordNotFound
 
 They are enumerated in <a href="http://github.com/rails/rails/tree/v2.1.0/actionpack/lib/action_controller/rescue.rb#L16-18"><code>ActionController::Rescue</code></a>.
 

@@ -19,25 +19,24 @@ Ran into some gotchas when installing from <a href="http://www.macports.org/">Ma
 
 I installed MySQL 5 with
 
-``` text
+``` bash
 sudo port install mysql5 +server
 ```
 
 Trying to start it with <code>mysql5</code> gave the error
 
-``` text
-ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/opt/local/var/run/mysql5/mysqld.sock' (2)
-```
+    ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/opt/local/var/run/mysql5/mysqld.sock' (2)
+
 There were a lot of mentions of this on Google, but solutions were hard to find.
 
 What worked for me was to run
 
-``` text
+``` bash
 sudo mysql_install_db5 --user=mysql
 ```
 which I believe creates the required default databases, then start MySQL with
 
-``` text
+``` bash
 sudo /opt/local/etc/LaunchDaemons/org.macports.mysql5/mysql5.wrapper start
 ```
 
@@ -47,15 +46,13 @@ I tried to install some ports (<code>git-core</code>, <code>readline</code>) tha
 
 Installation seemed to get stuck at
 
-``` text
---->  Staging ncurses into destroot
-```
+    --->  Staging ncurses into destroot
 
 The issue was as <a href="http://www.nabble.com/ncurses-install-hangs-td20580633.html">described here</a>.
 
 Fixed by running
 
-``` text
+``` bash
 sudo port clean --all ncurses ncursesw
 sudo port upgrade ncursesw
 sudo port install ncurses

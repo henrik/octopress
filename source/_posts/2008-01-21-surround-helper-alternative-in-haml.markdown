@@ -15,7 +15,7 @@ Today I wanted to put a link in parentheses. There is a <code><a href="http://ha
 
 This is what I do instead:
 
-``` text
+``` haml
 %li
   =h item.name
   = "(%s)" % link_to_remote("x", item, :method => :delete)
@@ -23,22 +23,19 @@ This is what I do instead:
 
 The code
 
-``` text
+``` ruby
 "(%s)" % "foo"
 ```
 in Ruby is short for
 
-``` text
+``` ruby
 format("(%s)", "foo")
 ```
 or
 
-``` text
+``` ruby
 sprintf("(%s)", "foo")
 ```
 and will simply return
 
-``` text
-(foo)
-```
-.
+    (foo)

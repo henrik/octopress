@@ -28,7 +28,7 @@ Hopefully this is of use to someone else.
 
 The usage is simply
 
-``` c
+``` obj-c
 NSError *error;
 [myManagedObjectContext updateEntity: @"Channel"
                       fromDictionary: channelsToImport
@@ -39,7 +39,7 @@ NSError *error;
 
 where <code>channelsToImport</code> is a dictionary with the identifiers as keys, and dictionaries as values. Those nested dictionaries have attribute names as keys and attribute values as values. So, in pseudo-code (actually Ruby ;p):
 
-``` text
+``` ruby
 {"channel.123" => {"displayName" => "Some Channel", "baseURL" => "http://www.example.com/"}}
 ```
 
@@ -51,7 +51,7 @@ I did not add support for passing a predicate to limit the entities you want, si
 
 The code (<a href="http://henrik.nyh.se/uploads/NSManagedObjectContext_UpdateEntity.h">download</a>, don't forget to <code>#import</code> the file):
 
-``` c
+``` obj-c
 @interface NSManagedObjectContext (UpdateEntity)
 - (void)updateEntity:(NSString *)entity fromDictionary:(NSDictionary *)importDict withIdentifier:(NSString *)identifier overwriting:(NSArray *)overwritables andError:(NSError **)error;
 @end

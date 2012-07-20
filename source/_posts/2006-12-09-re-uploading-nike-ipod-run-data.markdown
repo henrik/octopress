@@ -26,19 +26,19 @@ Connect your iPod and allow it to mount.
 
 Go to the <code>synched</code> directory:
 
-``` text
+``` bash
 cd /Volumes/YourNanoName/iPod_Control/Device/Trainer/Workouts/Empeds/2X345FOOBAR/synched
 ```
 
 Move the file to the <code>latest</code> directory:
 
-``` text
+``` bash
 mv 2006-12-06\ 17\;40\;02.xml ../latest/
 ```
 
 Navigate out of the Nano to allow ejecting it:
 
-``` text
+``` bash
 cd
 ```
 

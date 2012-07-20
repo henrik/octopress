@@ -149,10 +149,8 @@ end
 
 outputs:
 
-``` text
-nil
-noll
-ett
-en biljon tjugofyra miljarder niohundraåtta miljoner tvåhundrasextiosju tusen tvåhundratjugonio
-en centiljard centiljarder ett
-```
+    nil
+    noll
+    ett
+    en biljon tjugofyra miljarder niohundraåtta miljoner tvåhundrasextiosju tusen tvåhundratjugonio
+    en centiljard centiljarder ett

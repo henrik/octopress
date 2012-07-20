@@ -17,14 +17,12 @@ I didn't want to use a subdomain, though. My site is on a subdomain already, and
 
 Over at <a href="http://henrik.nyh.se/tumble">http://henrik.nyh.se/tumble</a>, this is my <code>.htaccess</code>:
 
-``` text
- RewriteEngine On
+``` apache .htaccess
+RewriteEngine On
 RewriteBase /tumble
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$  proxy.php?url=http://malesca.tumblr.com/$1
-
-
 ```
 
 and this is <a href="http://henrik.nyh.se/uploads/proxy.phps"><code>proxy.php</code></a>:

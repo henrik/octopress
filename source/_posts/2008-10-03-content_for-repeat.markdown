@@ -40,7 +40,7 @@ Hence:
 
 Prettier in <a href="http://haml.hamptoncatlin.com/">Haml</a>, of course:
 
-``` text
+``` haml
 - content_for :controls do
   %ul
     %li Do this

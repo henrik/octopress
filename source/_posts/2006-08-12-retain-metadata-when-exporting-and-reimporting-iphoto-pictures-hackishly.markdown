@@ -43,7 +43,7 @@ Do this for each of your keyword or iPhoto folder folders.
 
 I started by creating a list suitable for AppleScript and saved it to a file. Using the Terminal, step inside the folder of photos in question and do
 
-``` text
+``` bash
 ruby -e 'puts %{"} + Dir["*.jpg"].join(%{", "}) + %{"}' > iphoto.scpt
 ```
 

@@ -21,7 +21,7 @@ Put the <a href="http://henrik.nyh.se/uploads/opt2enter">opt2enter</a> binary in
 
 To make sure the binary is always running in the background, put <a href="http://henrik.nyh.se/uploads/name.henriknyh.opt2enter.plist">name.henriknyh.opt2enter.plist</a> in <code>/Library/LaunchDaemons</code> and run this command in a Terminal:
 
-``` text
+``` bash
 sudo launchctl load -w /Library/LaunchDaemons/name.henriknyh.opt2enter.plist
 ```
 

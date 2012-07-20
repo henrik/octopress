@@ -20,19 +20,19 @@ The solution I'm currently using is the work of jptix, a regular on the <a href=
 
 Get <a href="http://www.macports.org/">MacPorts</a> and install <code>readline</code> (you must specify <code>+universal</code>, even on Intel):
 
-``` text
+``` bash
 sudo port install readline +universal
 ```
 
 Get the Ruby extension for <code>readline</code>:
 
-``` text
+``` bash
 svn co http://svn.ruby-lang.org/repos/ruby/tags/v1_8_6_111/ext/readline/ readline
 ```
 
 Apply <a href="http://pastie.textmate.org/168767">a small patch</a> to <code>readline/extconf.rb</code>:
 
-``` text
+``` bash
 curl http://pastie.textmate.org/pastes/168767/download | patch readline/extconf.rb
 ```
 

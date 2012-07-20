@@ -14,19 +14,17 @@ That takes care of knowing what branch you're on, but I still found myself runni
 
 I hacked that in, and now my prompt looks like e.g.
 
-``` text
-henrik@Hyperion ~/dev/blog.johannaost.com[master]$
-```
+    henrik@Hyperion ~/dev/blog.johannaost.com[master]$
+
 when the working directory is clean, and
 
-``` text
-henrik@Hyperion ~/dev/blog.johannaost.com[master*]$
-```
+    henrik@Hyperion ~/dev/blog.johannaost.com[master*]$
+
 when it's dirty – an asterisk is added.
 
 Code for bash, goes into <code>~/.bashrc</code>:
 
-``` bash
+``` bash ~/.bashrc
 function parse_git_dirty {
   [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
 }

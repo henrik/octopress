@@ -51,7 +51,5 @@ And that's it. Just copy some text containing URLs and then run the script.
 
 Test with this:
 
-``` text
-Frou http://www.example.com, frou (http://www.google.com/#squid)
-and http://henrik.nyh.se!
-```
+    Frou http://www.example.com, frou (http://www.google.com/#squid)
+    and http://henrik.nyh.se!

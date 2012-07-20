@@ -17,10 +17,8 @@ Following the hint, I added a printer with a URI like <code>smb://username:passw
 
 My first attempts gave gibberish output starting with
 
-``` text
-%!PS-Adobe-3.0
-              %RBINumCopies: 1
-```
+    %!PS-Adobe-3.0
+                  %RBINumCopies: 1
 
 followed by a few more lines in the same spirit and then a number of blank pages, at which point I cancelled printing.
 

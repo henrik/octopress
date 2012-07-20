@@ -29,12 +29,10 @@ Bookmark this: <a href="javascript:function%20%24%28id%29%20%7B%20return%20docum
 
 Pass the bookmarklet a (case-insensitive) argument beginning with <code>L</code> to get an LJ-cut, or <code>B</code> for BBCode. Anything else, or no argument, will give you HTML. So usage could e.g. be either of
 
-``` text
-bat
-bat html
-bat bb
-bat lj
-```
+    bat
+    bat html
+    bat bb
+    bat lj
 
 The un-encoded code follows. It should be URL encoded before bookmarking it, but the "%s" is a Firefox quick-search placeholder (for argument passing) that should <em>not</em> be encoded.
 

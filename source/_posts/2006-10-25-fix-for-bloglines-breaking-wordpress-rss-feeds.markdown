@@ -20,7 +20,7 @@ I'm running WordPress 2.0. I've no idea if the problem or this solution apply to
 
 The file to change is <code>wp-includes/template-functions-post.php</code>, around row 90. Unidiff (<a href="http://henrik.nyh.se/uploads/bloglineswordpress.diff">download</a>):
 
-``` text
+``` diff
 --- wp-includes/template-functions-post-old.php	2006-07-16 09:44:50.000000000 +0200
 +++ wp-includes/template-functions-post.php	2006-10-25 20:46:47.000000000 +0200
 @@ -87,7 +87,7 @@

@@ -10,7 +10,7 @@ comments: true
 ---
 This post is just to suggest that in <a href="http://haml.hamptoncatlin.com/">Haml</a> (which I can't decide if I like or not), rather than something like
 
-``` text
+``` haml
 %p
   You are logged in.
   = succeed "?" do
@@ -18,7 +18,7 @@ This post is just to suggest that in <a href="http://haml.hamptoncatlin.com/">Ha
 ```
 consider
 
-``` text
+``` haml
 %p
   You are logged in.
   = link_to("Log out", "#"), "?"

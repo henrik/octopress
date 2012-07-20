@@ -25,8 +25,8 @@ Also, if an event (a show, in this case) spans two days, it would appear once un
 
 The changes follow as a unidiff (<code>man diff</code>, <code>man patch</code>):
 
-``` text
--<!---->-<!---->- iCalEvents.js.old	2006-07-27 20:27:58.000000000 +0200
+``` diff
+--- iCalEvents.js.old	2006-07-27 20:27:58.000000000 +0200
 +++ iCalEvents.js	2006-07-27 20:39:07.000000000 +0200
 @@ -262,7 +262,7 @@
  					     currentDayEnd_getTime > startDate_getTime))
@@ -52,6 +52,6 @@ The changes follow as a unidiff (<code>man diff</code>, <code>man patch</code>):
 
 Apply it with e.g.
 
-``` text
+``` bash
 patch ~/Library/Widgets/iCal\ Events.wdgt/iCalEvents.js < icalevents.diff
 ```

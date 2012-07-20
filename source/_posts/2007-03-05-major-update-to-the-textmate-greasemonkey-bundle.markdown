@@ -40,7 +40,7 @@ I'll paste the bundle documentation (available through <code>Help</code> in the 
 <h4>Template (&#x21E7;&#x2303;&#x2325;&#x2318;G)</h4>
 <p>Select <code>File &gt; New From Template &gt; Greasemonkey &gt; Userscript</code> to create a new script from template. The template outputs this:</p>
 
-``` text
+``` js
 // ==UserScript==
 // @name          Name
 // @namespace     http://www.example.com
