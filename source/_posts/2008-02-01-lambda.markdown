@@ -1,0 +1,18 @@
+---
+wordpress_id: 207
+title: Lambda
+categories:
+- Ruby
+date: 2008-02-01 12:39
+layout: post
+comments: true
+---
+Teehee:
+
+``` ruby
+module Kernel
+  alias_method "λ", :lambda
+end
+
+send("λ") { puts "w00t" }.call
+```
