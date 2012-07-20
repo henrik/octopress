@@ -5,9 +5,7 @@ This [Octopress](http://octopress.org)-powered blog can be seen here: <http://he
 
 ## TODO
 
-- title hover color
 - title/logo before content on small screens, not after
-- look over old code examples, set filenames for some
 - fix -> /octopress redirect without trailing slash.
 
 

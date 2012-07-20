@@ -34,14 +34,19 @@ html {
   }
 }
 
-h1 a {
-  text-decoration: none;
-}
-
 .site-title {
+  $title-color: #daa520;
+
   font-size: 28px;
-  color: goldenrod;
+  color: $title-color;
   margin-bottom: 0.5em;
+
+  a {
+    text-decoration: none;
+    &:hover {
+      color: $title-color;
+    }
+  }
 }
 
 .site-intro {
