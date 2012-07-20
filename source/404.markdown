@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Page Not Found
+title: Page not found (Error 404)
 ---
 
-Oops, I couldn't find that page! Sorry about that.
+Though several brave pugs died in the attempt, that page could not be found.
 
-Maybe try the search box (top right), or look through the [archives](/archives)?
+Try the search box on the right, or browse through [all posts]({{root_url}}/).

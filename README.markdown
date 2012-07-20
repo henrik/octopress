@@ -7,8 +7,8 @@ This [Octopress](http://octopress.org)-powered blog can be seen here: <http://he
 
 - title hover color
 - title/logo before content on small screens, not after
-- 404
-- sitemap
+- look over old code examples, set filenames for some
+- fix -> /octopress redirect without trailing slash.
 
 
 ## Octopress license
