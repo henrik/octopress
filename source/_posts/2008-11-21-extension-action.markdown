@@ -18,4 +18,5 @@ Renaming manually is a bother, especially when you don't know what file type it'
 
 When a new file appears in the folder, by being saved or moved there, the script uses the <code>file</code> command to get the file type (try <code>man file</code> for more info on how that works). Then, if the file type is JPG, PNG or GIF, and the filename extension does not match that file type, the correct extension is added.
 
-The script is here: <a href="http://gist.github.com/27558">http://gist.github.com/27558</a>
+The script is here:
+{% gist 27558 %}

@@ -24,17 +24,7 @@ when it's dirty – an asterisk is added.
 
 Code for bash, goes into <code>~/.bashrc</code>:
 
-``` bash ~/.bashrc
-function parse_git_dirty {
-  [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
-}
-function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1$(parse_git_dirty)]/"
-}
-export PS1='\u@\h \[\033[1;33m\]\w\[\033[0m\]$(parse_git_branch)$ '
-```
-
-<a href="http://gist.github.com/31631">Also available as a gist</a>, if you want to fork it.
+{% gist 31631 %}
 
 I have nearly no experience in shell scripting, so please let me know how this can be improved. For one thing, I expect it could be made more efficient by just running <code>git status</code> once and getting both branch and dirtiness from that.
 
