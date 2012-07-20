@@ -6,12 +6,11 @@ This [Octopress](http://octopress.org)-powered blog can be seen here: <http://he
 ## TODO
 
 Major:
-- Import old posts
+- Verify RSS feeds
 - Deploy
 
 Minor:
 - Fix comments - maybe only work in prod?
-- Verify RSS feeds
 - title hover color
 - title/logo before content on small screens, not after
 
