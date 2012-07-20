@@ -1,6 +1,4 @@
-This [Octopress](http://octopress.org)-powered blog can be seen here:
-
-<http://henrik.nyh.se/>
+This [Octopress](http://octopress.org)-powered blog can be seen here: <http://henrik.nyh.se/>
 
 * [Octopress on GitHub](https://github.com/imathis/octopress)
 * [Octopress docs](http://octopress.org/docs/)
@@ -33,7 +31,7 @@ THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 ## Blog license
 
-The blog engine and its default theme are under the MIT license.
+Octopress and its default theme are under the MIT license.
 
 Please don't steal my customized theme wholesale, but you can of course borrow bits and pieces. Not the pug graphic! :)
 
