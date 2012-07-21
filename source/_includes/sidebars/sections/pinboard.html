@@ -1,8 +1,10 @@
 {% if site.pinboard_user %}
 <section>
-  <h1>Recent bookmarks</h1>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:{{site.pinboard_user}}"><img src="{{root_url}}/images/custom/pinboard.png" alt="{{site.pinboard_user}} @ Pinboard" title="{{site.pinboard_user}} @ Pinboard"></a>
+  </p>
+
   <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
-  <p><a href="http://pinboard.in/u:{{ site.pinboard_user }}">{{site.pinboard_user}}@Pinboard &raquo;</a></p>
 </section>
 <script type="text/javascript">
   $(document).ready(function(){

@@ -94,8 +94,8 @@ google_plus_hidden: false
 google_plus_image_size: 32
 
 # Pinboard
-pinboard_user:
-pinboard_count: 3
+pinboard_user: henrik
+pinboard_count: 4
 
 # Delicious
 delicious_user:

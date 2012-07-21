@@ -63,7 +63,7 @@ html {
 
 // Sidebar
 
-.bird {
+.service-icon {
   margin: 2em 0 0.5em;
   text-align: center;
   a {
@@ -76,11 +76,27 @@ html {
   }
 }
 
-#tweets {
+#tweets,
+#pinboard_linkroll {
   font-size: 0.9em;
+}
 
+.twitter-date,
+.pin-description,
+.pin-tag {
+  font-size: 80%;
+}
+
+.pin-title {
+  margin-bottom: 0 !important;
+}
+.pin-description {
+  margin-top: 3px;
+  margin-bottom: 0 !important;
+}
+
+#tweets {
   .twitter-date {
-    font-size: 80%;
     display: block;
   }
 
