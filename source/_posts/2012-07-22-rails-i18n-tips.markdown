@@ -127,7 +127,7 @@ Perhaps you have an admin section with only one or two locales, and a public sec
 
 Instead of having the translator needlessly translate your admin section to every locale, split it into a `config/locales/en.yml` and a `config/locales/admin.en.yml`.
 
-By default, Rails will load all translations from <code>config/locales/*.{rb,yml}</code>.
+By default, Rails will load all translations from `config/locales/*.{rb,yml}`.
 
 
 ## Beware highly inflected languages
