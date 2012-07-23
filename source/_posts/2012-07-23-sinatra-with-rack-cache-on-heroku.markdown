@@ -52,7 +52,7 @@ In your Sinatra app, require the dependencies. I like to do it this way so I don
 ``` ruby app.rb
 require "rubygems"
 require "bundler"
-Bundler.require :default, (ENV['RACK_ENV'] || "development").to_sym
+Bundler.require :default, (ENV["RACK_ENV"] || "development").to_sym
 ```
 
 But you could do this if you prefer:
@@ -70,8 +70,8 @@ Configure the app to use memcache for storage:
 
 ``` ruby app.rb
 # Defined in ENV on Heroku. To try locally, start memcached and uncomment:
-# ENV['MEMCACHE_SERVERS'] = "localhost"
-if memcache_servers = ENV['MEMCACHE_SERVERS']
+# ENV["MEMCACHE_SERVERS"] = "localhost"
+if memcache_servers = ENV["MEMCACHE_SERVERS"]
   use Rack::Cache,
     verbose: true,
     metastore:   "memcached://#{memcache_servers}",
@@ -82,7 +82,7 @@ end
 And have the app set whatever HTTP caching headers you like:
 
 ``` ruby app.rb
-get '/foo' do
+get "/foo" do
   cache_control :public, max_age: 1800  # 30 mins.
   "Hello world at #{Time.now}!"
 end
@@ -93,18 +93,18 @@ Altogether:
 ``` ruby app.rb
 require "rubygems"
 require "bundler"
-Bundler.require :default, (ENV['RACK_ENV'] || "development").to_sym
+Bundler.require :default, (ENV["RACK_ENV"] || "development").to_sym
 
 # Defined in ENV on Heroku. To try locally, start memcached and uncomment:
-# ENV['MEMCACHE_SERVERS'] = "localhost"
-if memcache_servers = ENV['MEMCACHE_SERVERS']
+# ENV["MEMCACHE_SERVERS"] = "localhost"
+if memcache_servers = ENV["MEMCACHE_SERVERS"]
   use Rack::Cache,
     verbose: true,
     metastore:   "memcached://#{memcache_servers}",
     entitystore: "memcached://#{memcache_servers}"
 end
 
-get '/foo' do
+get "/foo" do
   cache_control :public, max_age: 1800  # 30 mins.
   "Hello world at #{Time.now}!"
 end
