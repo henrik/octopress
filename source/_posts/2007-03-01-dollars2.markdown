@@ -1,6 +1,6 @@
 ---
 wordpress_id: 108
-title: "Dollars\xC2\xB2"
+title: "Dollars²"
 categories:
 - Interesting
 date: 2007-03-01 13:47
