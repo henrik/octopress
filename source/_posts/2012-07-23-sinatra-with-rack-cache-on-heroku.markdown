@@ -88,7 +88,7 @@ get "/foo" do
 end
 ```
 
-Altogether:
+All together:
 
 ``` ruby app.rb
 require "rubygems"
