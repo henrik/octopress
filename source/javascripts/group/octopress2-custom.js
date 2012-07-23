@@ -1,6 +1,6 @@
 // This file must have a name that comes after "jquery" alphabetically, due to how minification works.
 
-// TODO:
+// FIXME:
 // * Doesn't properly reset on resizing.
 
 $(function() {
