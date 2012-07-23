@@ -127,7 +127,9 @@ Perhaps you have an admin section with only one or two locales, and a public sec
 
 Instead of having the translator needlessly translate your admin section to every locale, split it into a `config/locales/en.yml` and a `config/locales/admin.en.yml`.
 
-By default, Rails will load all translations from `config/locales/*.{rb,yml}`.
+Multiple files isn't just about limiting what you send to translators. It also means you can limit what you send to your automatic scripts, like tests, as described below.
+
+By default, Rails will load all translations matching `config/locales/*.{rb,yml}`.
 
 
 ## Beware highly inflected languages
@@ -146,7 +148,7 @@ from_x: "From %{x}"
 from_x: "Från %{x}"
 ```
 
-But in a language like Finnish, you inflect the word itself: "New Yorkista" means "from New York". And the suffix isn't predictable without a dictionary: "from Berlin" is "Berliinistä" ([the ablative case](http://en.wikipedia.org/wiki/Ablative_case)).
+But in a language like Finnish, you inflect the word itself ([the ablative case](http://en.wikipedia.org/wiki/Ablative_case)): "New Yorkista" means "from New York". And the suffix isn't predictable without a dictionary: "from Berlin" is "Berliinistä".
 
 You could list these variations in your translation files or other data source, but that takes some effort.
 
@@ -164,7 +166,7 @@ from: "Från:"
 from: "Lähettäjä:"
 ```
 
-Consult a speaker of the target language and see if you can come up with a workaround similar to this.
+Apparently this is enough to avoid inflecting the place name. Consult a speaker of the target language and see if you can come up with a workaround similar to this.
 
 
 ## YAML flattener plugin for Vim
