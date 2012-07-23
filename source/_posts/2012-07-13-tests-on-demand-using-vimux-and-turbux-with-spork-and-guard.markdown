@@ -105,7 +105,7 @@ This can be useful if you're running one integration test over and over, while m
 Or if you want a more permanent mapping, you could do something like:
 
 ``` vim ~/.vimrc
-map ,x call VimuxRunLastCommand()<CR>
+map ,x :VimuxRunLastCommand<CR>
 ```
 
 ``` vim
@@ -114,7 +114,7 @@ map ,x call VimuxRunLastCommand()<CR>
 ,x
 ```
 
-Vimux also lets you `:call VimuxPromptCommand()` if you prefer a prompt, though the function form lets you do things like refer to the current file dynamically:
+Vimux also lets you `:VimuxPromptCommand` if you prefer a prompt, though the function form lets you do things like refer to the current file dynamically:
 
 ``` vim
 :call VimuxRunCommand("cat ".expand("%"))
