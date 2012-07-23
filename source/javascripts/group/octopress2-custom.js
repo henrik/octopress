@@ -1,5 +1,7 @@
 // This file must have a name that comes after "jquery" alphabetically, due to how minification works.
 
+// Make the year headers on the index/tag pages position: fixed sometimes, like iOS table headers.
+//
 // FIXME:
 // * Doesn't properly reset on resizing.
 
