@@ -4,9 +4,8 @@
 // * Doesn't properly reset on resizing.
 
 $(function() {
-  var isTouchDevice = 'ontouchstart' in document.documentElement;
-
   // Scroll events are funky with touch. Let's not even go there.
+  var isTouchDevice = 'ontouchstart' in document.documentElement;
   if (isTouchDevice) return;
 
   var $container = $("#blog-archives");
@@ -18,8 +17,8 @@ $(function() {
   var lastHeader;
   var containerBottom;
 
-  $(window).resize(setUp);
   $(document).scroll(moveHeaders);
+  $(window).resize(setUp);
   setUp();
 
   // Any time the window resizes, we must recalculate the things that change,
@@ -44,9 +43,8 @@ $(function() {
       }
     });
 
-    nextOffset = nextOffset || containerBottom;
-
     if (thisHeader) {
+      nextOffset = nextOffset || containerBottom;
       thisHeader.nextOffset = nextOffset;
     }
 
@@ -56,10 +54,12 @@ $(function() {
   function moveHeaders() {
     var pos = $(document).scrollTop();
     var header = headerForX(pos);
+
     if (lastHeader && lastHeader != header) {
       $(lastHeader).css({ position: originalPosition, top: originalTop, opacity: 1.0 });
       lastHeader = null;
     }
+
     if (header) {
       var opacity = 1.0;
       var fullAt = header.nextOffset - headerHeight;
@@ -67,7 +67,7 @@ $(function() {
         opacity = 1 - (pos - fullAt) / headerHeight;
       }
 
-      $(lastHeader).css({ position: "fixed", top: 0, opacity: opacity });
+      $(header).css({ position: "fixed", top: 0, opacity: opacity });
       lastHeader = header;
     }
   }
