@@ -175,16 +175,16 @@ I wrote [a plugin for Vim](https://github.com/henrik/vim-yaml-flattener) that le
 
 ``` yml xx.yml
 en:
+  baz: "baize"
   foo:
     bar: "baare"
-  baz: "baize"
 ```
 
 and a flat format:
 
 ``` yml xx.yml
-en.foo.bar: "baare"
 en.baz: "baize"
+en.foo.bar: "baare"
 ```
 
 This is really useful, as the flat format is easier to search and edit.
