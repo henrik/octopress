@@ -5,7 +5,6 @@ This [Octopress](http://octopress.org)-powered blog can be seen here: <http://he
 
 ## TODO
 
-- title/logo before content on small screens, not after
 - fix -> /octopress redirect without trailing slash.
 
 
