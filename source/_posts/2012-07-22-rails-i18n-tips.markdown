@@ -196,7 +196,7 @@ A nice side-effect of the plugin is that every time you toggle it, the keys will
 
 ## Test that translations match up
 
-I've also found it really useful to have a test in my test suite that verifies that all translations match up. So if `en.yml` has `foo.bar`, `sv.yml` should have it as well.
+I've also found it really useful to have a test in my test suite that verifies that all translations match up. So if `en.yml` has the key `foo.bar.baz`, then `sv.yml` should have it as well.
 
 It's caught me a number of times when I mistakenly add a translation to only one locale, or remove a translation from only one locale.
 
