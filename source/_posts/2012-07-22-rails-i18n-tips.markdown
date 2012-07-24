@@ -155,15 +155,15 @@ You could list these variations in your translation files or other data source, 
 The easiest solution I [found](http://www.ruby-forum.com/topic/1897522) for this was simply to make small tweaks to avoid it altogether, e.g. "From: New York" instead of "From New York".
 
 ``` yml en.yml
-from: "From:"
+from_x: "From: %{x}"
 ```
 
 ``` yml sv.yml
-from: "Från:"
+from_x: "Från: %{x}"
 ```
 
 ``` yml fi.yml
-from: "Lähettäjä:"
+from_x: "Lähettäjä: %{x}"
 ```
 
 Apparently this is enough to avoid inflecting the place name. Consult a speaker of the target language and see if you can come up with a workaround similar to this.
