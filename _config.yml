@@ -77,7 +77,7 @@ github_skip_forks: true
 
 # Twitter
 twitter_user: henrik
-twitter_tweet_count: 4
+twitter_tweet_count: 3
 twitter_show_replies: false
 twitter_follow_button: true
 twitter_show_follower_count: true
@@ -95,7 +95,7 @@ google_plus_image_size: 32
 
 # Pinboard
 pinboard_user: henrik
-pinboard_count: 4
+pinboard_count: 3
 
 # Delicious
 delicious_user:
