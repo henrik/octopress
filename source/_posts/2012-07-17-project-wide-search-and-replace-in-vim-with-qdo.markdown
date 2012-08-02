@@ -1,5 +1,5 @@
 ---
-title: Project-wide search-and-replace in Vim with Qdo
+
 date: 2012-07-17 16:30
 categories:  [Vim]
 layout: post
@@ -101,6 +101,20 @@ For project-wide search-and-replace, then, you would simply do something like th
 ```
 :GitGrep foo.*bar
 :Qdo %s/foo.*bar/baz
+```
+
+You probably want to configure
+
+``` vim ~/.vimrc
+" Automatically save changes before switching buffer with some
+" commands, like :cnfile.
+set autowrite
+```
+
+so each buffer is saved automatically when it moves to the next one. Otherwise, you could do:
+
+```
+:Qdo %s/foo.*bar/baz | update
 ```
 
 
