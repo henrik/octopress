@@ -6,6 +6,7 @@ comments: true
 categories:
   - Ruby on Rails
   - i18n
+  - Tips
 ---
 
 These are some tips based on my experiences of working with [Rails i18n](http://guides.rubyonrails.org/i18n.html), extracted from [my styleguide](https://github.com/henrik/styleguide).

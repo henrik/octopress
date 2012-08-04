@@ -1,0 +1,38 @@
+---
+layout: post
+title: "Captio with multiple recipients"
+date: 2012-08-04 21:30
+comments: true
+categories:
+  - Apps
+  - Tips
+  - Gmail
+---
+
+I love [Captio](http://boonbits.com/captio/) ($1.99 [in the App Store](http://itunes.apple.com/app/captio-email-yourself-1-tap/id370899391?mt=8)) on my iPhone for quick notes-to-self.
+
+You launch the app, type, hit the "Send" button and it mails you the note.
+
+It only has one "Send" button, though, and my notes are sometimes for work, sometimes for home.
+
+I came up with a simple workaround [until Captio adds multiple-recipient support](https://twitter.com/benlenarts/status/230407417211518976). It assumes you use Gmail.
+
+Simply set up a Gmail filter that forwards all Captio mail containing "jj" to your work e-email, and then type "jj" in those notes. "jj" is quick to type, unlikely to yield false positives, and suggests your **j**ob.
+
+## Instructions
+
+In the Gmail search box, type or paste
+
+    from:(captio@boonbits.com) jj
+
+and click the "Show search options" triangle on the right side of the search box.
+
+![Screenshot](http://f.cl.ly/items/2u1S2d1c3f2n3J0j1V2S/filter.png)
+
+Then click "Create filter with this search", and make it skip the inbox and forward. You will need to add the forwarding address if you haven't before.
+
+![Screenshot](http://f.cl.ly/items/0o1m383D2C3J1S1k1b0k/filter2.png)
+
+And that's it. Just add a "jj" to your note and it goes to work instead of home.
+
+You can, of course, use any keyword you like; or change the rule to forward but not archive, getting the mail in both inboxes; or add more rules if you want more than two recipients.
