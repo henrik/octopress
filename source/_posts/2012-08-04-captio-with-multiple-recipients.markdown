@@ -17,7 +17,7 @@ It only has one "Send" button, though, and my notes are sometimes for work, some
 
 I came up with a simple workaround [until Captio adds multiple-recipient support](https://twitter.com/benlenarts/status/230407417211518976). It assumes you use Gmail.
 
-Simply set up a Gmail filter that forwards all Captio mail containing "jj" to your work e-email, and then type "jj" in those notes. "jj" is quick to type, unlikely to yield false positives, and suggests your **j**ob.
+Simply set up a Gmail filter that forwards all Captio mail containing the word "jj" to your work e-email, and then type "jj" in those notes. "jj" is quick to type, unlikely to yield false positives, isn't autocorrected, and suggests your **j**ob.
 
 ## Instructions
 
@@ -35,4 +35,6 @@ Then click "Create filter with this search", and make it skip the inbox and forw
 
 And that's it. Just add a "jj" to your note and it goes to work instead of home.
 
-You can, of course, use any keyword you like; or change the rule to forward but not archive, getting the mail in both inboxes; or add more rules if you want more than two recipients.
+It only matches "jj" as a separate word, not as part of a word. You can, of course, use another keyword if you prefer. Or add more rules with more keywords if you want more than two different recipients.
+
+Depending on what you want to happen, tweak the rule to not archive, or to archive *and* mark as read, or to delete instead.
