@@ -126,7 +126,7 @@ While I would prefer to only type the search string once in the common case, the
 
 You have your choice of global search tool, with their different features and trade-offs. The raw speed of git-grep in a Git repository is a wonderful thing. With `:GitGrepAdd` you can search for "x" in directory a plus "y" in directory b.
 
-And on the other end, you get all the magic (or nomagic) of Vim. Though I don't think I've used it with `:Qdo` yet, you could apply some complex macro and not just a substitution.
+And on the other end, you get all the magic (or [nomagic](http://vimdoc.sourceforge.net/htmldoc/options.html#\'nomagic\')) of Vim. Though I don't think I've used it with `:Qdo` yet, you could apply some complex macro and not just a substitution.
 
 One thing I have done is chain multiple substitutions (replace "a" with "b" if present and then "c" with "d" if present), which I think would be more difficult with a more convenient but less flexible setup.
 
