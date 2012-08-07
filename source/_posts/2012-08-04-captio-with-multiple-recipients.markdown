@@ -35,6 +35,8 @@ Then click "Create filter with this search", and make it skip the inbox and forw
 
 And that's it. Just add a "jj" to your note and it goes to work instead of home.
 
-It only matches "jj" as a separate word, not as part of a word. You can, of course, use another keyword if you prefer. Or add more rules with more keywords if you want more than two different recipients.
+It only matches "jj" as a separate word, not as part of a word. It's case-insensitive, so if the iPhone autocapitalizes to "Jj", that's fine.
+
+You can, of course, use another keyword if you prefer. Or add more rules with more keywords if you want more than two different recipients.
 
 Depending on what you want to happen, tweak the rule to not archive, or to archive *and* mark as read, or to delete instead.
