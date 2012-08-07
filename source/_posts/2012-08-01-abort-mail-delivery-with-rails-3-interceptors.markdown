@@ -64,7 +64,7 @@ describe PreventMailInterceptor, "delivery interception" do
   end
 
   def deliver_mail
-    ActionMailer::Base.mail(to: "foo@example.com", from: "fake@example.com").deliver
+    ActionMailer::Base.mail(to: "a@foo.com", from: "b@foo.com").deliver
   end
 end
 
