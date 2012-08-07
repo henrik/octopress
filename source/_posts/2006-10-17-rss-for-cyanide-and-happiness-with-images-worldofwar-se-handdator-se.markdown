@@ -7,6 +7,15 @@ date: 2006-10-17 00:46
 layout: post
 comments: true
 ---
+
+## Update 2012-08-07
+
+Sorry, these feeds are going away as I don't use them and don't want to maintain them.
+
+There is a [Cyanide and Happiness feed with images here](http://pipes.yahoo.com/pipes/pipe.run?_id=9b91d1900e14d1caff163aa6fa1b24bd&_render=rss) that seems just as good.
+
+## Old post
+
 I discovered the web comic <a href="http://www.explosm.net/comics">Cyanide and Happiness</a> a few hours ago. Good stuff.
 
 Alas, their RSS feed didn't include the comic images inline. Easily solved &ndash; I wrote a PHP wrapper around the feed that finds and injects the images. Get the <a href="http://henrik.nyh.se/scrapers/cyanide_and_happiness.rss">improved feed</a>.
