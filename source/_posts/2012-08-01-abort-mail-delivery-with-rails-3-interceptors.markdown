@@ -21,59 +21,62 @@ Note that if you use something like [Resque::Mailer](https://github.com/zapnap/r
 Register the interceptor:
 
 ``` ruby config/initializers/action_mailer.rb
-ActionMailer::Base.register_interceptor(FakeDataMailInterceptor)
+ActionMailer::Base.register_interceptor(PreventMailInterceptor)
 ```
 
 Define the interceptor, making sure to modify the conditions to suit your needs:
 
-``` ruby lib/fake_data_mail_interceptor.rb
-class FakeDataMailInterceptor
+``` ruby lib/prevent_mail_interceptor.rb
+class PreventMailInterceptor
   RE = /dev\+.*@example\.com/
 
   def self.delivering_email(message)
-    if every_recipient_is_fake?(message)
+    unless deliver?(message)
       message.perform_deliveries = false
+      Rails.logger.debug "Interceptor prevented sending mail #{message.inspect}!"
     end
   end
 
-  def self.every_recipient_is_fake?(message)
-    message.to.all? { |recipient| recipient.match(RE) }
+  def self.deliver?(message)
+    message.to.any? { |recipient| recipient !~ RE }
   end
 end
 ```
 
 And spec it:
 
-``` ruby spec/lib/fake_data_mail_interceptor_spec.rb
+``` ruby spec/lib/prevent_mail_interceptor_spec.rb
 require 'spec_helper'
 
-describe FakeDataMailInterceptor, "delivery interception" do
-  it "prevents mailing fake recipients" do
+describe PreventMailInterceptor, "delivery interception" do
+  it "prevents mailing some recipients" do
+    PreventMailInterceptor.stub(:deliver? => false)
     expect {
-      deliver_mail_to("dev+foo@example.com")
+      deliver_mail
     }.not_to change(ActionMailer::Base.deliveries, :count)
   end
 
-  it "does not prevent mailing other recipients" do
+  it "allows mailing other recipients" do
+    PreventMailInterceptor.stub(:deliver? => true)
     expect {
-      deliver_mail_to("user@example.com")
+      deliver_mail
     }.to change(ActionMailer::Base.deliveries, :count)
   end
 
-  def deliver_mail_to(email)
-    ActionMailer::Base.mail(to: email, from: "fake@example.com").deliver
+  def deliver_mail
+    ActionMailer::Base.mail(to: "foo@example.com", from: "fake@example.com").deliver
   end
 end
 
-describe FakeDataMailInterceptor, ".every_recipient_is_fake?" do
-  it "is true for recipients like dev+*@example.com" do
+describe PreventMailInterceptor, ".deliver?" do
+  it "is false for recipients like dev+*@example.com" do
     message = mock(to: %w[dev+123@example.com])
-    FakeDataMailInterceptor.every_recipient_is_fake?(message).should be_true
+    PreventMailInterceptor.deliver?(message).should be_false
   end
 
-  it "is false for other recipients" do
+  it "is true for other recipients" do
     message = mock(to: %w[user@example.com])
-    FakeDataMailInterceptor.every_recipient_is_fake?(message).should be_false
+    PreventMailInterceptor.deliver?(message).should be_true
   end
 end
 ```
