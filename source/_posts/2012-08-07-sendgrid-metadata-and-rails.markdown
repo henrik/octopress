@@ -37,7 +37,7 @@ class MyMailer < ActionMailer::Base
     }.to_json
 
     mail(to: "someone@example.com") do |format|
-      format.text { render text: "Hello!" }
+      format.text { render(text: "Hello!") }
     end
   end
 end
