@@ -25,6 +25,6 @@ THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 Octopress and its default theme are under the MIT license.
 
-I ask that you don't base your blog's design on mine, or use the distinctive custom year scrolling, since I like my blog to have an identity of its own. The default theme is great, though, and a great place to start on yours.
+I ask that you don't base your blog's design on mine, or use the distinctive custom year scrolling, since I like my blog to have an identity of its own. The default theme is great, though, and a good place to start on yours.
 
 The pug graphic is under copyright, as are blog post contents; code is under MIT unless otherwise stated.
