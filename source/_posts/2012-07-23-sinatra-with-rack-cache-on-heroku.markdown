@@ -66,9 +66,11 @@ require "dalli"
 require "rack-cache"
 ```
 
-Configure the app to use memcache for storage:
+Configure Rack::Cache to use memcache for storage:
 
-``` ruby app.rb
+``` ruby config.ru
+require "./app"
+
 # Defined in ENV on Heroku. To try locally, start memcached and uncomment:
 # ENV["MEMCACHE_SERVERS"] = "localhost"
 if memcache_servers = ENV["MEMCACHE_SERVERS"]
@@ -77,9 +79,11 @@ if memcache_servers = ENV["MEMCACHE_SERVERS"]
     metastore:   "memcached://#{memcache_servers}",
     entitystore: "memcached://#{memcache_servers}"
 end
+
+run Sinatra::Application
 ```
 
-And have the app set whatever HTTP caching headers you like:
+Then have the app set whatever HTTP caching headers you like:
 
 ``` ruby app.rb
 get "/foo" do
@@ -88,12 +92,10 @@ get "/foo" do
 end
 ```
 
-All together:
+## All together
 
-``` ruby app.rb
-require "rubygems"
-require "bundler"
-Bundler.require :default, (ENV["RACK_ENV"] || "development").to_sym
+``` ruby config.ru
+require "./app"
 
 # Defined in ENV on Heroku. To try locally, start memcached and uncomment:
 # ENV["MEMCACHE_SERVERS"] = "localhost"
@@ -103,6 +105,14 @@ if memcache_servers = ENV["MEMCACHE_SERVERS"]
     metastore:   "memcached://#{memcache_servers}",
     entitystore: "memcached://#{memcache_servers}"
 end
+
+run Sinatra::Application
+```
+
+``` ruby app.rb
+require "rubygems"
+require "bundler"
+Bundler.require :default, (ENV["RACK_ENV"] || "development").to_sym
 
 get "/foo" do
   cache_control :public, max_age: 1800  # 30 mins.
