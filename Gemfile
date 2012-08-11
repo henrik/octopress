@@ -16,4 +16,8 @@ group :development do
   gem 'rake-minify'
 end
 
+group :production do
+  gem 'unicorn'
+end
+
 gem 'sinatra', '~> 1.3.2'
