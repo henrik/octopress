@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Randomize your factories - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2012/07/randomize-your-factories/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2012/07/randomize-your-factories/">Randomize your factories</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2012-07-08T15:00:00+02:00" pubdate data-updated="true">July  8, 2012 at 15:00 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/factories/'>Factories</a>, <a class='category' href='/tag/factorygirl/'>FactoryGirl</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>, <a class='category' href='/tag/testing/'>Testing</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="https://github.com/thoughtbot/factory_girl/">FactoryGirl</a> is a Ruby library to create data for tests.</p>
+
+<p>I read Arjan van der Gaag&#8217;s <a href="http://arjanvandergaag.nl/blog/factory_girl_tips.html">FactoryGirl Tips and Tricks</a> post the other day and found myself disagreeing with a few of the points. Mainly the one where Arjan recommends not using randomized attribute values because they can cause unexpected results in tests.</p>
+
+<p>A randomized attribute value could be something like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">factory</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">gender</span> <span class="p">{</span> <span class="o">[</span><span class="s2">&quot;male&quot;</span><span class="p">,</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="o">].</span><span class="n">sample</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Whenever you generate a user for a test, you don&#8217;t know what gender that user will have unless you explicitly state it:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>  <span class="c1"># Any gender.</span>
+</span><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="n">gender</span><span class="p">:</span> <span class="s2">&quot;female&quot;</span><span class="p">)</span>  <span class="c1"># Definitely female.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or you could define and use a more specific factory (or use <a href="https://github.com/thoughtbot/factory_girl/">traits</a>):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">factory</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">gender</span> <span class="p">{</span> <span class="o">[</span><span class="s2">&quot;male&quot;</span><span class="p">,</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="o">].</span><span class="n">sample</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">factory</span><span class="p">(</span><span class="ss">:female_user</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">gender</span> <span class="s2">&quot;female&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:female_user</span><span class="p">)</span>  <span class="c1"># Definitely female.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I think you should only ever rely on the <code>:user</code> factory to give you a user. Possibly you could also assume that it&#8217;s a valid one, and that it has the object graph that a real user would have. But no specific, implicit set of valid attributes should be assumed.</p>
+
+<p>If you&#8217;re writing a test that applies to users, you fabricate a <code>:user</code>. If you&#8217;re writing a test that applies specifically to female users, you fabricate a <code>:female_user</code>, or set that attribute. If you write a test that makes no mention of the user gender, it should pass no matter the gender.</p>
+
+<h2>Fixtures vs. factories</h2>
+
+<p>If you do assume certain attributes, your factory is more like the <a href="http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures">Ruby on Rails fixtures</a> that many people use factories to get away from. If you&#8217;re writing a test that is explicitly for any user, what&#8217;s the value in implicitly knowing their sex? This post is making the case that there is value in making sure you <em>don&#8217;t</em> know. This is, of course, also one advantage of factories over fixtures.</p>
+
+<h2>Random failures</h2>
+
+<p>It&#8217;s true that randomized attributes means tests can fail randomly. That&#8217;s certainly not ideal. But the alternative is that your app has that same bug, only without ever failing.</p>
+
+<p>Say you write not-at-all-contrived code like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">title</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">gender</span>
+</span><span class='line'>    <span class="k">when</span> <span class="s2">&quot;male&quot;</span>
+</span><span class='line'>      <span class="s2">&quot;Mr.&quot;</span>
+</span><span class='line'>    <span class="k">when</span> <span class="s2">&quot;female&quot;</span>
+</span><span class='line'>      <span class="s2">&quot;Ms.&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You&#8217;ve made the mistake of assuming user genders are only ever &#8220;male&#8221; or &#8220;female&#8221;, but they can also be &#8220;other&#8221;. (As an aside, gender identity and gender choices in forms is interesting and complex – just these three options wouldn&#8217;t satisfy everyone.)</p>
+
+<p>Now, if your tests always generate female users, this will probably never fail. But if attributes are randomized, you can catch mistakes. Maybe a request test suddenly blows up because something expected a string title but got a nil value.</p>
+
+<p>Certainly, these failures can be a bit frustrating, because they&#8217;re harder to reproduce. But would you really prefer to have a perfectly reproducible case of not catching the issue at all? Instead your production users, with their less predictable data, will find the bugs for you.</p>
+
+<p>Once you&#8217;ve discovered this bug, you should of course write a test specifically for it, and one that fails predictably. Randomized attributes are certainly no substitute for that. What they are is a safety net, making up somewhat for the fact that you will make mistakes.</p>
+
+<p>Curiously, Arjan&#8217;s very next point is that you should test for explicit values, and not rely on factories to have certain implicit values. That is really much of my point. Randomized attribute values enforce this by not letting you rely on them even if you try.</p>
+
+<p>Again, I&#8217;m not saying I think random test failures are great. Only that they&#8217;re better than having a bug but no test failures whatsoever.</p>
+
+<h2>Update – July 8, 2012 at 19:30 CEST:</h2>
+
+<p><a href="http://arjanvandergaag.nl/blog/factory_girl_tips.html">Arjan&#8217;s post</a> was updated to address these points:</p>
+
+<blockquote><p>One might argue (…) that random values help you discover bugs. While possible, that obviously means you have a bigger problem: holes in your test suite. (…) True, a cryptic error is better than no error, but randomised factories remain a poor substitute for proper unit tests, code review and TDD to prevent these problems.</p>
+
+<p>Randomised factories are therefore not only not worth the effort, they even give you false confidence in your tests, which is worse than having no tests at all.</p></blockquote>
+
+<p>Even if you do &#8220;proper unit tests, code review and TDD&#8221; as diligently as anyone, you will make mistakes and have bugs. And given those bugs, you have a chance of finding them sooner by doing it the way I described. I think I made it pretty clear above, but I will reiterate that I don&#8217;t see randomized factories as a substitute for anything other than human infallibility. It&#8217;s one more safety net.</p>
+
+<p>If your tests and code review are good enough, you won&#8217;t ever get the random test failures. You only get them when you mess up. Do TDD and code review, but do this too.</p>
+
+<p>I think that Arjan&#8217;s argument about giving false confidence in your tests is the strongest one. I can only say that I do this precisely because I have little confidence in my tests, or anyone else&#8217;s. I don&#8217;t rig the extra safety net so I can take more risks; I do it because I know that sooner or later, no matter how hard I try, I&#8217;ll slip.</p>
+
+<h2>Update – July 9, 2012 at 08:15 CEST:</h2>
+
+<p>The random failures don&#8217;t even have to be random. Or rather, they don&#8217;t have to be hard to reproduce.</p>
+
+<p>I <a href="https://twitter.com/madeofcode/status/222070153641328640">just learned something from Mark Dodwell</a> that I hadn&#8217;t realized: when you have RSpec or MiniTest randomize the test order (<code>rspec --order random my_spec.rb</code>), the seed value that you get back isn&#8217;t just for recreating that test order. That seed applies to any use of <code>Kernel#rand</code>, so it can make your random test failures reproducible too.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard/">Tests on demand using Vimux and Turbux with Spork and Guard</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2011/07/usability-trumps-security/">Usability trumps security</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2012/07/randomize-your-factories/';
+        var disqus_url = 'http://henrik.nyh.se/2012/07/randomize-your-factories/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

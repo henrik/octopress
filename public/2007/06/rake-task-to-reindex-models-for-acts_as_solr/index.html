@@ -1,0 +1,435 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rake task to (re)index models for acts_as_solr - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/06/rake-task-to-reindex-models-for-acts_as_solr/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/06/rake-task-to-reindex-models-for-acts_as_solr/">Rake task to (re)index models for acts_as_solr</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-06-14T20:13:00+02:00" pubdate data-updated="true">June 14, 2007 at 20:13 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/rake/'>Rake</a>, <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&#8217;m currently playing with <a href="http://lucene.apache.org/solr/">Solr</a>/<a href="http://acts_as_solr.railsfreaks.com/">acts_as_solr</a> for a Rails project.</p>
+
+<p>Alas, there doesn&#8217;t seem to be any simple way to (re)index your models. If model objects are added or modified while the Solr server is running, the index is updated, but if you install acts_as_solr when you already have a bunch of data,  you&#8217;ve got some work ahead of you.</p>
+
+<p>You could loop over every object and run <code>solr_save</code>. A better idea is to run <code>rebuild_solr_index</code> on every model class. This method more or less amounts to running solr_save on each object and optimizing the index afterwards, though it can add items in batch to speed things up.</p>
+
+<p>Better still would be to have this wrapped in a Rake task, so you can easily (re)index all models that act_as_solr without going into the console and processing the classes one by one.</p>
+
+<!--more-->
+
+
+<p>This is <a href="http://henrik.nyh.se/uploads/solr_additions.rake">solr_additions.rake</a>. Stick it in lib/tasks inside your Rails project.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">namespace</span> <span class="ss">:solr</span> <span class="k">do</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">desc</span> <span class="sx">%{Reindexes data for all acts_as_solr models. Clears index first to get rid of orphaned records and optimizes index afterwards. RAILS_ENV=your_env to set environment. ONLY=book,person,magazine to only reindex those models; EXCEPT=book,magazine to exclude those models. START_SERVER=true to solr:start before and solr:stop after. BATCH=123 to post/commit in batches of that size: default is 300. CLEAR=false to not clear the index first; OPTIMIZE=false to not optimize the index afterwards.}</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:reindex</span> <span class="o">=&gt;</span> <span class="ss">:environment</span> <span class="k">do</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">includes</span> <span class="o">=</span> <span class="n">env_array_to_constants</span><span class="p">(</span><span class="s1">&#39;ONLY&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">includes</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>      <span class="n">includes</span> <span class="o">=</span> <span class="no">Dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="no">RAILS_ROOT</span><span class="si">}</span><span class="s2">/app/models/*.rb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">path</span><span class="o">|</span> <span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;.rb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">camelize</span><span class="o">.</span><span class="n">constantize</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">excludes</span> <span class="o">=</span> <span class="n">env_array_to_constants</span><span class="p">(</span><span class="s1">&#39;EXCEPT&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">includes</span> <span class="o">-=</span> <span class="n">excludes</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">optimize</span>     <span class="o">=</span> <span class="n">env_to_bool</span><span class="p">(</span><span class="s1">&#39;OPTIMIZE&#39;</span><span class="p">,</span>     <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">start_server</span> <span class="o">=</span> <span class="n">env_to_bool</span><span class="p">(</span><span class="s1">&#39;START_SERVER&#39;</span><span class="p">,</span> <span class="kp">false</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">clear_first</span>   <span class="o">=</span> <span class="n">env_to_bool</span><span class="p">(</span><span class="s1">&#39;CLEAR&#39;</span><span class="p">,</span>       <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">batch_size</span>   <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;BATCH&#39;</span><span class="o">].</span><span class="n">to_i</span><span class="o">.</span><span class="n">nonzero?</span> <span class="o">||</span> <span class="mi">300</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">start_server</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Starting Solr server...&quot;</span>
+</span><span class='line'>      <span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="o">[</span><span class="s2">&quot;solr:start&quot;</span><span class="o">].</span><span class="n">invoke</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># Disable solr_optimize</span>
+</span><span class='line'>    <span class="k">module</span> <span class="nn">ActsAsSolr::CommonMethods</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">blank</span><span class="p">()</span> <span class="k">end</span>
+</span><span class='line'>      <span class="n">alias_method</span> <span class="ss">:deferred_solr_optimize</span><span class="p">,</span> <span class="ss">:solr_optimize</span>
+</span><span class='line'>      <span class="n">alias_method</span> <span class="ss">:solr_optimize</span><span class="p">,</span> <span class="ss">:blank</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">models</span> <span class="o">=</span> <span class="n">includes</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:rebuild_solr_index</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="n">models</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">model</span><span class="o">|</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="n">clear_first</span>
+</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;Clearing index for </span><span class="si">#{</span><span class="n">model</span><span class="si">}</span><span class="s2">...&quot;</span>
+</span><span class='line'>        <span class="no">ActsAsSolr</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="no">Solr</span><span class="o">::</span><span class="no">Request</span><span class="o">::</span><span class="no">Delete</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:query</span> <span class="o">=&gt;</span> <span class="s2">&quot;type_t:</span><span class="si">#{</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Rebuilding index for </span><span class="si">#{</span><span class="n">model</span><span class="si">}</span><span class="s2">...&quot;</span>
+</span><span class='line'>      <span class="n">model</span><span class="o">.</span><span class="n">rebuild_solr_index</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">models</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;There were no models to reindex.&quot;</span>
+</span><span class='line'>    <span class="k">elsif</span> <span class="n">optimize</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Optimizing...&quot;</span>
+</span><span class='line'>      <span class="n">models</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">deferred_solr_optimize</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">start_server</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Shutting down Solr server...&quot;</span>
+</span><span class='line'>      <span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="o">[</span><span class="s2">&quot;solr:stop&quot;</span><span class="o">].</span><span class="n">invoke</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">env_array_to_constants</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">env</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="n">env</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>    <span class="n">env</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sr">/\s*,\s*/</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="o">.</span><span class="n">singularize</span><span class="o">.</span><span class="n">camelize</span><span class="o">.</span><span class="n">constantize</span> <span class="p">}</span><span class="o">.</span><span class="n">uniq</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">env_to_bool</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">env</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="n">env</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">env</span>
+</span><span class='line'>      <span class="k">when</span> <span class="sr">/^true$/i</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>      <span class="k">when</span> <span class="sr">/^false$/i</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>      <span class="k">else</span> <span class="n">default</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The description and code hopefully make things apparent. The simplest way to use it is just <code>rake solr:reindex</code> which will (re)index all models with an act_as_solr declaration inside them, and which assumes there is a Solr server already running.</p>
+
+<p>Since it depends on the &#8220;environment&#8221; task, you can also use e.g. <code>RAILS_ENV=production</code> to set what environment it applies to. I think there are gotchas related to using acts_as_solr against multiple environments, though.</p>
+
+<div class="updated">
+<h5>Update 2007-06-18</h5>
+
+The entry has been updated to take advantage of the batch processing support in acts_as_solr 0.9. Batched reindexing is several times faster, since the overhead for posting and indexing additions one by one really adds up.
+</div>
+
+
+
+
+<div class="updated">
+<h5>Update 2007-06-19</h5>
+
+Now takes an <code>OPTIMIZE</code> flag that defaults to <code>true</code>. Optimizing the index is recommended <a href="http://api.railsfreaks.com/projects/acts_as_solr/classes/ActsAsSolr/CommonMethods.html#M000111">&#8220;once following large batch-like updates and/or once a day&#8221;</a>.
+</div>
+
+
+
+
+<div class="updated">
+<h5>Update 2007-07-04</h5>
+
+Now takes an <code>CLEAR</code> flag that defaults to <code>true</code>. Clearing means emptying the index before reindexing. <code>rebuild_solr_index</code> does not do this by default, which means it will not get rid of orphaned records – items that are indexed but no longer in the database.
+</div>
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/06/using-will_paginate-with-acts_as_solr/">Using will_paginate with acts_as_solr</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/06/colored-ssh-terminals-in-os-x/">Colored SSH terminals in OS X</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/06/rake-task-to-reindex-models-for-acts_as_solr/';
+        var disqus_url = 'http://henrik.nyh.se/2007/06/rake-task-to-reindex-models-for-acts_as_solr/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

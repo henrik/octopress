@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>cap gems:install and a Gem dependency gotcha - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2008/10/cap-gems-install-and-a-gem-dependency-gotcha/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2008/10/cap-gems-install-and-a-gem-dependency-gotcha/">cap gems:install and a Gem dependency gotcha</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2008-10-12T23:15:00+02:00" pubdate data-updated="true">October 12, 2008 at 23:15 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/capistrano/'>Capistrano</a>, <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I made a simple Capistrano task to run <code>rake gems:install</code> on the server, for <a href="http://ryandaigle.com/articles/2008/4/1/what-s-new-in-edge-rails-gem-dependencies">Rails Gem dependencies</a>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">namespace</span> <span class="ss">:gems</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">desc</span> <span class="s2">&quot;Install gems&quot;</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:install</span><span class="p">,</span> <span class="ss">:roles</span> <span class="o">=&gt;</span> <span class="ss">:app</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">run</span> <span class="s2">&quot;cd </span><span class="si">#{</span><span class="n">current_path</span><span class="si">}</span><span class="s2"> &amp;&amp; </span><span class="si">#{</span><span class="n">sudo</span><span class="si">}</span><span class="s2"> rake RAILS_ENV=production gems:install&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The one non-obvious thing here is how <code>sudo</code> and <code>cd</code> interacts. Explained further in <a href="http://www.mail-archive.com/capistrano@googlegroups.com/msg05066.html">this thread</a>.</p>
+
+<p>Also, I ran into a catch 22 with an app that has <code>will_paginate</code> as a Gem dependency.</p>
+
+<!--more-->
+
+
+<p>The <code>rake gems:install</code> task will load the app environment, but as I was using the <code>WillPaginate</code> constant in my app (in a helper), the task failed with</p>
+
+<pre><code>uninitialized constant WillPaginate
+</code></pre>
+
+<p>So the Rake task could not run to install the gem, because the <code>WillPaginate</code> constant was not available, because the gem was not installed…</p>
+
+<p>The fix was simply to check for the constant in a conditional:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CustomRenderer</span> <span class="o">&lt;</span> <span class="no">WillPaginate</span><span class="o">::</span><span class="no">LinkRenderer</span>
+</span><span class='line'>  <span class="c1"># ⋮</span>
+</span><span class='line'><span class="k">end</span> <span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">WillPaginate</span><span class="p">)</span>  <span class="c1"># avoid catch 22 with &quot;rake gems:install&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Another solution would, of course, be to install the gem outside of the Rake task, but that kind of does away with the point of having the task in the first place.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2008/10/using-form-helpers-with-split-up-forms-in-rails/">Using form helpers with split-up forms in Rails</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2008/10/content_for-repeat/">Repeat content in Rails with content_for</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2008/10/cap-gems-install-and-a-gem-dependency-gotcha/';
+        var disqus_url = 'http://henrik.nyh.se/2008/10/cap-gems-install-and-a-gem-dependency-gotcha/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

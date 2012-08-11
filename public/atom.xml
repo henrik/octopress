@@ -1,0 +1,2124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[The Pug Automatic]]></title>
+  <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
+  <link href="http://henrik.nyh.se/"/>
+  <updated>2012-08-11T09:41:40+02:00</updated>
+  <id>http://henrik.nyh.se/</id>
+  <author>
+    <name><![CDATA[Henrik Nyh]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[SendGrid metadata and Rails]]></title>
+<link href="http://henrik.nyh.se/2012/08/sendgrid-metadata-and-rails/"/>
+<updated>2012-08-07T20:30:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/08/sendgrid-metadata-and-rails</id>
+
+      <content type="html"><![CDATA[<p>We have a Rails app that sends its mail through <a href="http://sendgrid.com/">SendGrid</a>.</p>
+
+<p>SendGrid lets you specify metadata in your mail headers, which you can put to excellent use.</p>
+
+<h2>The activity log</h2>
+
+<p>SendGrid&#8217;s highly useful <a href="http://sendgrid.com/logs/index">activity log</a> (<a href="http://docs.sendgrid.com/documentation/delivery-metrics/email-activity/">docs</a>) lists the last week of sent mail. Not the full mail, but the recipient e-mail address, the time it was sent, and its state (delivered, link in mail was clicked etc) as far as SendGrid can tell.</p>
+
+<p>You can filter the list by e-mail address, which is really handy for debugging and customer support.</p>
+
+<p>But the list doesn&#8217;t contain the mail body, or subject, or anything to help you tell which mail is which.</p>
+
+<p>This can be solved with SendGrid metadata and some Action Mailer trickery.</p>
+
+<h2>Categories</h2>
+
+<p>You can set up to 10 <a href="http://docs.sendgrid.com/documentation/delivery-metrics/categories/">categories</a> as SendGrid metadata on each mail:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MyMailer</span> <span class="o">&lt;</span> <span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span>
+</span><span class='line'>    <span class="n">headers</span> <span class="s2">&quot;X-SMTPAPI&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">category</span><span class="p">:</span> <span class="o">[</span><span class="s2">&quot;Unsolicited&quot;</span><span class="p">,</span> <span class="s2">&quot;Greetings&quot;</span><span class="o">]</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to_json</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">mail</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="s2">&quot;someone@example.com&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">text</span> <span class="p">{</span> <span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>They&#8217;re not predefined, so you can use an unlimited number of categories in total.</p>
+
+<p>You can use categories to filter your <a href="http://sendgrid.com/statistics/email">statistics</a>. Categories are also displayed in the activity log, which may give you an idea of what we&#8217;ll do in a bit.</p>
+
+<h2>Unique arguments</h2>
+
+<p>You can also add any keys and values you like as so-called <a href="http://docs.sendgrid.com/documentation/api/smtp-api/developers-guide/unique-arguments/">unique arguments</a>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">headers</span> <span class="s2">&quot;X-SMTPAPI&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">unique_args</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">locale</span><span class="p">:</span> <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">environment</span><span class="p">:</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span><span class="o">.</span><span class="n">to_json</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>They&#8217;re also shown in the activity log.</p>
+
+<p>Note that the values will be turned into strings. If a value is a Ruby array, you&#8217;ll just see &#8220;Array&#8221; in SendGrid, so if you want them, do:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">headers</span> <span class="s2">&quot;X-SMTPAPI&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">unique_args</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">my_array</span><span class="p">:</span> <span class="o">[</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="s2">&quot;two&quot;</span><span class="o">].</span><span class="n">to_json</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span><span class="o">.</span><span class="n">to_json</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Setting metadata from mail automatically</h2>
+
+<p>So how do we automatically store the mailer and action (and some additional goodies) in the SendGrid metadata?</p>
+
+<figure class='code'><figcaption><span>app/mailers/application_mailer.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationMailer</span> <span class="o">&lt;</span> <span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="c1"># Call add_sendgrid_headers after generating each mail.</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">method_name</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">super</span><span class="o">.</span><span class="n">tap</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">add_sendgrid_headers</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="k">if</span> <span class="n">method_name</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Set headers for SendGrid.</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">add_sendgrid_headers</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">mailer</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span>
+</span><span class='line'>    <span class="n">args</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">[</span> <span class="nb">method</span><span class="p">(</span><span class="n">action</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:last</span><span class="p">)</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">]</span>
+</span><span class='line'>    <span class="n">headers</span> <span class="s2">&quot;X-SMTPAPI&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">category</span><span class="p">:</span>    <span class="o">[</span> <span class="n">mailer</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">mailer</span><span class="si">}</span><span class="s2">#</span><span class="si">#{</span><span class="n">action</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">unique_args</span><span class="p">:</span> <span class="p">{</span> <span class="n">environment</span><span class="p">:</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">inspect</span> <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to_json</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Any mailer that inherits from <code>ApplicationMailer</code> will now get the following metadata:</p>
+
+<ul>
+<li>A category with the name of the mailer, e.g. &#8220;MyMailer&#8221;</li>
+<li>A category with the mailer and action, e.g. &#8220;MyMailer#hello&#8221;</li>
+<li>A unique argument with the Rails environment, e.g. &#8220;production&#8221;</li>
+<li>A unique argument with the arguments passed into the mailer as a hash from argument name to value, like &#8220;{:foo_id=>123, :bar_id=>456}&#8221;</li>
+</ul>
+
+
+<p>The mailer arguments will be rather a lot of text if you pass in full Active Record instances. If you use <a href="https://github.com/zapnap/resque_mailer/">resque_mailer</a> like we do, you will usually be passing only record ids, so it will be more compact.</p>
+
+<p>Instead of this:</p>
+
+<p><img src="http://f.cl.ly/items/0g1914381r1a0z1f0D15/sendgrid-before.png" alt="Screenshot" /></p>
+
+<p>The log will show this:</p>
+
+<p><img src="http://f.cl.ly/items/191C17201J2p0J191F2t/sendgrid-after.png" alt="Screenshot" /></p>
+
+<p>Having this data is really handy, and I was pretty happy with this implementation. Sure beats <a href="https://gist.github.com/2775581">looking at the call chain</a> :)</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Captio with multiple recipients]]></title>
+<link href="http://henrik.nyh.se/2012/08/captio-with-multiple-recipients/"/>
+<updated>2012-08-04T21:30:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/08/captio-with-multiple-recipients</id>
+
+      <content type="html"><![CDATA[<p>I love <a href="http://boonbits.com/captio/">Captio</a> ($1.99 <a href="http://itunes.apple.com/app/captio-email-yourself-1-tap/id370899391?mt=8">in the App Store</a>) on my iPhone for quick notes-to-self.</p>
+
+<p>You launch the app, type, hit the &#8220;Send&#8221; button and it mails you the note.</p>
+
+<p>It only has one &#8220;Send&#8221; button, though, and my notes are sometimes for work, sometimes for home.</p>
+
+<p>I came up with a simple workaround <a href="https://twitter.com/benlenarts/status/230407417211518976">until Captio adds multiple-recipient support</a>. It assumes you use Gmail.</p>
+
+<p>Simply set up a Gmail filter that forwards all Captio mail containing the word &#8220;jj&#8221; to your work e-email, and then type &#8220;jj&#8221; in those notes. &#8220;jj&#8221; is quick to type, unlikely to yield false positives, isn&#8217;t autocorrected, and suggests your <strong>j</strong>ob.</p>
+
+<h2>Instructions</h2>
+
+<p>In the Gmail search box, type or paste</p>
+
+<pre><code>from:(captio@boonbits.com) jj
+</code></pre>
+
+<p>and click the &#8220;Show search options&#8221; triangle on the right side of the search box.</p>
+
+<p><img src="http://f.cl.ly/items/2u1S2d1c3f2n3J0j1V2S/filter.png" alt="Screenshot" /></p>
+
+<p>Then click &#8220;Create filter with this search&#8221;, and make it skip the inbox and forward. You will need to add the forwarding address if you haven&#8217;t before.</p>
+
+<p><img src="http://f.cl.ly/items/0o1m383D2C3J1S1k1b0k/filter2.png" alt="Screenshot" /></p>
+
+<p>And that&#8217;s it. Just add a &#8220;jj&#8221; to your note and it goes to work instead of home.</p>
+
+<p>It only matches &#8220;jj&#8221; as a separate word, not as part of a word. It&#8217;s case-insensitive, so if the iPhone autocapitalizes to &#8220;Jj&#8221;, that&#8217;s fine.</p>
+
+<p>You can, of course, use another keyword if you prefer. Or add more rules with more keywords if you want more than two different recipients.</p>
+
+<p>Depending on what you want to happen, tweak the rule to not archive, or to archive <em>and</em> mark as read, or to delete instead.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Abort mail delivery with Rails 3 interceptors]]></title>
+<link href="http://henrik.nyh.se/2012/08/abort-mail-delivery-with-rails-3-interceptors/"/>
+<updated>2012-08-01T19:40:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/08/abort-mail-delivery-with-rails-3-interceptors</id>
+
+      <content type="html"><![CDATA[<p>It can be a good idea to use anonymized production data in development and staging. You might change every user email to <code>dev+user123@example.com</code>, say.</p>
+
+<p>It&#8217;s unnecessary to send real mail to these users, but you might not want to deactivate sending <em>all</em> mail. It&#8217;s nice if things like the signup flow work, including mail delivery.</p>
+
+<p>You can use Rails 3 <a href="http://api.rubyonrails.org/classes/ActionMailer/Base.html#label-Observing+and+Intercepting+Mails">interceptors</a> for this. Every mail is passed to the interceptor before delivery. The interceptor can modify the <code>Mail::Message</code> instance. As <a href="https://github.com/mikel/mail/issues/114">discussed here</a>, interceptors don&#8217;t let you abort delivery in an obvious way, but you can achieve it by setting <code>message.perform_deliveries = false</code>.</p>
+
+<p>Note that if you use something like <a href="https://github.com/zapnap/resque_mailer/">Resque::Mailer</a>, the mail will still be enqueued; delivery isn&#8217;t aborted until the job is processed.</p>
+
+<h2>Example</h2>
+
+<p>Register the interceptor:</p>
+
+<figure class='code'><figcaption><span>config/initializers/action_mailer.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">register_interceptor</span><span class="p">(</span><span class="no">PreventMailInterceptor</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Define the interceptor, making sure to modify the conditions to suit your needs:</p>
+
+<figure class='code'><figcaption><span>lib/prevent_mail_interceptor.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">PreventMailInterceptor</span>
+</span><span class='line'>  <span class="no">RE</span> <span class="o">=</span> <span class="sr">/dev\+.*@example\.com/</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">delivering_email</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">unless</span> <span class="n">deliver?</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">message</span><span class="o">.</span><span class="n">perform_deliveries</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>      <span class="no">Rails</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span> <span class="s2">&quot;Interceptor prevented sending mail </span><span class="si">#{</span><span class="n">message</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">!&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">deliver?</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">message</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">any?</span> <span class="p">{</span> <span class="o">|</span><span class="n">recipient</span><span class="o">|</span> <span class="n">recipient</span> <span class="o">!~</span> <span class="no">RE</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And spec it:</p>
+
+<figure class='code'><figcaption><span>spec/lib/prevent_mail_interceptor_spec.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="no">PreventMailInterceptor</span><span class="p">,</span> <span class="s2">&quot;delivery interception&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;prevents mailing some recipients&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">PreventMailInterceptor</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:deliver?</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">expect</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">deliver_mail</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">not_to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;allows mailing other recipients&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">PreventMailInterceptor</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:deliver?</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">expect</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">deliver_mail</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">deliver_mail</span>
+</span><span class='line'>    <span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">mail</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="s2">&quot;a@foo.com&quot;</span><span class="p">,</span> <span class="n">from</span><span class="p">:</span> <span class="s2">&quot;b@foo.com&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="no">PreventMailInterceptor</span><span class="p">,</span> <span class="s2">&quot;.deliver?&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;is false for recipients like dev+*@example.com&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">message</span> <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="sx">%w[dev+123@example.com]</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">PreventMailInterceptor</span><span class="o">.</span><span class="n">deliver?</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="o">.</span><span class="n">should</span> <span class="n">be_false</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;is true for other recipients&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">message</span> <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="sx">%w[user@example.com]</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">PreventMailInterceptor</span><span class="o">.</span><span class="n">deliver?</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="o">.</span><span class="n">should</span> <span class="n">be_true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Done!</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Sinatra with rack-cache on Heroku]]></title>
+<link href="http://henrik.nyh.se/2012/07/sinatra-with-rack-cache-on-heroku/"/>
+<updated>2012-07-23T09:40:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/07/sinatra-with-rack-cache-on-heroku</id>
+
+      <content type="html"><![CDATA[<p>I&#8217;m running some <a href="http://www.sinatrarb.com">Sinatra</a>-based RSS scrapers on <a href="http://heroku.com">Heroku</a> (<a href="http://blocket.herokuapp.com/">for blocket.se</a> and <a href="http://etsy-rss.herokuapp.com/">Etsy</a>).</p>
+
+<p>Since they make slow web requests, they would time out. To make them faster on Heroku&#8217;s free plan, my first step was to <a href="http://blog.railsonfire.com/2012/05/06/Unicorn-on-Heroku.html">run Unicorn for 4x concurrency</a>.</p>
+
+<p>But I also wanted caching. Heroku&#8217;s Aspen and Bamboo stacks <a href="https://devcenter.heroku.com/articles/http-caching">support Varnish</a>. With the Cedar stack, needed for Unicorn, you can use <a href="http://rtomayko.github.com/rack-cache/">rack-cache</a> instead.</p>
+
+<p>rack-cache stands between the visitor and the app and enforces HTTP caching. Say I request <code>/foo</code> and it comes back with a <code>Cache-Control: public, max-age=123</code> header. For the next 123 seconds, requests for <code>/foo</code> will only hit the cache and not the app.</p>
+
+<p>I found examples of using rack-cache with Ruby on Rails on Heroku, but not with Sinatra, so here goes.</p>
+
+<h2>Setting up Heroku</h2>
+
+<p>Install the free memcache addon (5 MB). In a terminal, in your app directory:</p>
+
+<pre><code>heroku addons:add memcache
+</code></pre>
+
+<h2>Setting up your app</h2>
+
+<p>Your <code>Gemfile</code> should include <code>dalli</code> (a memcache client) and <code>rack-cache</code>:</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="ss">:rubygems</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gem</span> <span class="s2">&quot;sinatra&quot;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s2">&quot;dalli&quot;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s2">&quot;rack-cache&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">group</span> <span class="ss">:production</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s2">&quot;unicorn&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Update <code>Gemfile.lock</code> for Heroku (and install gems locally). In the terminal:</p>
+
+<pre><code>bundle
+</code></pre>
+
+<p>In your Sinatra app, require the dependencies. I like to do it this way so I don&#8217;t have to repeat myself:</p>
+
+<figure class='code'><figcaption><span>app.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;rubygems&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;bundler&quot;</span>
+</span><span class='line'><span class="no">Bundler</span><span class="o">.</span><span class="n">require</span> <span class="ss">:default</span><span class="p">,</span> <span class="p">(</span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RACK_ENV&quot;</span><span class="o">]</span> <span class="o">||</span> <span class="s2">&quot;development&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_sym</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But you could do this if you prefer:</p>
+
+<figure class='code'><figcaption><span>app.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;rubygems&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;bundler/setup&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;sinatra&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;dalli&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;rack-cache&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Configure Rack::Cache to use memcache for storage:</p>
+
+<figure class='code'><figcaption><span>config.ru</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;./app&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Defined in ENV on Heroku. To try locally, start memcached and uncomment:</span>
+</span><span class='line'><span class="c1"># ENV[&quot;MEMCACHE_SERVERS&quot;] = &quot;localhost&quot;</span>
+</span><span class='line'><span class="k">if</span> <span class="n">memcache_servers</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;MEMCACHE_SERVERS&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Cache</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">verbose</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">metastore</span><span class="p">:</span>   <span class="s2">&quot;memcached://</span><span class="si">#{</span><span class="n">memcache_servers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">entitystore</span><span class="p">:</span> <span class="s2">&quot;memcached://</span><span class="si">#{</span><span class="n">memcache_servers</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">run</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Application</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then have the app set whatever HTTP caching headers you like:</p>
+
+<figure class='code'><figcaption><span>app.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">get</span> <span class="s2">&quot;/foo&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">cache_control</span> <span class="ss">:public</span><span class="p">,</span> <span class="n">max_age</span><span class="p">:</span> <span class="mi">1800</span>  <span class="c1"># 30 mins.</span>
+</span><span class='line'>  <span class="s2">&quot;Hello world at </span><span class="si">#{</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="si">}</span><span class="s2">!&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>All together</h2>
+
+<figure class='code'><figcaption><span>config.ru</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;./app&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Defined in ENV on Heroku. To try locally, start memcached and uncomment:</span>
+</span><span class='line'><span class="c1"># ENV[&quot;MEMCACHE_SERVERS&quot;] = &quot;localhost&quot;</span>
+</span><span class='line'><span class="k">if</span> <span class="n">memcache_servers</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;MEMCACHE_SERVERS&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Cache</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">verbose</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">metastore</span><span class="p">:</span>   <span class="s2">&quot;memcached://</span><span class="si">#{</span><span class="n">memcache_servers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">entitystore</span><span class="p">:</span> <span class="s2">&quot;memcached://</span><span class="si">#{</span><span class="n">memcache_servers</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">run</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Application</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;rubygems&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;bundler&quot;</span>
+</span><span class='line'><span class="no">Bundler</span><span class="o">.</span><span class="n">require</span> <span class="ss">:default</span><span class="p">,</span> <span class="p">(</span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RACK_ENV&quot;</span><span class="o">]</span> <span class="o">||</span> <span class="s2">&quot;development&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_sym</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">get</span> <span class="s2">&quot;/foo&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">cache_control</span> <span class="ss">:public</span><span class="p">,</span> <span class="n">max_age</span><span class="p">:</span> <span class="mi">1800</span>  <span class="c1"># 30 mins.</span>
+</span><span class='line'>  <span class="s2">&quot;Hello world at </span><span class="si">#{</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="si">}</span><span class="s2">!&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you want to see this in a real app, check out the <a href="https://github.com/henrik/etsy-rss/">Etsy scraper on GitHub</a>.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Rails i18n tips]]></title>
+<link href="http://henrik.nyh.se/2012/07/rails-i18n-tips/"/>
+<updated>2012-07-22T13:15:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/07/rails-i18n-tips</id>
+
+      <content type="html"><![CDATA[<p>These are some tips based on my experiences of working with <a href="http://guides.rubyonrails.org/i18n.html">Rails i18n</a>, extracted from <a href="https://github.com/henrik/styleguide">my styleguide</a>.</p>
+
+<h2>Avoid translated view files</h2>
+
+<p>If you ever need to work with external translators, it&#8217;s a bit of a pain sending both your YML files and a bunch of views like <code>index.en.html.erb</code>.</p>
+
+<p>For one thing, you need some code to find all those files and send them, and put them back after receiving the translations. For another, your translator must respect the markup and code of the template, and know not to translate them. And if you want to use tools like <a href="https://webtranslateit.com/">WebTranslateIt</a>, it&#8217;s easier to stick to YML.</p>
+
+<p>You probably don&#8217;t want one translation key per sentence, though. It&#8217;s helpful for the translator to have context rather than a lot of short strings, and less fiddly on your part.</p>
+
+<p>So I use <a href="http://en.wikipedia.org/wiki/Yaml#Block_literals">YAML block literals</a> when I can:</p>
+
+<figure class='code'><figcaption><span>la.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">long_text</span><span class="p-Indicator">:</span> <span class="p-Indicator">|</span>
+</span><span class='line'>  <span class="no">Lorem ipsum dolor sit amet.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">Consectetur adipisicing elit.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Don&#8217;t forget the <code>|</code> or YAML will fold your newlines.</p>
+
+<p>You still want markup, though – that&#8217;s up next.</p>
+
+<h2>Take advantage of simpler syntaxes</h2>
+
+<p>I find Rails&#8217; <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/TextHelper.html#method-i-simple_format">simple_format</a> handy if you just want some paragraph breaks:</p>
+
+<figure class='code'><figcaption><span>la.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">long_text</span><span class="p-Indicator">:</span> <span class="p-Indicator">|</span>
+</span><span class='line'>  <span class="no">Lorem ipsum dolor sit amet.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">Consectetur adipisicing elit.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>index.erb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">simple_format</span> <span class="n">t</span><span class="p">(</span><span class="ss">:&#39;long_text&#39;</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This becomes:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;p&gt;</span>Lorem ipsum dolor sit amet.<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>Consectetur adipisicing elit.<span class="nt">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Another common case is lists, where I tend to do something simple like:</p>
+
+<figure class='code'><figcaption><span>la.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">selling_points</span><span class="p-Indicator">:</span> <span class="p-Indicator">|</span>
+</span><span class='line'>  <span class="no">Lorem.</span>
+</span><span class='line'>  <span class="no">Ipsum…</span>
+</span><span class='line'>  <span class="no">Dolor!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>signup.erb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">&lt;ul&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="n">t</span><span class="p">(</span><span class="ss">:&#39;selling_points&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each_line</span> <span class="k">do</span> <span class="o">|</span><span class="n">point</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">point</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This becomes:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;</span>Lorem.<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;</span>Ipsum…<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;</span>Dolor!<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Group translations instead of translating markup</h2>
+
+<p>Then there&#8217;s markup inside each paragraph, like links and such.</p>
+
+<p>You could do it right in the translation strings, but your translator then needs to know how to handle the markup, and you risk duplicating knowledge if you go as far as to hard-code link URLs.</p>
+
+<p>What I do is split up the translations, but keep them under the same key:</p>
+
+<figure class='code'><figcaption><span>en.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'>  <span class="l-Scalar-Plain">log_in_or_sign_up</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">text</span><span class="p-Indicator">:</span> <span class="s">&quot;%{log_in}</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">%{sign_up}</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">stuff.&quot;</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">log_in</span><span class="p-Indicator">:</span> <span class="s">&quot;Log</span><span class="nv"> </span><span class="s">in&quot;</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">sign_up</span><span class="p-Indicator">:</span> <span class="s">&quot;Sign</span><span class="nv"> </span><span class="s">up&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>header.erb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">t</span><span class="p">(</span>
+</span><span class='line'>  <span class="ss">:&#39;log_in_or_sign_up.text&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">log_in</span><span class="p">:</span>  <span class="n">link_to</span><span class="p">(</span><span class="n">t</span><span class="p">(</span><span class="ss">:&#39;log_in_or_sign_up.log_in&#39;</span><span class="p">),</span>  <span class="n">login_path</span><span class="p">),</span>
+</span><span class='line'>  <span class="n">sign_up</span><span class="p">:</span> <span class="n">link_to</span><span class="p">(</span><span class="n">t</span><span class="p">(</span><span class="ss">:&#39;log_in_or_sign_up.sign_up&#39;</span><span class="p">),</span> <span class="n">signup_path</span><span class="p">)</span>
+</span><span class='line'><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This way, the translator sees no code or markup (except for the i18n interpolation syntax) and there is no duplication.</p>
+
+<h2>When you <em>do</em> need translated view files</h2>
+
+<p>If you need some fairly complex document with a bunch of headers, links and bullet points, perhaps your terms of use, you probably <em>do</em> want some markup and to use separate files.</p>
+
+<p>But you can still use the simplest syntax possible – perhaps <a href="http://en.wikipedia.org/wiki/Markdown">Markdown</a>. Or implement your own subset, like <a href="https://gist.github.com/2775319">Prawndown</a>.</p>
+
+<p>And instead of putting the files somewhere under <code>app/views</code>, keep them centralized, e.g. <code>config/locales/documents/terms.en.yml</code>, if they&#8217;re not in your CMS.</p>
+
+<h2>Use multiple YML files</h2>
+
+<p>If your app has different parts with different i18n needs, consider using multiple files.</p>
+
+<p>Perhaps you have an admin section with only one or two locales, and a public section with a bunch.</p>
+
+<p>Instead of having the translator needlessly translate your admin section to every locale, split it into a <code>config/locales/en.yml</code> and a <code>config/locales/admin.en.yml</code>.</p>
+
+<p>Multiple files isn&#8217;t just about limiting what you send to translators. It also means you can limit what you send to your automatic scripts, like tests, as described below.</p>
+
+<p>By default, Rails will load all translations matching <code>config/locales/*.{rb,yml}</code>.</p>
+
+<h2>Beware highly inflected languages</h2>
+
+<p>This will of course depend on your perspective, but: beware Finnish and other highly inflected languages.</p>
+
+<p>As a grammar nerd, I actually love this stuff. But judging by my colleagues, <em>you</em> won&#8217;t.</p>
+
+<p>In languages like English and Swedish, you express something like &#8220;From New York&#8221; with a preposition (the word &#8220;from&#8221;). This is trivial to translate:</p>
+
+<figure class='code'><figcaption><span>en.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">from_x</span><span class="p-Indicator">:</span> <span class="s">&quot;From</span><span class="nv"> </span><span class="s">%{x}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>sv.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">from_x</span><span class="p-Indicator">:</span> <span class="s">&quot;Från</span><span class="nv"> </span><span class="s">%{x}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But in a language like Finnish, you inflect the word itself (<a href="http://en.wikipedia.org/wiki/Ablative_case">the ablative case</a>): &#8220;New Yorkista&#8221; means &#8220;from New York&#8221;. And the suffix isn&#8217;t predictable without a dictionary: &#8220;from Berlin&#8221; is &#8220;Berliinistä&#8221;.</p>
+
+<p>You could list these variations in your translation files or other data source, but that takes some effort.</p>
+
+<p>The easiest solution I <a href="http://www.ruby-forum.com/topic/1897522">found</a> for this was simply to make small tweaks to avoid it altogether, e.g. &#8220;From: New York&#8221; instead of &#8220;From New York&#8221;.</p>
+
+<figure class='code'><figcaption><span>en.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">from_x</span><span class="p-Indicator">:</span> <span class="s">&quot;From:</span><span class="nv"> </span><span class="s">%{x}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>sv.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">from_x</span><span class="p-Indicator">:</span> <span class="s">&quot;Från:</span><span class="nv"> </span><span class="s">%{x}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>fi.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">from_x</span><span class="p-Indicator">:</span> <span class="s">&quot;Lähettäjä:</span><span class="nv"> </span><span class="s">%{x}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Apparently this is enough to avoid inflecting the place name. Consult a speaker of the target language and see if you can come up with a workaround similar to this.</p>
+
+<h2>YAML flattener plugin for Vim</h2>
+
+<p>I wrote <a href="https://github.com/henrik/vim-yaml-flattener">a plugin for Vim</a> that lets you easily toggle a YML file between nested format:</p>
+
+<figure class='code'><figcaption><span>xx.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">en</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">baz</span><span class="p-Indicator">:</span> <span class="s">&quot;baize&quot;</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">foo</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">bar</span><span class="p-Indicator">:</span> <span class="s">&quot;baare&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and a flat format:</p>
+
+<figure class='code'><figcaption><span>xx.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">en.baz</span><span class="p-Indicator">:</span> <span class="s">&quot;baize&quot;</span>
+</span><span class='line'><span class="l-Scalar-Plain">en.foo.bar</span><span class="p-Indicator">:</span> <span class="s">&quot;baare&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is really useful, as the flat format is easier to search and edit.</p>
+
+<p>One could write a custom Rails i18n backend to always use the flat format, but the nested format has the benefit of being conventional, for use with other tools and services.</p>
+
+<p>A nice side-effect of the plugin is that every time you toggle it, the keys will be sorted.</p>
+
+<h2>Test that translations match up</h2>
+
+<p>I&#8217;ve also found it really useful to have a test in my test suite that verifies that all translations match up. So if <code>en.yml</code> has the key <code>foo.bar.baz</code>, then <code>sv.yml</code> should have it as well.</p>
+
+<p>It&#8217;s caught me a number of times when I mistakenly add a translation to only one locale, or remove a translation from only one locale.</p>
+
+<p><a href="https://gist.github.com/2994129">This is an example of such a test.</a></p>
+
+<p>It even handles pluralization differences – these match up fine:</p>
+
+<figure class='code'><figcaption><span>en.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">table</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">one</span><span class="p-Indicator">:</span> <span class="s">&quot;%{count}</span><span class="nv"> </span><span class="s">table&quot;</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">other</span><span class="p-Indicator">:</span> <span class="s">&quot;%{count}</span><span class="nv"> </span><span class="s">tables&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>sv.yml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">table</span><span class="p-Indicator">:</span> <span class="s">&quot;%{count}</span><span class="nv"> </span><span class="s">bord&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And if you want to exclude some translations from this test, because they won&#8217;t be translated or haven&#8217;t been translated yet, you can just use multiple YML files as described above. Simply make sure that the test knows which files to check and which to skip.</p>
+
+<h2>Fin</h2>
+
+<p>I&#8217;m very interested to hear what tools and methods others use, and if you do things different from this. Let me know!</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Project Wide Search And Replace In Vim With Qdo]]></title>
+<link href="http://henrik.nyh.se/2012/07/project-wide-search-and-replace-in-vim-with-qdo/"/>
+<updated>2012-07-17T16:30:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/07/project-wide-search-and-replace-in-vim-with-qdo</id>
+
+      <content type="html"><![CDATA[<p>In <a href="http://henrik.nyh.se/2011/01/textmate-to-vim-with-training-wheels">my blog post about switching to Vim</a>, I mentioned that I had yet to find a project-wide search-and-replace solution that I like.</p>
+
+<p>Now I have: I use <a href="https://github.com/henrik/git-grep-vim">git-grep-vim</a> for project-wide search, then <a href="https://github.com/henrik/vim-qargs">vim-qargs</a> to run a vim search-and-replace command over every result file.</p>
+
+<h2>Less convenience, more power</h2>
+
+<p>I think it&#8217;s unlikely that Vim will have a solution any time soon fully as convenient and well-integrated as in more modern editors. The per-buffer find-and-replace in Vim is dusted with enough special Vim magic that it won&#8217;t match up perfectly with the syntax of project-wide search tools like ack, grep or git-grep. And in a large project, you need fast tools like those.</p>
+
+<p>So while I don&#8217;t know of a solution that is on par with the convenience of search-and-replace in other editors, I do consider this one more convenient than switching to another editor – for a while I used TextMate alongside Vim for project-wide find-and-replace.</p>
+
+<p>And as usual with Vim, you get a lot of power you may not find in those other editors.</p>
+
+<h2>Project-wide search with git-grep</h2>
+
+<p>I use <a href="https://github.com/henrik/git-grep-vim">my fork of git-grep-vim</a> for project-wide search in Vim.</p>
+
+<p>It&#8217;s based on <a href="https://github.com/mileszs/ack.vim/">ack.vim</a> but uses git-grep instead of ack.</p>
+
+<p>You search like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep some.*pattern</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can optionally specify one or several directories to limit the search to:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep some.*pattern app/models lib spec</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And pass in flags (<code>-w</code> makes it match only at word boundaries):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep -w hello</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add the results of a new search to the existing result list:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep hello
+</span><span class='line'>:GitGrepAdd goodbye</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With multiple words or some special characters, quote the search string:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep "hello there"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or cheat to save some typing (the regex <code>.</code> matches any character, including a space):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep hello.there</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To save some typing, this line in my <code>~/.vimrc</code> brings up the search prompt when I hit <code>,a</code> (the &#8220;a&#8221; was for &#8220;ack&#8221;, once):</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="c">&quot; We want the trailing space.</span>
+</span><span class='line'>exe <span class="s2">&quot;nnoremap &lt;leader&gt;a :GitGrep &quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As long as you&#8217;re in a Git repository, I much prefer git-grep to ack. It&#8217;s faster, and <a href="https://github.com/protocool/ack-tmbundle/wiki/recognizing-files">ack will ignore unknown filetypes (like Haml) unless reconfigured</a>.</p>
+
+<p>That said, git-grep can also mislead. It won&#8217;t find results in new files before they&#8217;ve been added to Git, or in <code>.gitignore</code>d files, and as mentioned, it only works in directories managed by Git. You can trade in some speed for removing these gotchas with the <a href="http://www.kernel.org/pub/software/scm/git/docs/git-grep.html">flags</a> <code>--untracked</code>, <code>--no-exclude-standard</code> and <code>--no-index</code>.</p>
+
+<p>I use project-wide search all the time. It&#8217;s not just for search-and-replace, of course.</p>
+
+<h2>The quickfix window</h2>
+
+<p><img src="https://dl.dropbox.com/u/546793/blog/git-grep-quickfix.png" alt="Screenshot" /></p>
+
+<p>The search results end up in <a href="http://vimdoc.sourceforge.net/htmldoc/quickfix.html">the quickfix window</a>, a split window in Vim that you can move through like any Vim buffer. Hitting <code>⏎</code> will show the result from the current line.</p>
+
+<p>There&#8217;s a bunch of commands to open items from the quickfix list, without even needing to have it open (close it with <code>:cclose</code>).</p>
+
+<p>I&#8217;ve mapped the <code>+</code> and <code>-</code> keys to <code>:cnext</code> and <code>:cprevious</code>, for skipping one item at the time. I&#8217;ve mapped <code>g+</code> and <code>g-</code> to <code>:cpfile</code> and <code>:cnfile</code>, for skipping one <em>file</em> at the time.</p>
+
+<p>Some of my favorite commands for the quickfix list are <code>:colder</code> and <code>:cnewer</code>, to revisit the previous or next item list. This means you can run one project search for &#8220;foo&#8221;, notice some issue with bars, search for &#8220;bar&#8221;, do stuff, then run <code>:colder</code> and you&#8217;re back in the &#8220;foo&#8221; search. It&#8217;s effectively a stack of project searches to pop and push at leisure.</p>
+
+<h2>Qdo</h2>
+
+<p>Vim has a couple of commands like <code>:bufdo</code> and <code>:windo</code>, which let you run a command in every open buffer or window. Drew Neil (of <a href="http://vimcasts.org/">Vimcasts</a> and <a href="http://pragprog.com/book/dnvim/practical-vim">Practical Vim</a>) with other contributors <a href="http://stackoverflow.com/a/5686810/6962">wrote a :Qargdo</a> for when you want to run a command against every file in the quickfix list.</p>
+
+<p><a href="https://github.com/henrik/vim-qargs">My fork of vim-qargs</a> uses the conveniently short <code>:Qdo</code> for the same.</p>
+
+<p>For project-wide search-and-replace, then, you would simply do something like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep foo.*bar
+</span><span class='line'>:Qdo %s/foo.*bar/baz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You probably want to configure</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="c">&quot; Automatically save changes before switching buffer with some</span>
+</span><span class='line'><span class="c">&quot; commands, like :cnfile.</span>
+</span><span class='line'><span class="k">set</span> <span class="nb">autowrite</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>so each buffer is saved automatically when it moves to the next one. Otherwise, you could do:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:Qdo %s/foo.*bar/baz | update</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The upside of separate steps</h2>
+
+<p>It is, of course, a bit inconvenient to repeat the search string. But because the syntax of git-grep (or some other tool) will often diverge from the Vim search syntax, I&#8217;ve settled for typing the search string twice rather than having it automatically reused.</p>
+
+<p>While I would prefer to only type the search string once in the common case, there is an upside to having separate steps for the global find and the local search-and-replace, and that&#8217;s flexibility.</p>
+
+<p>You have your choice of global search tool, with their different features and trade-offs. The raw speed of git-grep in a Git repository is a wonderful thing. With <code>:GitGrepAdd</code> you can search for &#8220;x&#8221; in directory a plus &#8220;y&#8221; in directory b.</p>
+
+<p>And on the other end, you get all the magic (or <a href="http://vimdoc.sourceforge.net/htmldoc/options.html#'nomagic'">nomagic</a>) of Vim. Though I don&#8217;t think I&#8217;ve used it with <code>:Qdo</code> yet, you could apply some complex macro and not just a substitution.</p>
+
+<p>One thing I have done is chain multiple substitutions (replace &#8220;a&#8221; with &#8220;b&#8221; if present and then &#8220;c&#8221; with &#8220;d&#8221; if present), which I think would be more difficult with a more convenient but less flexible setup.</p>
+
+<h2>Fin</h2>
+
+<p>I&#8217;m curious to hear what others use. Let me know!</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Tests on demand using Vimux and Turbux with Spork and Guard]]></title>
+<link href="http://henrik.nyh.se/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard/"/>
+<updated>2012-07-13T18:15:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard</id>
+
+      <content type="html"><![CDATA[<p><img src="https://dl.dropbox.com/u/546793/blog/vimux-spork.png" alt="Screenshot" /></p>
+
+<p>My development environment these days is <a href="http://henrik.nyh.se/2011/01/textmate-to-vim-with-training-wheels">Vim</a> inside <a href="http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/">tmux</a>.</p>
+
+<p>Among other benefits (which I may write about later), this lets me split my terminal so I can run tests right next to my editor.</p>
+
+<p>I used to run tests with <a href="https://github.com/guard/guard/">Guard</a>. You start it in a terminal with <code>guard</code>, and when it detects that you saved a file, it runs the corresponding test. In your project&#8217;s <code>Guardfile</code>, you can map files to tests any way you please. Typically, you&#8217;ll have <code>models/user.rb</code> trigger <code>spec/models/user_spec.rb</code> and so on. You might also, for example, have it run <code>user_spec.rb</code> whenever you modify <code>user_factory.rb</code>.</p>
+
+<p>There&#8217;s also <a href="https://github.com/sporkrb/spork/">Spork</a>, which loads your app up in a test server, so you don&#8217;t have to wait for it to load on every test run. <a href="https://github.com/guard/guard-spork">Guard::Spork</a> helps Guard make use of Spork.</p>
+
+<h2>The downsides of Guard</h2>
+
+<p>While wonderful in theory, Guard can get annoying.</p>
+
+<p>If you&#8217;re fixing a failing integration test, you may alternate between that test and the integrating classes. Any time you modify and save one of the integrating classes, its tests will run. If they&#8217;re not lightning-fast, it quickly gets frustrating waiting for them to complete so you can run the integration test.</p>
+
+<p>Or perhaps you make some trivial change to a file, such as tweaking copy or stripping trailing whitespace, and that triggers a test run that you&#8217;d rather not wait for.</p>
+
+<p>When you switch branches or rebase, Guard may detect changed files and cause their tests to run.</p>
+
+<p>If you save one file while another test is running, it&#8217;s queued up. This means that a series of small tweaks can cause a bunch of tests to run, whether you want them to or not.</p>
+
+<p>Sometimes, Guard gets the idea that you probably want to run all the tests, when you really don&#8217;t.</p>
+
+<p>It happens that you accidentally forget you have a Guard running and start a second one, causing conflicts in tests that hit the database.</p>
+
+<p>Also, sometimes Guard&#8217;s file detection gets choked up for whatever reason and won&#8217;t run tests immediately when you save a file, or at all.</p>
+
+<p>All this is, of course, more of an annoyance if you have a slow test suite. But it gets pretty frustrating with sub-second tests as well, as you recalibrate your impatience.</p>
+
+<p>As it turns out, there&#8217;s a way to get the benefits of Guard and Spork without these downsides.</p>
+
+<h2>Vimux</h2>
+
+<p><a href="https://github.com/benmills/vimux/">Vimux</a> is a Vim plugin that lets you send commands to another tmux pane without leaving Vim.</p>
+
+<p>A simple example of what it lets you do is</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rspec spec/my_spec.rb&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By default, Vimux opens a new pane (and then reuses it) to run the command. As I tend to manually set up my workspace with about 80% editor on the left, 20% test runner on the right, I&#8217;ve configured it to just use the nearest pane instead:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> <span class="k">g</span>:VimuxUseNearestPane <span class="p">=</span> <span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Turbux</h2>
+
+<p>Then there&#8217;s <a href="https://github.com/jgdavey/vim-turbux">Turbux</a> (<a href="http://joshuadavey.com/post/15619414829/faster-tdd-feedback-with-tmux-tslime-vim-and">author&#8217;s blog post</a>), which builds on Vimux (or a Vimux alternative called tslime.vim). Turbux adds mappings to Vim to run the test you&#8217;re currently editing, with RSpec (or test-unit or Cucumber), using Vimux. What&#8217;s more, it uses some <a href="https://github.com/tpope/vim-rails">rails.vim</a> magic to figure out that if you&#8217;re in <code>models/user.rb</code>, you want to run <code>spec/models/user_spec.rb</code>.</p>
+
+<p>As I already use <code>,t</code> and <code>,T</code> for <a href="https://github.com/wincent/Command-T">Command-T</a>, I remapped Turbux to <code>,m</code> and <code>,M</code>:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> <span class="k">g</span>:no_turbux_mappings <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'>map <span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">m</span> <span class="p">&lt;</span>Plug<span class="p">&gt;</span>SendTestToTmux
+</span><span class='line'>map <span class="p">&lt;</span>leader<span class="p">&gt;</span>M <span class="p">&lt;</span>Plug<span class="p">&gt;</span>SendFocusedTestToTmux
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What does <code>,M</code> (<code>SendFocusedTestToTmux</code>) do? The same as <code>rspec spec/my_spec.rb:123</code> – it tells RSpec the current line number, so it can run only the test(s) encompassing that line, and not the entire file.</p>
+
+<p>Another great feature of Turbux is that if it can&#8217;t figure out a test to run, it will re-run the last one. So if you modify <code>user.rb</code> and trigger Turbux, it will run <code>user_spec.rb</code>. If you then open <code>en.yml</code> to localize some user attributes, triggering Turbux will run <code>user_spec.rb</code> again.</p>
+
+<h2>The benefits of Vimux and Turbux over Guard</h2>
+
+<p>With Turbux, you&#8217;re in control of when your tests run. You can save files all you want, and the tests will only run when you tell them to. And you can tell them with a simple mapping from inside Vim. You won&#8217;t be waiting for tests you didn&#8217;t want to run.</p>
+
+<p>There&#8217;s no confusion waiting for Guard to notice your changes. Tests run in a terminal window as if you typed the commands manually, so the current state is obvious.</p>
+
+<p>If you want to tweak some RSpec options (perhaps to provide a random seed) or set some environment variables for the tests, just change the command Turbux sends:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">let</span> <span class="k">g</span>:turbux_command_rspec <span class="p">=</span> <span class="s1">&#39;FOO=bar rspec --order rand:123&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You&#8217;d have to restart Guard (including the Guard::Spork app environment) to do the same.</p>
+
+<p>And because the commands are just sent to a shell in another pane, you have a lot of flexibility. If you want to try some one-off modifications to the commands, you can just edit them in that pane, using the shell history.</p>
+
+<p>If you have Rake tasks to run some subset of tests, just run that task in the same pane, manually or with Vimux. You can run tests any way you like and still see them in the same tmux pane.</p>
+
+<h2>Vimux without Turbux</h2>
+
+<p>You can use Vimux without Turbux. It&#8217;s great for one-off mappings. On my Swedish keyboard, <code>§</code> is conveniently located and underused, so I do things like:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>map § :<span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rspec spec/some_file.rb&quot;</span><span class="p">)&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This can be useful if you&#8217;re running one integration test over and over, while modifying a bunch of different files.</p>
+
+<p>Or if you want a more permanent mapping, you could do something like:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">,</span><span class="k">x</span> :VimuxRunLastCommand<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rspec spec/some_file.rb&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">,</span><span class="k">x</span>
+</span><span class='line'><span class="p">,</span><span class="k">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Vimux also lets you <code>:VimuxPromptCommand</code> if you prefer a prompt, though the function form lets you do things like refer to the current file dynamically:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;cat &quot;</span>.expand<span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once you have Vimux in your toolbox, you&#8217;ll find it&#8217;s not just for running tests. I used it recently to repeatedly run a script I was working on through <code>rails runner</code>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>map § :<span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rails runner some_script.rb&quot;</span><span class="p">)&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Using Spork</h2>
+
+<p>With Turbux, you&#8217;re effectively running your tests in a regular terminal. Compared to Guard with Spork, this is slow, as every test run needs to load your app environment.</p>
+
+<p>Luckily, Spork works fine divorced from Guard. And, indeed, married to Turbux. Just start Spork (I like to put it in a small pane in the bottom-right) and then make sure your tests connect to it. I do this in my <code>~/.vimrc</code>:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> <span class="k">g</span>:turbux_command_rspec <span class="p">=</span> <span class="s1">&#39;rspec --drb&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&#8217;s it. As long as you have a Spork running, your Turbux test runs will use it.</p>
+
+<p>It&#8217;s kind of nice to have Spork separate from your test runner. If you introduce an endless loop and a test hangs, just kill the test and run it again when the issue has been fixed. The app will remain loaded in Spork. If you make changes that require Spork to restart, just restart it. If you make many such changes and Spork gets in the way, just kill Spork and keep running the tests without it. With Guard::Spork, your test running and your test server are tied together.</p>
+
+<p>Guard::Spork does offer the convenience of reloading Spork automatically when necessary, like when you modify <code>environment.rb</code>. It&#8217;s not something I&#8217;ve been missing, though. It&#8217;s easy enough to restart Spork yourself when you need to.</p>
+
+<h2>Using Guard</h2>
+
+<p>But if you do want that convenience, you can even use Vimux with Guard.</p>
+
+<p>This is not what I do myself – I just use Spork as described above – but it&#8217;s an interesting option that I&#8217;ve looked into. It gets you the Guard::Spork autoreloading as well as any special file mapping you&#8217;ve set up in your <code>Guardfile</code>, while you still get to decide when to trigger a run.</p>
+
+<p>After starting Guard, hit <code>p⏎</code> to pause the automatic &#8220;file modification listening&#8221;.</p>
+
+<p>Rather than trigger when it detects modified files, Guard will now only trigger <em>if you tell it a file has been modified</em>. Add a mapping like:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">,</span><span class="k">x</span> :<span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;change &quot;</span>.expand<span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then when you hit <code>,x</code>, you will send the command <code>change current/file.rb</code> to Guard, filling in the current filename. Guard will see the file as modified and do its magic.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Randomize your factories]]></title>
+<link href="http://henrik.nyh.se/2012/07/randomize-your-factories/"/>
+<updated>2012-07-08T15:00:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/07/randomize-your-factories</id>
+
+      <content type="html"><![CDATA[<p><a href="https://github.com/thoughtbot/factory_girl/">FactoryGirl</a> is a Ruby library to create data for tests.</p>
+
+<p>I read Arjan van der Gaag&#8217;s <a href="http://arjanvandergaag.nl/blog/factory_girl_tips.html">FactoryGirl Tips and Tricks</a> post the other day and found myself disagreeing with a few of the points. Mainly the one where Arjan recommends not using randomized attribute values because they can cause unexpected results in tests.</p>
+
+<p>A randomized attribute value could be something like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">factory</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">gender</span> <span class="p">{</span> <span class="o">[</span><span class="s2">&quot;male&quot;</span><span class="p">,</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="o">].</span><span class="n">sample</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Whenever you generate a user for a test, you don&#8217;t know what gender that user will have unless you explicitly state it:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>  <span class="c1"># Any gender.</span>
+</span><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="n">gender</span><span class="p">:</span> <span class="s2">&quot;female&quot;</span><span class="p">)</span>  <span class="c1"># Definitely female.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or you could define and use a more specific factory (or use <a href="https://github.com/thoughtbot/factory_girl/">traits</a>):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">factory</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">gender</span> <span class="p">{</span> <span class="o">[</span><span class="s2">&quot;male&quot;</span><span class="p">,</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="o">].</span><span class="n">sample</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">factory</span><span class="p">(</span><span class="ss">:female_user</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">gender</span> <span class="s2">&quot;female&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:female_user</span><span class="p">)</span>  <span class="c1"># Definitely female.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I think you should only ever rely on the <code>:user</code> factory to give you a user. Possibly you could also assume that it&#8217;s a valid one, and that it has the object graph that a real user would have. But no specific, implicit set of valid attributes should be assumed.</p>
+
+<p>If you&#8217;re writing a test that applies to users, you fabricate a <code>:user</code>. If you&#8217;re writing a test that applies specifically to female users, you fabricate a <code>:female_user</code>, or set that attribute. If you write a test that makes no mention of the user gender, it should pass no matter the gender.</p>
+
+<h2>Fixtures vs. factories</h2>
+
+<p>If you do assume certain attributes, your factory is more like the <a href="http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures">Ruby on Rails fixtures</a> that many people use factories to get away from. If you&#8217;re writing a test that is explicitly for any user, what&#8217;s the value in implicitly knowing their sex? This post is making the case that there is value in making sure you <em>don&#8217;t</em> know. This is, of course, also one advantage of factories over fixtures.</p>
+
+<h2>Random failures</h2>
+
+<p>It&#8217;s true that randomized attributes means tests can fail randomly. That&#8217;s certainly not ideal. But the alternative is that your app has that same bug, only without ever failing.</p>
+
+<p>Say you write not-at-all-contrived code like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">title</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">gender</span>
+</span><span class='line'>    <span class="k">when</span> <span class="s2">&quot;male&quot;</span>
+</span><span class='line'>      <span class="s2">&quot;Mr.&quot;</span>
+</span><span class='line'>    <span class="k">when</span> <span class="s2">&quot;female&quot;</span>
+</span><span class='line'>      <span class="s2">&quot;Ms.&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You&#8217;ve made the mistake of assuming user genders are only ever &#8220;male&#8221; or &#8220;female&#8221;, but they can also be &#8220;other&#8221;. (As an aside, gender identity and gender choices in forms is interesting and complex – just these three options wouldn&#8217;t satisfy everyone.)</p>
+
+<p>Now, if your tests always generate female users, this will probably never fail. But if attributes are randomized, you can catch mistakes. Maybe a request test suddenly blows up because something expected a string title but got a nil value.</p>
+
+<p>Certainly, these failures can be a bit frustrating, because they&#8217;re harder to reproduce. But would you really prefer to have a perfectly reproducible case of not catching the issue at all? Instead your production users, with their less predictable data, will find the bugs for you.</p>
+
+<p>Once you&#8217;ve discovered this bug, you should of course write a test specifically for it, and one that fails predictably. Randomized attributes are certainly no substitute for that. What they are is a safety net, making up somewhat for the fact that you will make mistakes.</p>
+
+<p>Curiously, Arjan&#8217;s very next point is that you should test for explicit values, and not rely on factories to have certain implicit values. That is really much of my point. Randomized attribute values enforce this by not letting you rely on them even if you try.</p>
+
+<p>Again, I&#8217;m not saying I think random test failures are great. Only that they&#8217;re better than having a bug but no test failures whatsoever.</p>
+
+<h2>Update – July 8, 2012 at 19:30 CEST:</h2>
+
+<p><a href="http://arjanvandergaag.nl/blog/factory_girl_tips.html">Arjan&#8217;s post</a> was updated to address these points:</p>
+
+<blockquote><p>One might argue (…) that random values help you discover bugs. While possible, that obviously means you have a bigger problem: holes in your test suite. (…) True, a cryptic error is better than no error, but randomised factories remain a poor substitute for proper unit tests, code review and TDD to prevent these problems.</p>
+
+<p>Randomised factories are therefore not only not worth the effort, they even give you false confidence in your tests, which is worse than having no tests at all.</p></blockquote>
+
+<p>Even if you do &#8220;proper unit tests, code review and TDD&#8221; as diligently as anyone, you will make mistakes and have bugs. And given those bugs, you have a chance of finding them sooner by doing it the way I described. I think I made it pretty clear above, but I will reiterate that I don&#8217;t see randomized factories as a substitute for anything other than human infallibility. It&#8217;s one more safety net.</p>
+
+<p>If your tests and code review are good enough, you won&#8217;t ever get the random test failures. You only get them when you mess up. Do TDD and code review, but do this too.</p>
+
+<p>I think that Arjan&#8217;s argument about giving false confidence in your tests is the strongest one. I can only say that I do this precisely because I have little confidence in my tests, or anyone else&#8217;s. I don&#8217;t rig the extra safety net so I can take more risks; I do it because I know that sooner or later, no matter how hard I try, I&#8217;ll slip.</p>
+
+<h2>Update – July 9, 2012 at 08:15 CEST:</h2>
+
+<p>The random failures don&#8217;t even have to be random. Or rather, they don&#8217;t have to be hard to reproduce.</p>
+
+<p>I <a href="https://twitter.com/madeofcode/status/222070153641328640">just learned something from Mark Dodwell</a> that I hadn&#8217;t realized: when you have RSpec or MiniTest randomize the test order (<code>rspec --order random my_spec.rb</code>), the seed value that you get back isn&#8217;t just for recreating that test order. That seed applies to any use of <code>Kernel#rand</code>, so it can make your random test failures reproducible too.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Usability trumps security]]></title>
+<link href="http://henrik.nyh.se/2011/07/usability-trumps-security/"/>
+<updated>2011-07-16T02:05:00+02:00</updated>
+<id>http://henrik.nyh.se/2011/07/usability-trumps-security</id>
+
+      <content type="html"><![CDATA[<p>After complaining about it on Twitter for the third time or so, I thought I should blog about a recurring UI annoyance.</p>
+
+<p>It&#8217;s all too common that login forms tell you that the username <em>or</em> password is incorrect, but not which one. I love <a href="https://www.pivotaltracker.com/">Pivotal Tracker</a>, but they made me laugh out loud by adding a third possible source of error:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/pivotal-login.png" alt="Failed login stating &quot;Invalid username, password, or invitation.&quot;" /></p>
+
+<p>The reason usually given is security. By not revealing to an attacker whether they got the username right, they may waste their time trying to crack the password of non-existent accounts.</p>
+
+<p>That&#8217;s right as far as it goes, but I would argue that this is a case where usability should trump security.</p>
+
+<p>As a user, it&#8217;s very frustrating to repeatedly fail to log in without knowing if you&#8217;re using the wrong one out of several usernames or emails, or the wrong one out of several passwords. Or the wrong invitation. If you even have an account.</p>
+
+<p><a href="http://tripadvisor.com">TripAdvisor</a> gets this right:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/tripadvisor-login.png" alt="Failed login stating &quot;There is no account for nonuser@example.com&quot;." /></p>
+
+<p>There are definitely cases where it&#8217;s the user-friendly thing not to reveal if a username or email is in use. Such as on a dating site, where the user may be embarrassed or worse to be revealed as a member.</p>
+
+<p>Obviously security is important. But this is <a href="http://en.wikipedia.org/wiki/Security_through_obscurity">security by obscurity</a>. An attacker is unlikely to try email addresses entirely at random. They will probably know or suspect that the account exists before starting out. And your site should probably not rely on the username being a secret for security.</p>
+
+<p>Also, if you do insist on not telling the user, please think things through.</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/pivotal-pwreset.png" alt="Password reset form stating &quot;Invalid username or email&quot;." /></p>
+
+<p>If other pages, such as user profiles or password reset, can tell if an account exists, your page is only one request safer. Any attacker worth their <a href="http://en.wikipedia.org/wiki/Salt_(cryptography)">salt</a> can first try that page to find an existing account, then attack your login page.</p>
+
+<p>Another common and amusing miss is to be unspecific if the username is known, but specific if unknown, such as on <a href="http://flickr.com">Flickr</a>. Incorrect password:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/yahoo-wrongpw.png" alt="Failed login stating &quot;Invalid ID or password.&quot;" /></p>
+
+<p>Incorrect username:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/yahoo-wrongname.png" alt="Failed login stating &quot;This ID is not yet taken.&quot;" /></p>
+
+<p>I&#8217;m not saying it&#8217;s objectively wrong to be vague about what credential is incorrect. But it is often user-unfriendly, and my opinion is that this is a case where usability trumps security.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Vim Ruby Runner]]></title>
+<link href="http://henrik.nyh.se/2011/03/vim-ruby-runner/"/>
+<updated>2011-03-19T22:50:00+01:00</updated>
+<id>http://henrik.nyh.se/2011/03/vim-ruby-runner</id>
+
+      <content type="html"><![CDATA[<p>When I <a href="http://henrik.nyh.se/2011/01/textmate-to-vim-with-training-wheels">switched to Vim from TextMate</a>, I missed TextMate&#8217;s <code class="kb">⌘R</code> command to execute a Ruby script and show the output.</p>
+
+<p>There are ways to execute Ruby code from a Vim buffer, such as <code>:w ! ruby</code> or <code>:! ruby %</code>, which you could map to any shortcut, but they have annoying limitations.</p>
+
+<p>Hence, I&#8217;ve been tinkering with a better solution for a while in <a href="https://github.com/henrik/dotfiles">my dotfiles</a>. It finally felt mature enough to pack into a plugin, so I did:</p>
+
+<p><a href="https://github.com/henrik/vim-ruby-runner"><img src="http://dl.dropbox.com/u/546793/blog/RubyRunner.png" alt="Screenshot" /></a></p>
+
+<p>Get it from GitHub: <a href="https://github.com/henrik/vim-ruby-runner">https://github.com/henrik/vim-ruby-runner</a></p>
+
+<h2>Usage</h2>
+
+<p>The default keybindings are only available in buffers with filetype <code>ruby</code>. I recommend defining a command in your <code>~/.vimrc</code> like</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>command<span class="p">!</span> FR <span class="k">set</span> <span class="k">filetype</span><span class="p">=</span><span class="k">ruby</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>so you can set that filetype with a simple <code>:FR</code>.</p>
+
+<p>When you have a Ruby buffer, <code class="kb">⌘r</code> (lowercase r) will execute its contents (even if it is an unnamed, unsaved buffer) as Ruby code and output the results into a new split buffer.</p>
+
+<p>The output buffer gains focus, and you can hit <code class="kb">⌘r</code> again to close it.</p>
+
+<p><code class="kb">⌘R</code> (capital R, so <code class="kb">⇧⌘r</code>) will keep focus in the input buffer.
+If you&#8217;re in input mode, you&#8217;ll even stay in that mode. So you can keep hitting <code class="kb">⌘R</code> as you type, any time you have valid Ruby code.</p>
+
+<p>Just like with <code>:help</code>, one and the same output buffer is reused per tab page.</p>
+
+<h2>Comparison and caveats</h2>
+
+<p>The main benefit in comparison to the TextMate command is, of course, that it runs in Vim ;)</p>
+
+<p>In some ways, though, this plugin compares unfavorably to TextMate.</p>
+
+<p>Whereas TextMate will show you output incrementally, I <a href="http://stackoverflow.com/questions/5329931/in-vim-can-i-stream-the-output-of-e-g-w-ruby-into-a-buffer-line-by-line">haven&#8217;t been able</a> to find a good way to achieve that in Vim.
+The Vim window will be unresponsive while the script executes, and will only show the output all at once after completion.</p>
+
+<p>Also, script execution does not wait for <code>gets</code>. The value of any <code>gets</code> will be nil.</p>
+
+<h2>Alternatives</h2>
+
+<p>If you need to see incremental output, you could instead do</p>
+
+<pre><code>:w ! ruby
+</code></pre>
+
+<p>That very command is at the heart of the plugin, but it only outputs incrementally when run on its own.
+Be aware that you get the output below the command line, not in a buffer, and have to discard it to be able to continue using Vim.</p>
+
+<p>You could also write to an output file on disk and tail that from a terminal, with e.g. (in Vim):</p>
+
+<pre><code>:w ! ruby &gt; /tmp/out.txt
+</code></pre>
+
+<p>and (in a terminal):</p>
+
+<pre><code>tail -f /tmp/out.txt
+</code></pre>
+
+<p>Or you could <a href="http://stackoverflow.com/questions/5329931/in-vim-can-i-stream-the-output-of-e-g-w-ruby-into-a-buffer-line-by-line/5330279#5330279">tail in Vim</a>, but that doesn&#8217;t seem to work perfectly.</p>
+
+<p>The Vim wiki has <a href="http://vim.wikia.com/wiki/Preview_output_from_interpreter_in_new_window">an article</a> on a command a little like this plugin, but that lets you run only visually selected lines. I may attempt to copy that feature.</p>
+
+<p>A completely different approach is <a href="http://vimcasts.org/episodes/running-vim-within-irb/">to launch Vim from IRB</a>, edit in Vim and execute in IRB. I&#8217;ve had that set up for a while, but haven&#8217;t found myself using it in practice.</p>
+
+<p>Please try the plugin and suggest or contribute improvements. If you use something else, feel free to share in the comments.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[TextMate to Vim with training wheels]]></title>
+<link href="http://henrik.nyh.se/2011/01/textmate-to-vim-with-training-wheels/"/>
+<updated>2011-01-06T18:40:00+01:00</updated>
+<id>http://henrik.nyh.se/2011/01/textmate-to-vim-with-training-wheels</id>
+
+      <content type="html"><![CDATA[<p><img src="http://dl.dropbox.com/u/546793/blog/MacVim.png" alt="Screenshot" /></p>
+
+<p>I switched from Windows to OS X four years ago mostly because of <a href="http://macromates.com">TextMate</a>.</p>
+
+<p>Then of late I became increasingly curious about <a href="http://en.wikipedia.org/wiki/Vim_%28text_editor%29">Vim</a>.
+Every now and then there&#8217;s a blog post about someone switching from TextMate and loving it.
+At work my Vim-wielding colleagues split windows with abandon.</p>
+
+<p>So I tried Vim a few times, but never lasted the day.</p>
+
+<p>It was less about the weird modal model (slicing and dicing text in command mode, writing new text in insert mode) and more that I couldn&#8217;t get to the right file fast enough.
+In TextMate, I would use <code class="kb">⌘T</code> to quickly jump to a deeply-nested file by name, or use project-wide search to get it by content. You can have both these things in Vim, but they were tricky to set up or to grasp. I&#8217;d feel unproductive enough that I couldn&#8217;t make myself continue.</p>
+
+<h2>MacVim and Janus</h2>
+
+<p>Then about a month ago, I read Daniel Fischer&#8217;s <a href="http://blog.danielfischer.com/2010/11/19/a-starting-guide-to-vim-from-textmate/">&#8220;A Starting Guide to VIM from TextMate&#8221;</a>. He describes a setup with <a href="http://code.google.com/p/macvim/">MacVim</a>, a port of Vim that is well-integrated with OS X; and <a href="https://github.com/carlhuda/janus">Janus</a>, a &#8220;MacVim distro&#8221;, or set of plugins and ready-made configurations.</p>
+
+<p>In <a href="http://yehudakatz.com/2010/07/29/everyone-who-tried-to-convince-me-to-use-vim-was-wrong/">&#8220;Everyone Who Tried to Convince Me to use Vim was Wrong&#8221;</a>, Yehuda Katz, co-author of Janus (and Ruby on Rails, jQuery etc), echoes my experience. Coming from TextMate and starting out with plain Vim means starting out unproductive. Instead, use MacVim and various plugins so you can start out closer to where you are now. Then as you learn Vim better, you can shed the training wheels.</p>
+
+<p>I&#8217;ve now been using Vim as my main editor for just over a month, following that method.</p>
+
+<p>I was on the fence for a few weeks, but as I&#8217;ve learned Vim better, used more features and customized it further, I now feel at least as productive as I did in TextMate, and with much more room to grow.</p>
+
+<p>I highly recommend everyone using TextMate to try MacVim with Janus.</p>
+
+<h2>Training wheels</h2>
+
+<p>MacVim gives you OS X features like <code class="kb">⌘S</code> to save, <code class="kb">⌘C</code> and <code class="kb">⌘V</code> for copy and paste, a proxy icon in the menu bar to drag-and-drop or right-click for the folder hierarchy, a dot in the red &#8220;close&#8221; button to indicate unsaved changes. You can position your caret with the mouse, or drag to resize splits.</p>
+
+<p>Do beware, though – if you get into the habit of saving with <code class="kb">⌘S</code>, you will be very annoyed when you use command-line Vim in Terminal.app and constantly trigger &#8220;Export Text As…&#8221; instead. And while the Vim model of copy and paste is confusing at first, with deletions being &#8220;copied&#8221; as well, and everything going into various registers, you should eventually try it out. Placing the caret by mouse is easy, but there is probably a Vim command that will get you there faster without your hands leaving the keyboard. Remember, training wheels.</p>
+
+<h2>Equivalent features</h2>
+
+<p>MacVim with Janus has a lot of the features TextMate is known for.</p>
+
+<p>There is a <code>mvim</code> command-line binary much like <code>mate</code>.</p>
+
+<p>You have things like snippets, auto-balancing quotes, folds, macros, bookmarks. They&#8217;re generally fairly easy to use in the way you would in TextMate, but have a lot more power if you want to take things to the next level.</p>
+
+<p>As an example, <code>mm</code> will insert a bookmark named &#8220;m&#8221; and <code>'m</code> will jump back to it. This is about the feature set of TextMate, except that bookmarks have names. But then you have both file-local and global marks, can list marks, have various automatic marks such that e.g. <code>'.</code> will jump to the position where the last change was made, and more. See <code>:help mark-motions</code>.</p>
+
+<p>Janus includes the NERDTree plugin which is similar to the TextMate drawer. You can move it around like any other Vim split. It is completely keyboard-driven, with commands like <code>o</code> to open a directory, <code>O</code> to recursively open, <code>p</code> to go to parent directory, <code>P</code> for root.</p>
+
+<p>Instead of <code class="kb">⌘T</code> you have the Command-T plugin. Unlike TextMate, it lets you filter by directory, not just filename. So if you&#8217;re looking for <code>my_controller/show.html.erb</code> and not the other dozen <code>show.html.erb</code> files, just filter with something like <code>my/sh</code>.</p>
+
+<p>For searching in a project, there&#8217;s the Ack.vim plugin. Project search is Vim&#8217;s Achilles&#8217; heel, in my opinion. On the plus side, typing <code>:Ack "search term" app/models</code> (Janus lets you hit <code class="kb">⇧⌘F</code> to produce <code>:Ack</code>) to limit your search to a certain directory is very nice. Beats clicking a folder in the drawer. On the minus side, having to quote a multi-word search term is a little annoying. The list of results is not displayed as nicely as in TextMate. I&#8217;ve yet to find a project search-and-replace solution I like. Then again, I rarely used that in TextMate because its project search gets unusably slow for large projects.</p>
+
+<p>Furthermore, when you use Vim&#8217;s commands to search or search-and-replace within a single document, you have to use a weird regular expression flavor. An expression like <code>\bfoo\b</code> becomes <code>&lt;foo&gt;</code>, and that&#8217;s assuming you&#8217;ve customized Vim to use &#8220;very magic&#8221; mode for search – otherwise you have to specify that (<code>\v&lt;foo&gt;</code>) or escape the brackets (<code>\&lt;foo\&gt;</code>). I&#8217;m guessing this is another case of &#8220;different but very powerful&#8221;, but the transition is harsh.</p>
+
+<p>That said, this has been a surprisingly minor annoyance so far, far outweighed by other things.</p>
+
+<h2>Things to love about Vim</h2>
+
+<p>I fall in love with new Vim features every day. These are just a few of the things I love:</p>
+
+<p>Vim has a <strong>powerful, extensive and fairly memorable set of primitives with a combinatorial explosion of uses</strong>. If I want a line of 80 dashes in TextMate, I might type ten dashes, copy it and paste seven more times. If I do it a lot, I may define a snippet or command. In a vanilla Vim:</p>
+
+<pre><code>80i-&lt;Esc&gt;
+</code></pre>
+
+<p>That&#8217;s not a special purpose plugin, just putting commands together. <code>i-&lt;Esc&gt;</code> goes into insert mode, writes a dash and then leaves insert mode again. An optional prepended count will repeat the action.</p>
+
+<p>If I want to turn</p>
+
+<pre><code>Hello world
+</code></pre>
+
+<p>into</p>
+
+<pre><code>Hello world
+===========
+</code></pre>
+
+<p>in Vim, I could type</p>
+
+<pre><code>YpVr=
+</code></pre>
+
+<p><code>Y</code> to copy (yank) the line, <code>p</code> to paste it below, <code>V</code> to select that line, <code>r=</code> to replace each character with &#8220;=&#8221;.</p>
+
+<p>And since you can do a lot of things with the primitives, there&#8217;s little need for TextMate&#8217;s modifier-heavy keyboard shortcuts.</p>
+
+<p>Vim has <strong>operators and motions</strong>, which are particularly lovely primitives that let you manipulate text with a kind of action-object model. If I have the text</p>
+
+<pre><code>function("some text")
+</code></pre>
+
+<p>and my caret is somewhere inside the quotes, <code>ci"</code> (change inside quotes) will delete the text inside the quotes and enter insert mode, so I can type something else. Like so:</p>
+
+<pre><code>function("|")
+</code></pre>
+
+<p>If I instead do <code>ca"</code> (change around quotes), it will also delete the quotes:</p>
+
+<pre><code>function(|)
+</code></pre>
+
+<p>I could achieve the same thing with <code>ci(</code> (change inside parentheses).</p>
+
+<p>If I have the text</p>
+
+<pre><code>Lorem ipsum dolor. Sic amet.
+</code></pre>
+
+<p>with my caret somewhere in &#8220;ipsum&#8221;, I could do <code>ciw</code> (change in word) to delete that word and enter insert mode to type another word. Or maybe <code>daw</code> (delete around word) to delete the word and its trailing whitespace. Or <code>das</code> to delete the entire sentence, or <code>dap</code> to delete the entire paragraph.</p>
+
+<p>So <code>c</code>(hange) or <code>d</code>(elete) is the operator, the action I want to perform; and <code>iw</code> is the motion, describing the scope or object of that action.</p>
+
+<p>These are just some examples. Instead of <code>c</code>, I could invoke actions like <code>&gt;</code> (indent), <code>gU</code> (make uppercase) and many more. Instead of the motion <code>iw</code>, I could use <code>tx</code> (till the next letter &#8220;x&#8221;), <code>/foo↩</code> (until the next match of a regular expression), <code>)</code> (until the end of the sentence), <code>'m</code> (until the mark &#8220;m&#8221;) and more.</p>
+
+<p>There are plugins that add motions like <a href="http://www.vim.org/scripts/script.php?script_id=3037">&#8220;at this indentation level&#8221;</a> or <a href="http://www.vim.org/scripts/script.php?script_id=3382">&#8220;in this Ruby block&#8221;</a>.</p>
+
+<p>And, of course, motions take a count, so <code>2c)</code> or <code>c2)</code> will change two sentences ahead.</p>
+
+<p>See <code>:help motion.txt</code> for more.</p>
+
+<p>Vim also has <strong>cheap splits</strong>. I can very easily open multiple files side by side, or even different parts of the same file.</p>
+
+<p>This is incredibly handy for things like editing code and test, controller and view, a set of translation files or anything else you want to see at the same time.</p>
+
+<p>Plugins like Command-T and Rails.vim let you easily open splits. In Command-T, finding a file and hitting <code>⌃s</code> will open it in a split. In Rails.vim, e.g. <code>:AS</code> will open a related test in a split.</p>
+
+<p>While TextMate does let you open files in a new window, it&#8217;s far from as convenient and pervasive.</p>
+
+<h2>Installation</h2>
+
+<p>I recommend installing MacVim with the <a href="http://mxcl.github.com/homebrew/">Homebrew</a> package manager. <a href="https://github.com/mxcl/homebrew/wiki/installation">Install Homebrew</a> if you don&#8217;t have it, then just</p>
+
+<pre><code>brew install macvim
+</code></pre>
+
+<p>If you&#8217;re not happy with the default icon, I like this one by <a href="http://sketchbooked.net/">Miguel A. Cardona Jr.</a>:</p>
+
+<p class="center">
+  <a href="http://dl.dropbox.com/u/546793/blog/MacVim.icns"><img src="http://dl.dropbox.com/u/546793/blog/MacVim.icns.png" alt="Download"></a>
+</p>
+
+
+<p>You&#8217;ll find MacVim.app under <code>~/.homebrew/Cellar/macvim/HEAD</code>.</p>
+
+<p>If you will use Vim on the command line as well, I&#8217;d recommend making sure you use MacVim&#8217;s version of Vim instead of the one that ships with OS X. Not only is it a newer version (7.3 instead of 7.2), but it&#8217;s also compiled with more features like support for writing Vim commands in Ruby.</p>
+
+<p>Get MacVim&#8217;s Vim binary on the command line by symlinking the <code>mvim</code> binary to <code>vim</code>, e.g.:</p>
+
+<pre><code>ln -s ~/.homebrew/bin/mvim ~/.homebrew/bin/vim
+</code></pre>
+
+<p>Make sure this directory is earlier in your <code>$PATH</code> path than <code>/usr/bin</code> is.</p>
+
+<p>Install Janus with</p>
+
+<pre><code>curl https://raw.github.com/carlhuda/janus/master/bootstrap.sh -o - | sh
+</code></pre>
+
+<p>The install script will rename (not overwrite) any pre-existing Vim dotfiles.</p>
+
+<p>Though I started out with Janus, I have made a lot of customizations.
+<a href="https://github.com/henrik/dotfiles">My dotfiles</a> are available on GitHub.
+If you see something you like, you can create a <code>~/.vimrc.local</code> or <code>~/.gvimrc.local</code> which Janus will load. Or just fork and modify the existing dotfiles.</p>
+
+<p>If you set up your own dotfiles from scratch, I very much recommend using <a href="http://www.vim.org/scripts/script.php?script_id=2332">Pathogen</a> so each plugin keeps to its own directory instead of putting files all over the place. It goes well with Git submodules.</p>
+
+<h2>Learning Vim</h2>
+
+<p>Give it a few days. It&#8217;s very different paradigm, but you will get used to it, and probably come to love it.</p>
+
+<p>For an interactive tutorial to get you started, try this from the command line:</p>
+
+<pre><code>vimtutor
+</code></pre>
+
+<p>Once you have the basics down, push yourself to use new Vim motions and commands, even though it may slow you down at first. If you don&#8217;t think you&#8217;re doing something in the optimal way, you&#8217;re probably right – look it up.</p>
+
+<p>One of the best features of Vim is the thorough help system. In Vim, just type e.g. <code>:help x</code> (<code>:h x</code> for short) to learn more about some command or topic.</p>
+
+<p>There are tons of resources. Read blog posts, see the <a href="http://vim.wikia.com/">Vim Tips Wiki</a>, get help on the friendly <code>#vim</code> IRC channel on Freenode, learn new things from the <a href="http://vimcasts.org/">Vimcasts</a> videos.</p>
+
+<p>When you feel up to it, challenge yourself with some <a href="http://vimgolf.com/">VimGolf</a>. It&#8217;s fun, instructive and quite addictive.</p>
+
+<p>If you do switch to Vim after reading this, or already switched, I&#8217;d love to hear about it in the comments!</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Canonizing pseudo-slugs in Rails]]></title>
+<link href="http://henrik.nyh.se/2009/09/canonizing-pseudo-slugs-in-rails/"/>
+<updated>2009-09-13T14:55:00+02:00</updated>
+<id>http://henrik.nyh.se/2009/09/canonizing-pseudo-slugs-in-rails</id>
+
+      <content type="html"><![CDATA[<p>It&#8217;s common to use pseudo-slugs in Ruby on Rails apps. You do something like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Item</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_param</span>
+</span><span class='line'>    <span class="o">[</span><span class="nb">id</span><span class="p">,</span> <span class="n">slug</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The Rails URL helpers will now use this parameter in URLs instead of just the <code>id</code>. Controller actions can usually be left unchanged since <code>ActiveRecord::Base#find</code> will run <code>to_i</code> on the parameter string, lopping off the slug.</p>
+
+<p>These pseudo-slugs let people mess with you, though. They could pass your <code>http://example.com/items/1-foo</code> URL to someone else as <code>http://example.com/items/1-ugly-ass-foo</code> and it will work fine. It may even be indexed by search engines that way.</p>
+
+<p>This is easy to overlook, but the solution is fairly obvious and simple:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ItemsController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="ss">:Base</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>    <span class="vi">@item</span> <span class="o">=</span> <span class="no">Item</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">canonical</span> <span class="o">=</span> <span class="vi">@item</span><span class="o">.</span><span class="n">to_param</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">canonical</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>      <span class="n">redirect_to</span><span class="p">(</span><span class="ss">:overwrite_params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">canonical</span> <span class="p">},</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="ss">:moved_permanently</span><span class="p">)</span> <span class="ow">and</span> <span class="k">return</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using <code>:overwrite_params</code> will ensure any additional parameters are unchanged.</p>
+
+<p>If you need this for more than just the <code>show</code> action, you might move it to a separate method, perhaps used as a <code>before_filter</code>.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Git hook to auto-reference tickets from the branchname]]></title>
+<link href="http://henrik.nyh.se/2009/09/git-hook-to-auto-reference-tickets-from-the-branchname/"/>
+<updated>2009-09-10T22:25:00+02:00</updated>
+<id>http://henrik.nyh.se/2009/09/git-hook-to-auto-reference-tickets-from-the-branchname</id>
+
+      <content type="html"><![CDATA[<p>It&#8217;s common to put &#8220;Refs #123&#8221; or &#8220;Closes #123&#8221; in version control commit messages, and then have a server-side hook that lists the referring commits under that ticket in the ticket tracker, closing the ticket if requested.</p>
+
+<p>It can be a bit of a pain to remember to reference the ticket you&#8217;re working on, though.</p>
+
+<p>Inspired by a discussion with <a href="http://teddyzetterlund.com/">Teddy</a> at work, I just wrote a <a href="http://progit.org/book/ch7-3.html">Git hook</a> to auto-reference tickets from the branchname.</p>
+
+<p>Get it here: <a href="http://gist.github.com/184711">http://gist.github.com/184711</a></p>
+
+<p>Installation instructions are in the file.</p>
+
+<p>Use the format <code>t123</code> (or <code>t123-whatever</code>) for your topic branch names. When you are on such a branch and make a commit, the hook will append &#8220;Refs #123.&#8221; to the commit message. It&#8217;s clever enough to not add it if your message already contains &#8220;#123&#8221;, e.g. if you&#8217;ve put &#8220;Closes #123&#8221; in there or a manual &#8220;Refs #123&#8221;.</p>
+
+<p>Because I can&#8217;t stand an unclosed sentence, the hook takes care of that as it appends, turning &#8220;fix it&#8221; into &#8220;fix it. Refs #123.&#8221;</p>
+
+<p>If the branch name does not follow that format (e.g. in <code>master</code>), your commit message is untouched.</p>
+
+<p>I chose to use the <code>commit-msg</code> hook, which runs after you&#8217;ve written a commit message but before the commit is made. Some would perhaps prefer to use the <code>prepare-commit-msg</code> hook, so the reference is pre-populated and can be edited as you write the rest of the commit message. That doesn&#8217;t work with the custom commit dialog in <a href="http://github.com/timcharper/git-tmbundle/tree/master">the TextMate Git bundle</a>, though, which is what I use.</p>
+
+<p>Feel free to fork and adapt to your workflow.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Buying from the US iTunes Store]]></title>
+<link href="http://henrik.nyh.se/2009/08/buying-from-the-us-itunes-store/"/>
+<updated>2009-08-22T09:41:00+02:00</updated>
+<id>http://henrik.nyh.se/2009/08/buying-from-the-us-itunes-store</id>
+
+      <content type="html"><![CDATA[<p>The other day, I wanted to buy a TV show from the US iTunes Store that was not available in my local (Swedish) iTunes Store.</p>
+
+<p>There are several guides out there, but I didn&#8217;t find one that explained payment well. Making a new post about it will also indicate that this solution worked fine at this time, August 2009.</p>
+
+<h2>Creating a US account</h2>
+
+<p>The first step is to create a US account. Follow Apple&#8217;s own tutorial on how to <a href="http://support.apple.com/kb/HT2534">create an iTunes App Store account without a credit card</a>.</p>
+
+<p>Basically you switch the store settings to the US Store, start purchasing a free iPhone app such as Remote (<a href="http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=284417350&amp;mt=8">iTunes Store link</a>) and create an account with &#8220;None&#8221; as the payment option.</p>
+
+<p>You need to enter US address details, such as those of any hotel in the USA.</p>
+
+<p>The iTunes Store handles <a href="http://en.wikipedia.org/wiki/Plus_addressing#Sub-addressing">plus-addressing</a> fine, so assuming your mail service supports it, you can use <code>me+us@example.com</code>.</p>
+
+<h2>Payment</h2>
+
+<p>If you don&#8217;t have a US credit card, you can still use a gift certificate purchased by someone else in the US Store.</p>
+
+<p>The iTunes Store has <a href="http://www.apple.com/itunes/store/gifts.html">gift cards as well as gift certificates</a>. gift <em>cards</em> are physical cards: to my knowledge you will not receive them by email. Gift <em>certificates</em>, on the other hand, are sent immediately by email.</p>
+
+<p>So if you have a contact in the US, have them email you a gift certificate (<a href="https://phobos.apple.com/WebObjects/MZFinance.woa/wa/buyLandingPage">iTunes Store link</a>).</p>
+
+<p>There are also gift cards available <a href="http://shop.ebay.com/?_nkw=us+itunes+gift">on eBay</a>, and some sellers state they will email you the code. I have no experience with this. Their price will be a few dollars above the face value.</p>
+
+<h2>Syncing</h2>
+
+<p>I have not tried this with anything I sync to the iPhone. <a href="http://discussions.apple.com/thread.jspa?messageID=7851413">This discussion thread</a> suggests that you can sync to the iPhone from multiple iTunes Store accounts as long as the computer is authorized for all of them.</p>
+
+<p>The thread also states that only the last account your computer was signed into will be available to the iTunes Music Store and the App Store on the iPhone.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[jQuery in GreaseKit]]></title>
+<link href="http://henrik.nyh.se/2009/07/jquery-in-greasekit/"/>
+<updated>2009-07-21T19:05:00+02:00</updated>
+<id>http://henrik.nyh.se/2009/07/jquery-in-greasekit</id>
+
+      <content type="html"><![CDATA[<p>When writing <a href="http://en.wikipedia.org/wiki/Greasemonkey">userscripts</a>, I almost always want to include the <a href="http://jquery.com/">jQuery</a> lib.</p>
+
+<p>Since version 0.8.0 of Greasemonkey, you can use <code>@require</code> as <a href="http://www.keyvan.net/2008/10/greasemonkey-jquery/">described e.g. here</a>. But if you use other userscript engines like <a href="http://8-p.info/greasekit/">GreaseKit</a> for Safari/WebKit (works fine in Safari 4, by the way), you can&#8217;t use <code>@require</code>.</p>
+
+<p>Rather than <a href="http://joanpiedra.com/jquery/greasemonkey/">polling</a>, you can do this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">jQueryIsReady</span><span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#foo&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// -----------------------------------------------------------------</span>
+</span><span class='line'><span class="c1">// Greasemonkey/GreaseKit compatibility</span>
+</span><span class='line'><span class="c1">// -----------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">unsafeWindow</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'> <span class="nx">unsafeWindow</span> <span class="o">=</span> <span class="nb">window</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// -----------------------------------------------------------------</span>
+</span><span class='line'><span class="c1">// jQuery</span>
+</span><span class='line'><span class="c1">// -----------------------------------------------------------------</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">&#39;http://jquery.com/src/jquery-latest.js&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">script</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">script</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">unsafeWindow</span><span class="p">.</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">noConflict</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">jQueryIsReady</span><span class="p">(</span><span class="nx">unsafeWindow</span><span class="p">.</span><span class="nx">jQuery</span><span class="p">);</span>
+</span><span class='line'><span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>See it in the context of <a href="http://userscripts.org/scripts/review/4169">a real userscript</a>.</p>
+
+<p>Many thanks to <a href="http://ecmanaut.blogspot.com/">Johan Sundström</a> who did most of the work figuring this out.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[TextMate "Open Finder" command]]></title>
+<link href="http://henrik.nyh.se/2009/06/tm-open-finder/"/>
+<updated>2009-06-13T11:55:00+02:00</updated>
+<id>http://henrik.nyh.se/2009/06/tm-open-finder</id>
+
+      <content type="html"><![CDATA[<p><a href="http://macromates.com">TextMate</a> comes with an &#8220;Open Terminal&#8221; (<code class="kb">⌃⇧O</code>) command, in the Shell Script bundle.</p>
+
+<p>This command will open a new Terminal window in the directory of the active TextMate file. Quite handy.</p>
+
+<p>I made an &#8220;Open Finder&#8221; (<code class="kb">⌃⇧O</code>) command to go with it. The command goes into the &#8220;TextMate&#8221; bundle.</p>
+
+<p>If you have a file open or selected in the project drawer, its containing directory is opened in Finder with the file selected (the OS X term is &#8220;revealed&#8221;). With a directory, it&#8217;s just plain opened in Finder. With an unsaved file, your home directory is opened.</p>
+
+<p>Both commands intentionally have the same shortcut, so TextMate presents you with a disambiguation menu. &#8220;Open Terminal&#8221; can be triggered with <code class="kb">⌃⇧O</code>, then <code class="kb">1</code> or <code class="kb">T</code>, then <code class="kb">↩</code> and &#8220;Open Finder&#8221; with <code class="kb">⌃⇧O</code>, then <code class="kb">2</code> or <code class="kb">F</code>, then <code class="kb">↩</code>.</p>
+
+<p>The command is available as <a href="http://gist.github.com/129167">a Gist</a>. <a href="http://gist.github.com/gists/129167/download">Download it</a>, unpack it and double-click <code>Open Finder.tmCommand</code> to install.</p>
+
+<p>I think I&#8217;ve written a command for this before, but I couldn&#8217;t find it, so I made a new one. If you have my old command, it would be interesting to see.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[VNC Stacks in OS X]]></title>
+<link href="http://henrik.nyh.se/2009/06/vnc-stacks/"/>
+<updated>2009-06-12T21:10:00+02:00</updated>
+<id>http://henrik.nyh.se/2009/06/vnc-stacks</id>
+
+      <content type="html"><![CDATA[<p><img src="https://dl.dropbox.com/u/546793/blog/2009-06-vnc-stack.png" alt="VNC stack screenshot" /></p>
+
+<p>OS X Leopard comes with a VNC client, <code>/System/Library/CoreServices/Screen Sharing.app</code>.</p>
+
+<p>Connecting to favorite servers isn&#8217;t as easy as it should be. If the remote computer is in your local network, you can click &#8220;Share Screen&#8221; in Finder. You can also type a <code>vnc://</code> URI in a browser, do <code>open vnc://…</code> from Terminal etc.</p>
+
+<p>As has been blogged <a href="http://lifehacker.com/software/remote-control/add-more-functionality-to-leopards-screen-sharing-334759.php">elsewhere</a>, you can run</p>
+
+<pre><code>defaults write com.apple.ScreenSharing ShowBonjourBrowser_Debug 1
+</code></pre>
+
+<p>in Terminal to see a list of local and manually added computers on launching Screen Sharing. Turn it off again with</p>
+
+<pre><code>defaults write com.apple.ScreenSharing ShowBonjourBrowser_Debug 0
+</code></pre>
+
+<p>What&#8217;s less well known is that you can drag the computer names from this list to e.g. the desktop. This creates a <code>.vncloc</code> shortcut file. Double-click it to connect to that computer.</p>
+
+<p>If you don&#8217;t want to bother with the Bonjour browser, you can create them manually. They look like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class='line'><span class="cp">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span>
+</span><span class='line'><span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;dict&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;key&gt;</span>URL<span class="nt">&lt;/key&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;string&gt;</span>vnc://Nyx.local.<span class="nt">&lt;/string&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dict&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plist&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Just change the URI.</p>
+
+<p>These shortcuts are handy, but I don&#8217;t like them on my desktop, so I put them in a Stack.</p>
+
+<p>First, I created a <code>~/Library/Remote Machines</code> directory and put the shortcuts in there. Then, I dragged it to the right-hand side (or bottom, in my case) of the dock, next to the Trash, where Stacks go.</p>
+
+<p>That&#8217;s it, really. The effect is a nice menu for your VNC favorites.</p>
+
+<p>To make it look nicer, find an icon in <code>/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources</code>. It&#8217;s one of the <code>com.apple.</code> files for a Mac, or <code>public.generic-pc</code> otherwise. Select the icon, run <code class="kb">⌘I</code>. Click the icon in the top left of the info pane (not the proxy icon in the title bar) so that it&#8217;s highlighted, and copy it with <code class="kb">⌘C</code>. Select the <code>.vncloc</code> file, run <code class="kb">⌘I</code>, select its icon and paste with <code class="kb">⌘V</code>. Done!</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Jekyll]]></title>
+<link href="http://henrik.nyh.se/2009/04/jekyll/"/>
+<updated>2009-04-23T01:17:00+02:00</updated>
+<id>http://henrik.nyh.se/2009/04/jekyll</id>
+
+      <content type="html"><![CDATA[<p>I finally got around to change this blog from <a href="http://wordpress.org/">WordPress</a> to <a href="http://github.com/henrik/jekyll">my own fork</a> of Tom Preston-Werner&#8217;s <a href="http://github.com/mojombo/jekyll">Jekyll</a>.</p>
+
+<p>Jekyll is a Ruby gem that can generate a static blog from layouts, assets and blog posts in Markdown or Textile. It powers <a href="http://github.com/blog/272-github-pages">GitHub Pages</a> but can also be used for self-hosted blogs.</p>
+
+<p>The source for this blog itself is <a href="http://github.com/henrik/henrik.nyh.se">on GitHub</a>. See the README for license.</p>
+
+<h2>Leaving WordPress</h2>
+
+<p>There are many things to like about Jekyll. Unlike WordPress, it&#8217;s Ruby code. It&#8217;s also very little code, so it&#8217;s easy to modify to your own needs. I did not enjoy modifying the WordPress PHP code.</p>
+
+<p>With Jekyll, you can edit blog content in your favorite editor and use version control. The fact that the generated blog is all static files means very good performance. I like how caching is a given.</p>
+
+<p>I used the WordPress importer provided by Jekyll with <a href="http://gist.github.com/100135">some modifications</a> to get tags, times and to fix some markup issues particular to my blog.</p>
+
+<p>With a static site, you need some sort of hosted comments. I use <a href="http://disqus.com">Disqus</a> which seems decent. Since comments are added with JavaScript, they won&#8217;t be indexed along your blog post by Google, but Disqus has indexable comment threads on their site, linked back to posts.</p>
+
+<p>To import WordPress comments into Disqus, you need to install a <a href="http://wordpress.org/extend/plugins/disqus-comment-system/">WordPress plugin</a> and do it from there. Disqus did not make this very clear.</p>
+
+<p>It would be nice to have some <a href="http://macromates.com/">TextMate</a> commands to create the file for a new post, to update the timestamps and slug and so on. I may write them some time.</p>
+
+<h2>My additions and fixes</h2>
+
+<p>I&#8217;ve added things in <a href="http://github.com/henrik/jekyll">my Jekyll fork</a> that are not in the <a href="http://github.com/mojombo/jekyll">main version</a>. To see examples of how to use these additions, have a look in <a href="http://github.com/henrik/henrik.nyh.se">the source for this blog</a>.</p>
+
+<p>A big one for me is support for <a href="http://haml.hamptoncatlin.com/">Haml</a>. Regular Jekyll uses <a href="http://www.liquidmarkup.org/">Liquid</a> for templates and pages. This makes a lot of sense for a hosted setup like GitHub Pages, since it limits users to a small set of safe operations. But for my own blog, I found this way too limiting. Also, I enjoy using Haml.</p>
+
+<p>Haml support has been added, but Liquid support has not been removed. In fact, it&#8217;s still needed for things like highlighting. I may tear it out entirely at some point, though supporting Liquid as well means it&#8217;s easier to port over blogs from Liquid to Haml file by file.</p>
+
+<p>It also supports <a href="http://haml.hamptoncatlin.com/docs/sass">Sass</a> for CSS.</p>
+
+<p>There are some Rails-inspired helper methods provided, <code>h(text)</code> and <code>link_to(text, url)</code>. You can include a <code>_helpers.rb</code> file in your blog with more helpers. This keeps the Haml views clean.</p>
+
+<p>You can set default post metadata in your <code>_config.yml</code> file, typically the layout to use. My version can also set the metadata title from the first Markdown or Textile header in the post. This means that you may get by without specifying a metadata block at all.</p>
+
+<p>You can change date format in post URLs, e.g. drop the day and only use the year and month, like on this blog. Posts can have a time, not just a date. The original filename for the generated post is available, so you can do fun stuff like <a href="http://github.com/henrik/henrik.nyh.se/commit/afdf2682d09ffab1ce29cc95d4583d8317bc0d9d">&#8220;Edit in TextMate&#8221; links</a>. Static sites and some imagination go a long way.</p>
+
+<p>Collated posts (by year, month and day in nested hashes) are available to pages, to easily create an archive. Posts by tag are available. Tags are basically like regular Jekyll categories or topics, but are not reflected in the URL.</p>
+
+<p>Jekyll&#8217;s syntax highlighting (using <a href="http://pygments.org/">Pygments</a>) can take a while. I added a simple file cache that reduced generation time for this blog from around 90 seconds to around 3 seconds.</p>
+
+<p>There are also some bugfixes. Pygments highlighting would break on non-ASCII characters. I worked around a RDiscount (Markdown) bug where it would not convert text after a highlighted block. These fixes have been sent upstream.</p>
+
+<h2>Deployment</h2>
+
+<p>Though you can set things up so your blog is regenerated when it&#8217;s pushed to some Git repository, I don&#8217;t currently want this. Instead I use a simple shell script in <code>tasks/deploy</code> under the blog root:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/usr/bin/env bash</span>
+</span><span class='line'>jekyll <span class="o">&amp;&amp;</span> rsync -avz --delete _site/ nyh:henrik.nyh.se/jekyll
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That means I can deploy by typing <code>tasks/deploy</code> from a Terminal in the blog root. <code>nyh</code> is a SSH alias.</p>
+
+<p>The <code>henrik.nyh.se</code> directory is the webroot for the <code>http://henrik.nyh.se</code> URL. I wanted the generated blog to go in a <code>jekyll</code> subdirectory to keep it separate from a ton of other stuff I have under the webroot. Requests to the domain should be rewritten to this subdirectory unless the file exists outside it. To my surprise, getting that working was fairly tricky. I ended up with <a href="http://gist.github.com/97822">these <code>.htaccess</code> files</a>.</p>
+
+<h2>Tips</h2>
+
+<p>Some lessons learned:</p>
+
+<p>Using the <code>--auto</code> flag with Jekyll will swallow exceptions. Don&#8217;t use it if you want to see error traces. When you do use it, I recommend something like <code>rm -rf _site/* &amp;&amp; jekyll --server --auto</code>. By removing previously generated files first, you notice if an error prevents them regenerating.</p>
+
+<p>If you&#8217;re hacking on Jekyll itself, put its <code>bin</code> directory (in my case, <code>/Users/henrik/Code/jekyll/bin</code>) in your <code>PATH</code> so you don&#8217;t have to rebuild the gem all the time.</p>
+
+<p>Make sure to precede highlight blocks in Markdown posts with a blank line or they will get paragraph tags inserted. I will probably look into patching this.</p>
+
+<h2>Feedback</h2>
+
+<p>There are bound to be issues with the markup in the imported old posts. If you notice anything, let me know.</p>
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Time zones and multidimensional grouping with Active Record and MySQL]]></title>
+<link href="http://henrik.nyh.se/2009/03/time-zones-and-multidimensional-grouping-with-active-record-and-mysql/"/>
+<updated>2009-03-26T12:37:00+01:00</updated>
+<id>http://henrik.nyh.se/2009/03/time-zones-and-multidimensional-grouping-with-active-record-and-mysql</id>
+
+      <content type="html"><![CDATA[<p>I&#8217;ve been writing a lot of statistics queries in Active Record/MySQL lately and noticed some possibly non-obvious things.</p>
+
+<h4>Time zones</h4>
+
+
+<p>Our database is configured to use UTC time. In Rails 2.1, we use <code>config.active_record.default_timezone = :utc</code>. In 2.3, I believe it&#8217;s <code>config.time_zone = 'UTC'</code>, and set that way by default.</p>
+
+<p>A lot of my statistics queries involved time ranges, grouping per day or only using data from a certain period. I found that a query like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;created_at BETWEEN ? AND ?&#39;</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">beginning_of_day</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">end_of_day</span><span class="o">]</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>did not do any time zone conversions as you may expect. If <code>some_day.beginning_of_day</code> is a non-UTC local time (e.g. 00:00 on March 26th CET), that date and time is passed into the query as &#8220;2009-03-26 00:00:00&#8221; and compared to the UTC datetimes in the database.</p>
+
+<p>Instead, you should do</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;created_at BETWEEN ? AND ?&#39;</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">beginning_of_day</span><span class="o">.</span><span class="n">utc</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">end_of_day</span><span class="o">.</span><span class="n">utc</span><span class="o">]</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this case, &#8220;2009-03-25 23:00:00&#8221; would be passed into the query.</p>
+
+<p>If you want to do that another way, or to group on local-time dates, you could instead do something like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="ss">:group</span> <span class="o">=&gt;</span> <span class="s1">&#39;DATE(CONVERT_TZ(created_at, &quot;UTC&quot;, &quot;CET&quot;))&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Without the conversion, it&#8217;d group on UTC dates instead of local CET dates. That would mean a customer that was created at 00:59 CET on March 26 would be grouped under March 25 instead.</p>
+
+<p>Note that you need to <a href="http://dev.mysql.com/doc/refman/5.1/en/time-zone-support.html">set up the MySQL time zone tables</a> with something like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On OS X with MySQL 5 from MacPorts, the invocation was</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mysql_tzinfo_to_sql5 /usr/share/zoneinfo | mysql -u root mysql
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Warnings about time zones that couldn&#8217;t be loaded are fine as long as they&#8217;re not the ones you&#8217;re using.</p>
+
+<p>You can convert time zones without those tables, but then you need to specify the UTC offset manually, and since it changes with daylight saving, I wouldn&#8217;t recommend it.</p>
+
+<h4>Multidimensional grouping</h4>
+
+
+<p>Another thing I noticed was that Active Record calculation queries (using e.g. <code>.count</code>) don&#8217;t seem to support grouping by multiple columns at once. It&#8217;s easy to do with <code>.all</code> and <code>#map</code>, though:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Item</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+</span><span class='line'>  <span class="ss">:select</span> <span class="o">=&gt;</span> <span class="s1">&#39;COUNT(*) AS count, age, gender&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:group</span> <span class="o">=&gt;</span> <span class="s1">&#39;age, gender&#39;</span>
+</span><span class='line'><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="o">[</span><span class="n">i</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">count</span><span class="o">.</span><span class="n">to_i</span><span class="o">]</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[git reset --soft as stash replacement and undo]]></title>
+<link href="http://henrik.nyh.se/2009/02/git-reset-soft-as-stash-replacement-and-undo/"/>
+<updated>2009-02-20T10:17:00+01:00</updated>
+<id>http://henrik.nyh.se/2009/02/git-reset-soft-as-stash-replacement-and-undo</id>
+
+      <content type="html"><![CDATA[<p>With <a href="http://git-scm.com/">Git</a>, if you have some work in progress and find you need to switch to another incompatible branch, you can <code>git stash</code> the changes and later restore them with <code>git stash pop</code>.</p>
+
+<p>However, I dislike having to remember I have something stashed. It&#8217;s easy to forget. (Idea: make the shell prompt indicate stash.) Instead, when I have work in progress, I just commit it as usual, with something like &#8220;WiP&#8221; as the message:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git commit -a -m <span class="s2">&quot;WiP&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When I get back to a branch, find that the last commit is &#8220;WiP&#8221; and want to restore my previous state, I do</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git reset --soft HEAD^
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will leave the working tree in the WiP state, but roll back the current HEAD one commit, as though you never made that commit.</p>
+
+<p>Just remember not to share the branch with a WiP commit or someone else may build upon it and object when you rewrite history.</p>
+
+<p>More generally, <code>git reset --soft HEAD<sup></code></sup> is great for undoing non-pushed commits. If I realize I committed a file I shouldn&#8217;t have, I do a soft reset and then redo the commit properly. It can be easier than amending or interactively rebasing.</p>
+]]></content>
+    </entry>
+  
+</feed>

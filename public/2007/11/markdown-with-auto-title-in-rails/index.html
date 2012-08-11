@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Markdown with auto-title in Rails - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/11/markdown-with-auto-title-in-rails/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/11/markdown-with-auto-title-in-rails/">Markdown with auto-title in Rails</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-11-24T16:24:00+01:00" pubdate data-updated="true">November 24, 2007 at 16:24 CET</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/markdown/'>Markdown</a>, <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I really like the idea of using a writer&#8217;s format like <a href="http://daringfireball.net/projects/markdown/">Markdown</a> for your site&#8217;s terms of use, privacy policy etc. I just implemented that on our site, and it&#8217;s so very sweet.</p>
+
+<!--more-->
+
+
+
+
+<h3>Prerequisites</h3>
+
+
+<p>I should mention I&#8217;m on Rails edge, currently revision 8168. Might work in earlier versions, but I didn&#8217;t try.</p>
+
+<p>Install <a href="http://blog.rubygreenblue.com/project/markdown_on_rails">Markdown on Rails</a> and the <code>bluecloth</code> gem.</p>
+
+<h3>Configuration</h3>
+
+
+<p>I created a <code>config/initializers/template_handlers.rb</code> file (that will also contain some <a href="http://haml.hamptoncatlin.com/">Haml</a> configuration) with this inside:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Markdown on Rails</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ActionView</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">register_template_handler</span><span class="p">(</span><span class="s1">&#39;markdown&#39;</span><span class="p">,</span> <span class="no">MarkdownOnRails</span><span class="p">)</span>
+</span><span class='line'><span class="no">MarkdownOnRails</span><span class="o">::</span><span class="n">map_headings_down_by</span> <span class="mi">1</span>  <span class="c1"># So &#39;# Terms of Use&#39; becomes a &lt;h2&gt; etc</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you installed Markdown on Rails as a gem (I have it <a href="http://piston.rubyforge.org/">pistonized</a>), I believe you need to require it first.</p>
+
+<h3>Routes and controller</h3>
+
+
+<p>Create whatever routes you want – perhaps</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">map</span><span class="o">.</span><span class="n">info</span> <span class="s1">&#39;info/:action&#39;</span><span class="p">,</span> <span class="ss">:controller</span> <span class="o">=&gt;</span> <span class="s1">&#39;info&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and create an <code>InfoController</code>. My controller reads like so:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">InfoController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:set_title</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">protected</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set_title</span>
+</span><span class='line'>    <span class="n">file</span> <span class="o">=</span> <span class="vi">@template</span><span class="o">.</span><span class="n">full_template_path</span><span class="p">(</span><span class="n">default_template_name</span><span class="p">,</span> <span class="vi">@template</span><span class="o">.</span><span class="n">pick_template_extension</span><span class="p">(</span><span class="n">default_template_name</span><span class="p">))</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="vg">$1</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/\A\s*#\s*(.+)\s*$/</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>set_title</code> method simply reads the view file, finds an initial header like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'># Privacy Policy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and sets that as the page title. It uses a <code>title=</code> helper that I&#8217;ve defined in <code>ApplicationController</code>. That method basically sets an instance variable that I display in my application layout. The net result is that the page <code>&lt;title&gt;</code> will be set automagically from the Markdown.</p>
+
+<p>Writing <code>set_title</code> took some digging around inside Rails. There might be a nicer way to do this – let me know in the comments.</p>
+
+<p>Markdown on Rails actually allows you to use erb in your templates, so if one doesn&#8217;t mind mixing things up and repeating oneself, one could get rid of <code>set_title</code> and do e.g.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='rhtml'><span class='line'><span class="cp">&lt;%</span> <span class="nb">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Privacy Policy&quot;</span> <span class="cp">-%&gt;</span>
+</span><span class='line'># Privacy Policy
+</span><span class='line'>⋮
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>instead.</p>
+
+<h3>Views</h3>
+
+
+<p>With all this set up, you can just create an <code>app/views/info/privacy.html.markdown</code> like so:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'># Privacy Policy
+</span><span class='line'>
+</span><span class='line'>Jeff Goldblum is watching *you* poop!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and similarly for terms of use etc.</p>
+
+<p>The page title will be set and the Markdown is rendered all pretty inside the controller/application layout.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/11/eyetv-hybrid-can-pause-and-rewind-live-analog-tv/">EyeTV Hybrid can pause and rewind live analog tv</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/11/__end__-in-testing/">Use __END__ for keeping code around in testing</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/11/markdown-with-auto-title-in-rails/';
+        var disqus_url = 'http://henrik.nyh.se/2007/11/markdown-with-auto-title-in-rails/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

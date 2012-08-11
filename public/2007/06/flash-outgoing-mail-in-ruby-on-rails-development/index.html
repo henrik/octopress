@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Flash outgoing mail in Ruby on Rails development - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/06/flash-outgoing-mail-in-ruby-on-rails-development/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/06/flash-outgoing-mail-in-ruby-on-rails-development/">Flash outgoing mail in Ruby on Rails development</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-06-29T11:45:00+02:00" pubdate data-updated="true">June 29, 2007 at 11:45 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p class="center"><img src="http://henrik.nyh.se/uploads/flash-mail.png" alt="[Screenshot]" /></p>
+
+
+<p>In Ruby on Rails web apps, you can use <a href="http://am.rubyonrails.com/">ActionMailer</a> to send mail (and process incoming mail). This is useful for e.g. account confirmation and password recovery.</p>
+
+<p>When developing the application, you might not want any mails to actually be sent. This can be configured in <code>config/environments/development.rb</code>. The default development configuration of ActionMailer is to actually send mails, but to ignore delivery errors. It&#8217;s easy to make it not send anything:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">action_mailer</span><span class="o">.</span><span class="n">delivery_method</span> <span class="o">=</span> <span class="ss">:test</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With this setting, outgoing mail will just be appended to the <code>ActionMailer::Base.deliveries</code> array. That&#8217;s all well and good, but it&#8217;d be nice to see the contents of those mails as they&#8217;re appended. This turned out to be a relatively simple matter.</p>
+
+<!--more-->
+
+
+<p>Make the</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">action_mailer</span><span class="o">.</span><span class="n">delivery_method</span> <span class="o">=</span> <span class="ss">:test</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>setting in <code>config/environments/development.rb</code> as mentioned above. In the same file, also</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;flash_mail&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add <a href="http://henrik.nyh.se/uploads/flash_mail.rb"><code>flash_mail.rb</code></a> to the <code>lib</code> directory:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># By Henrik Nyh &lt;http://henrik.nyh.se&gt; 2007-06-29</span>
+</span><span class='line'><span class="c1"># http://henrik.nyh.se/2007/06/flash-outgoing-mail-in-ruby-on-rails-development</span>
+</span><span class='line'><span class="c1"># Free to modify and redistribute with due credit.</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">FlashMail</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">ControllerTracking</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">action_controller</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">action_controller</span><span class="o">.</span><span class="n">instance_eval</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">before_filter</span>  <span class="ss">:set_current_controller</span>
+</span><span class='line'>        <span class="n">cattr_accessor</span> <span class="ss">:current_controller</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">protected</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">set_current_controller</span>
+</span><span class='line'>      <span class="no">ApplicationController</span><span class="o">.</span><span class="n">current_controller</span> <span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Delivery</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">action_mailer</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">action_mailer</span><span class="o">.</span><span class="n">instance_eval</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">alias_method_chain</span> <span class="ss">:deliver!</span><span class="p">,</span> <span class="ss">:flash</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">deliver_with_flash!</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">deliver_without_flash!</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="n">controller</span> <span class="o">=</span> <span class="no">ApplicationController</span><span class="o">.</span><span class="n">current_controller</span>
+</span><span class='line'>        <span class="n">controller</span><span class="o">.</span><span class="n">instance_eval</span> <span class="p">{</span> <span class="n">flash</span><span class="o">[</span><span class="ss">:mail</span><span class="o">]</span> <span class="o">=</span> <span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">last</span> <span class="p">}</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">send</span>     <span class="ss">:include</span><span class="p">,</span> <span class="no">FlashMail</span><span class="o">::</span><span class="no">Delivery</span>
+</span><span class='line'><span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">send</span> <span class="ss">:include</span><span class="p">,</span> <span class="no">FlashMail</span><span class="o">::</span><span class="no">ControllerTracking</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This extension does a few things:</p>
+
+<p>The <code>ApplicationController</code> class gets a <code>current_controller</code> accessor. This accessor is used to store the current controller object in a before filter. The point of this is to give <code>ActionMailer</code> a handle on the current controller.</p>
+
+<p>The <code>ActionMailer</code> <code>deliver!</code> method is wrapped to make the current controller set <code>flash[:mail]</code> to the last mail – the one just pushed onto the array.</p>
+
+<p>That&#8217;s pretty much it. Restart the server to have it pick up on the added extension. Make your views output <code>flash[:mail]</code> if it exists, and style to taste. I do</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='rhtml'><span class='line'><span class="cp">&lt;%</span> <span class="n">f</span> <span class="o">=</span> <span class="n">flash</span><span class="o">.</span><span class="n">to_hash</span>  <span class="c1"># A real hash is easier to manipulate without deprecation nags, and should be safe enough </span><span class="cp">%&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">f</span><span class="o">[</span><span class="ss">:mail</span><span class="o">]</span> <span class="cp">%&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;mail_flash&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;h4&gt;</span>Mail that would have been sent:<span class="nt">&lt;/h4&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;pre&gt;</span><span class="cp">&lt;%=</span> <span class="n">auto_link</span><span class="p">(</span><span class="n">h</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:mail</span><span class="p">)))</span> <span class="cp">%&gt;</span><span class="nt">&lt;/pre&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;p&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to_function</span><span class="p">(</span><span class="s2">&quot;Discard&quot;</span><span class="p">,</span> <span class="s2">&quot;mf = document.getElementById(&#39;mail_flash&#39;); mf.parentNode.removeChild(mf)&quot;</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">unless</span> <span class="n">f</span><span class="o">.</span><span class="n">empty?</span> <span class="cp">%&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;messages&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="cp">&lt;%</span> <span class="n">f</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">kind</span><span class="p">,</span> <span class="n">msg</span><span class="o">|</span> <span class="cp">%&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;</span><span class="cp">&lt;%=</span> <span class="n">kind</span> <span class="cp">%&gt;</span><span class="s">&quot;</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">msg</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nf">#mail_flash</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background</span><span class="o">:</span> <span class="m">#FCF2B8</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">padding</span><span class="o">:</span><span class="m">1.5em</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">margin-bottom</span><span class="o">:</span><span class="m">1em</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">#mail_flash</span> <span class="nt">pre</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">margin</span><span class="o">:</span> <span class="m">1.5em</span> <span class="m">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">#mail_flash</span> <span class="nt">p</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">font-weight</span><span class="o">:</span> <span class="k">bold</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/07/trac-autologin-greasemonkey-script/">Trac autologin Greasemonkey script</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/06/alternative-git-logo-and-favicon/">Alternative Git logo and favicon</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/06/flash-outgoing-mail-in-ruby-on-rails-development/';
+        var disqus_url = 'http://henrik.nyh.se/2007/06/flash-outgoing-mail-in-ruby-on-rails-development/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

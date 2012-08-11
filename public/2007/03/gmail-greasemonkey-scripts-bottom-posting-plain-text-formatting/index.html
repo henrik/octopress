@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Gmail Greasemonkey scripts: bottom posting, plain text formatting - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/03/gmail-greasemonkey-scripts-bottom-posting-plain-text-formatting/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/03/gmail-greasemonkey-scripts-bottom-posting-plain-text-formatting/">Gmail Greasemonkey scripts: bottom posting, plain text formatting</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-03-26T21:43:00+02:00" pubdate data-updated="true">March 26, 2007 at 21:43 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/firefox/'>Firefox</a>, <a class='category' href='/tag/greasemonkey/'>Greasemonkey</a>, <a class='category' href='/tag/javascript/'>JavaScript</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&#8217;m trying out <a href="http://www.google.com/a">Google Apps</a> on a test domain (<code>nyh.name</code>) to see if I want to let them handle my e-mail and <abbr title="Instant Messaging">IM</abbr>.</p>
+
+<p>I currently use <a href="http://www.mozilla.com/thunderbird/">Thunderbird</a>, with <a href="http://www.squirrelmail.org/">SquirrelMail</a> for web mail. Since <a href="http://mail.google.com/">Gmail</a> doesn&#8217;t support <a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol#Advantages_over_POP3">IMAP</a>, I&#8217;d probably use their web interface most of the time, and so I&#8217;ve been writing Greasemonkey scripts to fix some things I&#8217;d miss from Thunderbird. I made two so far.</p>
+
+<!--more-->
+
+
+
+
+<h4>Bottom posting in replies</h4>
+
+
+<p>I find <a href="http://mailformat.dan.info/quoting/bottom-posting.html">bottom posting</a> sensible. Gmail abstracts away <a href="http://en.wikipedia.org/wiki/Posting_styles">posting styles</a> when you&#8217;re reading mail, by collapsing quotes inside mails and displaying preceding mails above the one you&#8217;re reading. This is great, but what&#8217;s not so great is that replying in Gmail caters to top posting, with no option to have the caret inserted after the quote. Though you barely notice the difference as a Gmail user, it&#8217;s a courtesy to people with other mail clients.</p>
+
+<p>The <a href="http://userscripts.org/scripts/show/8041">Gmail bottom posting in replies</a> userscript puts the caret <em>after</em> the quoted text when replying, shuffling whitespace as appropriate.</p>
+
+<h4>Plain text formatting</h4>
+
+
+<p>Thunderbird and some other clients support some <a href="http://kb.mozillazine.org/Thunderbird_:_FAQs_:_Viewing_Headers#Enhanced_plain_text_features">enhanced plain text features</a>, like visually bold-facing, italicizing and underlining text between two asterisks, slashes and underscores, respectively, in plain text mails.</p>
+
+<p>With <a href="http://userscripts.org/scripts/show/8178">Gmail plain text formatting</a>, Gmail does this too:</p>
+
+<p class="center"><img src="http://henrik.nyh.se/uploads/gm-gmail-formatascii.png" alt="[Screenshot]" /></p>
+
+
+<p>Userscripting Gmail is difficult, what with it being <a href="http://www.ok-cancel.com/comic/105.html">AJAXED TO THE MAX</a>, but it&#8217;s a lot of fun for the same reason.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/03/transform-all-text-nodes-excepting-elements-with-hpricot/">Transform all text nodes (excepting elements) with Hpricot</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/03/textmate-command-to-toggle-writing-deltas/">TextMate command to toggle writing deltas</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/03/gmail-greasemonkey-scripts-bottom-posting-plain-text-formatting/';
+        var disqus_url = 'http://henrik.nyh.se/2007/03/gmail-greasemonkey-scripts-bottom-posting-plain-text-formatting/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

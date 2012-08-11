@@ -1,0 +1,337 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Custom 404 action in Rails - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2008/07/rails-404/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2008/07/rails-404/">Custom 404 action in Rails</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2008-07-25T01:13:00+02:00" pubdate data-updated="true">July 25, 2008 at 01:13 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>By default, Rails will render <code>public/404.html</code> (with a 404 status in the header) when it thinks an error 404 is appropriate.</p>
+
+<h4>Why use a custom action?</h4>
+
+
+<p>For error 500 (Internal Server Error) pages, rendering a static file makes sense. If your app is broken enough to give that error, it may not be up to the task of rendering a dynamic error page.</p>
+
+<p>But for 404 pages, a dynamic template might be preferable. You can use your site layouts (though some would argue error pages should look distinctly different) and helpers, you can suggest alternative content or try to figure out where they wanted to go, and so on.</p>
+
+<!--more-->
+
+
+<p>Note that even when your 404 page is a static HTML file, it is still rendered by Rails (after failing to match a route, or some other error), so replacing it with a dynamic action adds less overhead than you might assume.</p>
+
+<h4>Old school: Overriding <code>rescue_action</code></h4>
+
+
+<p>Blog posts on the subject that I found (like <a href="http://coderkitty.sweetperceptions.com/2008/7/6/meaningful-404s-and-500s">this one</a>) suggest overriding <code>rescue_action(_in_public)</code>.</p>
+
+<p>If you go that route (or a similar one using the new-fangled <a href="http://ryandaigle.com/articles/2007/9/24/what-s-new-in-edge-rails-better-exception-handling"><code>rescue_from</code></a>), these are the errors that Rails by default would render <code>public/404.html</code> for:</p>
+
+<pre><code>ActionController::RoutingError
+ActionController::UnknownAction
+ActiveRecord::RecordNotFound
+</code></pre>
+
+<p>They are enumerated in <a href="http://github.com/rails/rails/tree/v2.1.0/actionpack/lib/action_controller/rescue.rb#L16-18"><code>ActionController::Rescue</code></a>.</p>
+
+<h4>New school: Change it at the source</h4>
+
+
+<p>I wanted to know <em>exactly</em> when Rails was rendering <code>public/404.html</code>, not just rescue some exceptions that I had noticed led to a 404 in production, so I dug into the code – hence the list above.</p>
+
+<p>In short, <a href="http://github.com/rails/rails/tree/v2.1.0/actionpack/lib/action_controller/rescue.rb"><code>ActionController::Rescue</code></a> defines a <a href="http://github.com/rails/rails/tree/v2.1.0/actionpack/lib/action_controller/rescue.rb#L148-150"><code>rescue_action_in_public</code></a> that calls <a href="http://github.com/rails/rails/tree/v2.1.0/actionpack/lib/action_controller/rescue.rb#L156-164"><code>render_optional_error_file</code></a>.</p>
+
+<p>Rather than defining my own <code>rescue_action</code> in <code>ApplicationController</code>, where I would have to duplicate the list of exceptions that should cause a 404, I defined my own <code>render_optional_error_file</code> there:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">render_optional_error_file</span><span class="p">(</span><span class="n">status_code</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">status_code</span> <span class="o">==</span> <span class="ss">:not_found</span>
+</span><span class='line'>    <span class="n">render_404</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="k">super</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>render_404</code> method can look something like</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">render_404</span>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="n">type</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">type</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:template</span> <span class="o">=&gt;</span> <span class="s2">&quot;errors/error_404&quot;</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="s1">&#39;application&#39;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span> <span class="p">}</span>
+</span><span class='line'>    <span class="n">type</span><span class="o">.</span><span class="n">all</span>  <span class="p">{</span> <span class="n">render</span> <span class="ss">:nothing</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="kp">true</span>  <span class="c1"># so we can do &quot;render_404 and return&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>render_optional_error_file</code> <em>is</em> a documented method, so even though using <code>rescue_action</code> is probably less likely to break with future versions of Rails, I should think this solution is reasonably reliable.</p>
+
+<h4>Gotchas</h4>
+
+
+<p>Note that you won&#8217;t see this in local development, since it involves <code>rescue_action_in_public</code>. If you want to have a look, put</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">alias_method</span> <span class="ss">:rescue_action_locally</span><span class="p">,</span> <span class="ss">:rescue_action_in_public</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>in your <code>ApplicationController</code>, but don&#8217;t forget to remove it after.</p>
+
+<p>Another caveat is that if your server configuration has a directive like <code>ErrorDocument 404 /404.html</code> (Apache) or <code>error_page  404 /404.html;</code> (nginx), that will eclipse your Rails action. Just remove the directive.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2008/08/adium13-plugins/">Updating plugins for Adium 1.3</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2008/07/raise-404/">Raise Error404, don't render and return</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2008/07/rails-404/';
+        var disqus_url = 'http://henrik.nyh.se/2008/07/rails-404/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

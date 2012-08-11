@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Torrent Forwarder - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2008/03/torrent-forwarder/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2008/03/torrent-forwarder/">Torrent Forwarder</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2008-03-27T12:30:00+01:00" pubdate data-updated="true">March 27, 2008 at 12:30 CET</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/applescript/'>AppleScript</a>, <a class='category' href='/tag/os-x/'>OS X</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I wrote this script a while back, but I haven&#8217;t gotten around to blog it until now.</p>
+
+<p>This is my set-up at home: I have a Mac Mini as <a href="http://en.wikipedia.org/wiki/Home_theater_PC">HTPC</a> and as server for various things. I also use it as my BitTorrent machine.</p>
+
+<p>So the Mini handles torrent downloads. The Mini is always on because it is a web server, because it might need to record a tv show in the middle of the night etc. This is, of course, nice for downloads as well. I can put my notebook to sleep and take it with me somewhere and my downloads will be uninterrupted.</p>
+
+<p>Also, most of the time I want the downloads on that machine after completion, if they&#8217;re movies/shows/music. Saves me having to copy them over.</p>
+
+<p>To facilitate this, I made a Folder Action script so I can click a torrent file on my notebook and have it start on the Mini. A web page showing torrent progress is also opened on my notebook.</p>
+
+<!--more-->
+
+
+
+
+<h3>On the Mini</h3>
+
+
+<p>The Mini runs the <a href="http://www.transmissionbt.com/">Transmission</a> BitTorrent client.</p>
+
+<p>In the Transmission preferences, under the &#8220;Transfers&#8221; pane, &#8220;Auto add&#8221; is activated and set to watch for torrent files in <code>~htpc/Public/Torrent drop</code>.</p>
+
+<p>It also runs <a href="http://clutchbt.com/">Clutch</a>, a web interface to Transmission.</p>
+
+<h3>On the notebook</h3>
+
+
+<p>I wrote a Folder Action script that is attached to my <code>Downloads</code> folder. <a href="http://pastie.textmate.org/pastes/171463/download">Download the script</a> (<a href="http://pastie.textmate.org/171463">source</a>) and <a href="http://henrik.nyh.se/2007/10/lift-the-leopard-download-quarantine">attach it</a>. I&#8217;ve put the script in <code>~/Library/Scripts/Folder Action Scripts/Torrent Forwarder.scpt</code>.</p>
+
+<p>You will need to modify the script for your setup. The script will by default scp to <code>hyper:Public/Torrent drop</code>. I can use <code>hyper</code> because <code>~/.ssh/config</code> contains</p>
+
+<figure class='code'><figcaption><span>~/.ssh/config</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Host hyper
+</span><span class='line'>  Hostname hyperion.local
+</span><span class='line'>  User htpc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There&#8217;s no need to specify a password since <a href="http://www.noah.org/wiki/SSH_public_keys">SSH public key authentication</a> is used.</p>
+
+<p>The script uses &#8220;http://torrent&#8221; for Clutch: I have an <code>/etc/hosts</code> entry mapping &#8220;torrent&#8221; to the IP address of the Mini, and a <a href="http://nginx.net/">nginx</a> proxy rule so I don&#8217;t have to specify the port. Change the URL to whatever works for you.</p>
+
+<p>I realize this is all pretty user-unfriendly. I&#8217;m sharing it as inspiration for intrepid hackers, rather than as a simple tutorial for the newbie. Nevertheless, feel free to ask if you get stuck, and I&#8217;ll try to help.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2008/04/eyetv-onoff-keyboard-button/">EyeTV on/off keyboard button</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2008/03/pinch-to-fold-in-textmate/">Pinch to fold in TextMate</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2008/03/torrent-forwarder/';
+        var disqus_url = 'http://henrik.nyh.se/2008/03/torrent-forwarder/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ruby script to make LiveJournal entries private in batch - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/04/ruby-livejournal-batch-private/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/04/ruby-livejournal-batch-private/">Ruby script to make LiveJournal entries private in batch</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-04-14T20:49:00+02:00" pubdate data-updated="true">April 14, 2007 at 20:49 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/livejournal/'>LiveJournal</a>, <a class='category' href='/tag/ruby/'>Ruby</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&#8217;ve been wanting to make some old, silly LiveJournal entries private (so that only I can read them) for some time.</p>
+
+<p>There were 60 or so entries, and LiveJournal does not seem to provide batch editing. I&#8217;ve tried using some Perl stuff I found for the purpose, but I couldn&#8217;t get it working. Today, I resolved to write my own Ruby script for it.</p>
+
+<!--more-->
+
+
+<p>Turns out there is <a href="http://neugierig.org/software/livejournal/ruby/">a LiveJournal Ruby module</a> which saved me a lot of work. The API is not very pleasant, but perhaps that reflects the underlying LiveJournal API.</p>
+
+<p>Anyway, this is a script to make all your posts before a certain date private. Modify to taste; at the very least, change the name and password, unless they happen to be &#8220;foo&#8221; and &#8220;bar&#8221;…</p>
+
+<p>Script (<a href="http://svn.nyh.se/ruby/LiveJournal%20make%20entries%20private.rb">download</a>):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'><span class="c1"># By Henrik Nyh 2007-04-14.</span>
+</span><span class='line'><span class="c1"># Free to modify and redistribute with due credit.</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">USERNAME</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span>
+</span><span class='line'><span class="no">PASSWORD</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>
+</span><span class='line'><span class="no">MAKE_PRIVATE_BEFORE</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="mi">2004</span><span class="p">,</span> <span class="mo">04</span><span class="p">,</span> <span class="mo">01</span><span class="p">)</span>  <span class="c1"># year, month, day</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;livejournal/login&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;livejournal/entry&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;Logging in...&quot;</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">LiveJournal</span><span class="o">::</span><span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">USERNAME</span><span class="p">,</span> <span class="no">PASSWORD</span><span class="p">)</span>
+</span><span class='line'><span class="n">login</span> <span class="o">=</span> <span class="no">LiveJournal</span><span class="o">::</span><span class="no">Request</span><span class="o">::</span><span class="no">Login</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'><span class="n">login</span><span class="o">.</span><span class="n">run</span>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;Login response:&quot;</span>
+</span><span class='line'><span class="n">login</span><span class="o">.</span><span class="n">dumpresponse</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;Getting entries...&quot;</span>
+</span><span class='line'><span class="n">entries</span> <span class="o">=</span> <span class="no">LiveJournal</span><span class="o">::</span><span class="no">Request</span><span class="o">::</span><span class="no">GetEvents</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="ss">:recent</span> <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">values</span>
+</span><span class='line'><span class="n">entries</span> <span class="o">=</span> <span class="n">entries</span><span class="o">.</span><span class="n">sort_by</span> <span class="p">{</span> <span class="o">|</span><span class="n">e</span><span class="o">|</span> <span class="n">e</span><span class="o">.</span><span class="n">time</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;Processing entries...&quot;</span>
+</span><span class='line'><span class="n">entries</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">e</span><span class="o">|</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">e</span><span class="o">.</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">time</span> <span class="o">&lt;</span> <span class="no">MAKE_PRIVATE_BEFORE</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">security</span> <span class="o">!=</span> <span class="ss">:private</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making private...&quot;</span>
+</span><span class='line'>    <span class="n">e</span><span class="o">.</span><span class="n">security</span> <span class="o">=</span> <span class="ss">:private</span>
+</span><span class='line'>    <span class="no">LiveJournal</span><span class="o">::</span><span class="no">Request</span><span class="o">::</span><span class="no">EditEvent</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">run</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Security: </span><span class="si">#{</span><span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">security</span><span class="p">;</span>  <span class="n">s</span> <span class="o">==</span> <span class="ss">:private</span> <span class="p">?</span> <span class="n">s</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">upcase</span> <span class="p">:</span> <span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;All done.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/04/livejournal-comment-notification-scrollable-quotes/">LiveJournal comment notification scrollable quotes</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/04/importing-into-gmail-tips/">Importing mail into (Google Apps) Gmail: some tips</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/04/ruby-livejournal-batch-private/';
+        var disqus_url = 'http://henrik.nyh.se/2007/04/ruby-livejournal-batch-private/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

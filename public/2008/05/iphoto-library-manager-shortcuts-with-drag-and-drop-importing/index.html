@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iPhoto Library Manager shortcuts with drag-and-drop importing - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2008/05/iphoto-library-manager-shortcuts-with-drag-and-drop-importing/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2008/05/iphoto-library-manager-shortcuts-with-drag-and-drop-importing/">iPhoto Library Manager shortcuts with drag-and-drop importing</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2008-05-24T14:06:00+02:00" pubdate data-updated="true">May 24, 2008 at 14:06 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/applescript/'>AppleScript</a>, <a class='category' href='/tag/os-x/'>OS X</a>, <a class='category' href='/tag/iphoto/'>iPhoto</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p class="center"><img src="http://henrik.nyh.se/uploads/iphoto-libraries.png" alt="" class="bordered" /></a></p>
+
+
+<p><a href="http://johannaost.com">My girlfriend</a> is now on OS X.</p>
+
+<p>Being an artist, she&#8217;s very visual. Her digital picture collection – fashion photography, interior design, animals, David Duchovny etc – contains over 9 000 pictures.</p>
+
+<p>She also has some 7 000 photos of her own – of herself, family and friends.</p>
+
+<p>I&#8217;ve looked at a bunch of apps for organizing pictures, and I think iPhoto with <a href="http://www.bullstorm.se/KeywordManager.php">Keyword Manager</a> is the best fit.</p>
+
+<p>We use two iPhoto libraries for the two sets of pictures (collection and personal). iPhoto has basic support for multiple libraries, but it&#8217;s hard to use without something like <a href="http://www.fatcatsoftware.com/iplm/">iPhoto Library Manager</a>.</p>
+
+<p>iPhoto Library Manager lets you (at least if you&#8217;ve registered) create library shortcut files that you can put in the dock (on the right-hand side where files, as opposed to apps, go).</p>
+
+<p>I wanted to make the experience a bit smoother still, though, so I whipped up <a href="http://pastie.textmate.org/202713">this small AppleScript</a>.</p>
+
+<p>Modify it with the right library name, then save it in Script Editor as an application (I keep them in <code>~/Library/Scripts</code>), then stick it in the dock (the left part, where apps go). Create one for each library.</p>
+
+<p>Clicking the app will switch to that library (if not already the active library). Dragging files or folders to the app will switch to that library and then import those files and folders into it. Since OS X is clever about drag-and-drop, you can even drag photos straight from Photo Booth.</p>
+
+<h4>Bonus feature</h4>
+
+
+<p>The <a href="http://softbend.free.fr/mimifoto/index.html">mimiFoto</a> app can create iPhoto icons with your custom photo, as seen at the top of this post.</p>
+
+<p>mimiFoto will assign the icon to iPhoto, but you can <a href="http://docs.info.apple.com/article.html?artnum=304735">copy it across</a> to the script and then reset the iPhoto icon (select and delete the icon in the Info window).</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2008/05/share-screenshot-to-big-screen/">Share screenshot to big screen</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2008/04/keychain-cc/">Secure note in Keychain for credit card details</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2008/05/iphoto-library-manager-shortcuts-with-drag-and-drop-importing/';
+        var disqus_url = 'http://henrik.nyh.se/2008/05/iphoto-library-manager-shortcuts-with-drag-and-drop-importing/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

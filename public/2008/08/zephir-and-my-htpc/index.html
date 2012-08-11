@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ZephIR and my HTPC - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2008/08/zephir-and-my-htpc/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2008/08/zephir-and-my-htpc/">ZephIR and my HTPC</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2008-08-29T12:17:00+02:00" pubdate data-updated="true">August 29, 2008 at 12:17 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/applescript/'>AppleScript</a>, <a class='category' href='/tag/eyetv/'>EyeTV</a>, <a class='category' href='/tag/hardware/'>Hardware</a>, <a class='category' href='/tag/os-x/'>OS X</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Our <a href="http://en.wikipedia.org/wiki/Htpc"><abbr title="Home Theater PC">HTPC</abbr></a> setup mainly consists of a Mac Mini running <a href="http://elgato.com/">EyeTV</a> and a 40&#8221; tv (Fujitsu-Siemens Myrica VQ40-3SU) for a display.</p>
+
+<p>As <a href="http://henrik.nyh.se/2008/04/eyetv-onoff-keyboard-button">previously blogged</a>, I&#8217;ve gotten rid of the EyeTV remote, using only the Apple Wireless Keyboard.</p>
+
+<p>We still had the remote for the tv (display) though. But yesterday, I got the <a href="http://www.thezephir.com/ZephIR/Home.html">ZephIR IR blaster</a> I had ordered, and now we&#8217;re down to just the keyboard.</p>
+
+<p class="center"><a href="http://www.flickr.com/photos/malesca/2805705609/"><img src="http://farm4.static.flickr.com/3213/2805705609_5025026fbc.jpg?v=0" class="bordered" alt="[Photo]" /></a></p>
+
+
+<p>This is what I did.</p>
+
+<!--more-->
+
+
+
+
+<h4>Mounting</h4>
+
+
+<p>I put the ZephIR on the back of the tv with the included suction cup.</p>
+
+<p class="center"><a href="http://www.flickr.com/photos/malesca/2805704145/"><img src="http://farm4.static.flickr.com/3195/2805704145_0247289a90.jpg?v=0" class="bordered" alt="[Photo]" /></a></p>
+
+
+
+
+<p class="center"><a href="http://www.flickr.com/photos/malesca/2805704485/"><img src="http://farm4.static.flickr.com/3034/2805704485_1ef61de52f.jpg?v=0" class="bordered" alt="[Photo]" /></a></p>
+
+
+<p>The IR seems strong enough that it will bounce its way to the IR eye even without line-of-sight. Having it behind the tv means you don&#8217;t see it at all from the front, which was a goal.</p>
+
+<h4>AppleScripts</h4>
+
+
+<p>The functions I use on the tv remote are: power on/off, volume up/down (the Wii currently uses the tv speakers, though the computer has external ones) and changing input between computer (HDMI) and Wii (component/YUV).</p>
+
+<p>The ZephIR software is AppleScriptable, so I made scripts for these commands. Volume up and down were just single calls. These will vary with the names you have in ZephIR, but as an example:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='applescript'><span class='line'><span class="k">tell</span> <span class="nb">application</span> <span class="s2">&quot;ZephIR Station&quot;</span> <span class="k">to</span> <span class="nv">fire</span> <span class="nv">zephir</span> <span class="nv">command</span> <span class="s2">&quot;Volume Up&quot;</span> <span class="k">of</span> <span class="nv">component</span> <span class="s2">&quot;Fujitsu-Siemens Myrica TV&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Scripting against <code>ZephIR Station</code> rather than <code>ZephIR</code> means you talk directly to the faceless background app that runs the hardware, without having to start the visible ZephIR app.</p>
+
+<p>If your IR commands seem slower than they should, experiment with re-recording or cutting away more. (Since undo seems broken, I close-and-save whenever I have a good state, then reopen, and just don&#8217;t save if it stops working.) My &#8220;Volume Down&#8221; command was slower than &#8220;Volume Up&#8221; until I did this.</p>
+
+<p>Some tvs respond to discrete codes even where the remote has a toggle: so there might be a &#8220;Power off&#8221; (not &#8220;Power on/off&#8221;) command, and a &#8220;HDMI&#8221; command (not &#8220;Switch to next input&#8221;). Alas, if my tv has them, I don&#8217;t know what they are. I found <a href="http://www.remotecentral.com/cgi-bin/mboard/rc-discrete/thread.cgi?4603">some codes in another format</a> that I will try to import – the ZephIR author very helpfully provided support on that.</p>
+
+<p>So ZephIR only knows about &#8220;Switch to next input&#8221; right now, but I kind of faked discrete codes by having the computer store the current input, and then have a script that switches the right number of times based on that:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='applescript'><span class='line'><span class="k">set</span> <span class="nv">currentInput</span> <span class="k">to</span> <span class="nv">readPref</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="nv">currentInput</span> <span class="ow">is</span> <span class="s2">&quot;YUV&quot;</span> <span class="k">then</span>
+</span><span class='line'>  <span class="k">set</span> <span class="nv">n</span> <span class="k">to</span> <span class="mi">1</span> <span class="c">-- steps from YUV to HDMI</span>
+</span><span class='line'>  <span class="nv">writePref</span><span class="p">(</span><span class="s2">&quot;HDMI&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="k">set</span> <span class="nv">n</span> <span class="k">to</span> <span class="mi">5</span> <span class="c">-- steps from HDMI to YUV</span>
+</span><span class='line'>  <span class="nv">writePref</span><span class="p">(</span><span class="s2">&quot;YUV&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span> <span class="k">if</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">tell</span> <span class="nb">application</span> <span class="s2">&quot;ZephIR Station&quot;</span>
+</span><span class='line'>  <span class="k">repeat</span> <span class="nv">n</span> <span class="k">times</span>
+</span><span class='line'>      <span class="nv">fire</span> <span class="nv">zephir</span> <span class="nv">command</span> <span class="s2">&quot;Toggle Digital Input&quot;</span> <span class="k">of</span> <span class="nv">component</span> <span class="s2">&quot;Fujitsu-Siemens Myrica TV&quot;</span>
+</span><span class='line'>  <span class="k">end</span> <span class="k">repeat</span>
+</span><span class='line'><span class="k">end</span> <span class="k">tell</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">-- Persisting selection</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">property</span> <span class="nv">thePref</span> <span class="p">:</span> <span class="s2">&quot;home.automation.tv&quot;</span>
+</span><span class='line'><span class="k">property</span> <span class="nv">theKey</span> <span class="p">:</span> <span class="s2">&quot;digitalInput&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">on</span> <span class="nv">readPref</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">try</span>
+</span><span class='line'>      <span class="nb">do shell script</span> <span class="s2">&quot;defaults read &quot;</span> <span class="o">&amp;</span> <span class="nv">thePref</span> <span class="o">&amp;</span> <span class="s2">&quot; &quot;</span> <span class="o">&amp;</span> <span class="nv">theKey</span>
+</span><span class='line'>  <span class="nb">on</span> <span class="k">error</span>
+</span><span class='line'>      <span class="nv">null</span>
+</span><span class='line'>  <span class="k">end</span> <span class="k">try</span>
+</span><span class='line'><span class="k">end</span> <span class="nv">readPref</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">on</span> <span class="nv">writePref</span><span class="p">(</span><span class="nv">theValue</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">do shell script</span> <span class="s2">&quot;defaults write &quot;</span> <span class="o">&amp;</span> <span class="nv">thePref</span> <span class="o">&amp;</span> <span class="s2">&quot; &quot;</span> <span class="o">&amp;</span> <span class="nv">theKey</span> <span class="o">&amp;</span> <span class="s2">&quot; &quot;</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">quoted form</span> <span class="k">of</span> <span class="nv">theValue</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span> <span class="nv">writePref</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This works well because I plan on only ever changing the input through this script, and it never changes on its own, so I can rely on the stored value to be accurate.</p>
+
+<p>I did not, however, make a similar scripts for discrete power on/off, since I sometimes turn it off on the tv set itself, sometimes it turns itself off when left without input for too long, etc. I looked into whether OS X could tell me if the tv (its display) was on, but I had no luck. I briefly considered a webcam on the power diode and some image analysis, but decided against ;)</p>
+
+<p>On that subject, does anyone know if there are tvs that act like computer displays in that they sleep/wake based on activity, so you don&#8217;t need to use a power button at all? I would like that in my next tv set, if tvs still exist by then.</p>
+
+<p>So &#8220;Power&#8221; is just a simple script, like the volume ones. I also made a simple &#8220;Next input&#8221; script so I don&#8217;t have to find the tv remote if somehow the actual input and the stored value get out of sync.</p>
+
+<h4>Mapping to keyboard</h4>
+
+
+<p>To make these scripts actually useful, I needed to map them to our keyboard. So I had five functions to map: power on/off, toggle HDMI/YUV, next input, volume down, volume up.</p>
+
+<p>When I <a href="http://henrik.nyh.se/2008/04/eyetv-onoff-keyboard-button">made an EyeTV on/off button</a>, I mapped that to the <code>°</code> key, left of the <code>1</code> key on a Swedish keyboard. But that was more or less the only key I didn&#8217;t use.</p>
+
+<p>So when mapping the tv functions to the keyboard, I decided to use the function keys.</p>
+
+<p class="center"><img src="http://henrik.nyh.se/uploads/apple-wireless-keyboard-function-keys.jpg" class="bordered" alt="[Photo]" title="Photo stolen from AppleInsider!" /></p>
+
+
+<p>The Apple Wireless Keyboard has symbols on most function keys, providing functionality like changing display brightness and controlling iTunes. If you hold the <code>Fn</code> key while pressing them, you get actual F1, F2 etc.</p>
+
+<p>If you don&#8217;t use the symbol keys, OS X can be configured to provide F1 and friends without needing to press <code>Fn</code>.</p>
+
+<p>Using the free <a href="http://www.red-sweater.com/fastscripts/">FastScripts Lite</a>, I mapped my old &#8220;EyeTv On/Off&#8221; script to F1 (small sun), tv &#8220;Power On/Off&#8221; to F2 (big sun), &#8220;Toggle HDMI/YUV&#8221; to F7 (rewind), &#8220;Next input&#8221; to F9 (fast forward), and volume to F11 and F12 (volume down/up). The symbols kind of fit, and I also tried to get the different functions spread a bit apart, to avoid accidental key presses.</p>
+
+<p>So now, pressing <code>Fn</code> and the big sun turns on/off the tv display, and so on.</p>
+
+<p>With the free <a href="http://www.abyssoft.com/software/teleport/">Teleport</a> software, I can even mouse right over to the HTPC and then hit those function keys from my own keyboard.</p>
+
+<h4>Making the software presentable</h4>
+
+
+<p>While I love what the ZephIR lets me do, it&#8217;s not the prettiest of apps. The icon looks particularly out of place in OS X.</p>
+
+<p>The ZephIR app must be running to receive AppleScript and send IR blasts. Alas, it always appears in the Dock – I would very much like an option to have it in the menu bar only, or even to have a separate ZephIR daemon that handles AppleScript/IR, with the regular app only for configuration. I plan on submitting this and other feedback to the author at some point.</p>
+
+<div class="updated">
+<h5>Update 2008-09-04</h5>
+The ZephIR creator told me there is such a daemon already. Changing the AppleScripts from <code>tell application "ZephIR"</code> to <code>tell application "ZephIR Station"</code> means no visible app needs to be running.
+
+The code above has been changed to reflect this, so this section is no longer very relevant.
+</div>
+
+
+<p>I tried hiding the app with <a href="http://forums.macosxhints.com/showthread.php?t=26703">the <code>LSUIElement</code> trick</a>, but I didn&#8217;t like that – it made the app hard to find when you needed it, disabled the menu bar and made it unhideable.</p>
+
+<p>So instead, I replaced the icon with a prettier one. The prettiest/most suitable icon I could think of was the one for the app <a href="http://gravityapps.com/sofacontrol/download/index.html">SofaControl</a> – so I downloaded that app and stole its icon for my personal use.</p>
+
+<p>I had to open the app packages and copy the icon over, renaming it to <code>ZephIR.icns</code> – copying across from the Info windows did not work.</p>
+
+<p>And that&#8217;s it. I&#8217;ve only had the ZephIR for a day so far, but I&#8217;m very happy with being down to a single remote and the possibilities for automation.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2008/09/404-invalid-rails-format/">Show 404 instead of 500 for invalid format in Rails</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2008/08/adium13-plugins/">Updating plugins for Adium 1.3</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2008/08/zephir-and-my-htpc/';
+        var disqus_url = 'http://henrik.nyh.se/2008/08/zephir-and-my-htpc/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

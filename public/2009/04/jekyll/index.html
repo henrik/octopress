@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Jekyll - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2009/04/jekyll/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2009/04/jekyll/">Jekyll</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2009-04-23T01:17:00+02:00" pubdate data-updated="true">April 23, 2009 at 01:17 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/jekyll/'>Jekyll</a>, <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/wordpress/'>WordPress</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I finally got around to change this blog from <a href="http://wordpress.org/">WordPress</a> to <a href="http://github.com/henrik/jekyll">my own fork</a> of Tom Preston-Werner&#8217;s <a href="http://github.com/mojombo/jekyll">Jekyll</a>.</p>
+
+<p>Jekyll is a Ruby gem that can generate a static blog from layouts, assets and blog posts in Markdown or Textile. It powers <a href="http://github.com/blog/272-github-pages">GitHub Pages</a> but can also be used for self-hosted blogs.</p>
+
+<p>The source for this blog itself is <a href="http://github.com/henrik/henrik.nyh.se">on GitHub</a>. See the README for license.</p>
+
+<h2>Leaving WordPress</h2>
+
+<p>There are many things to like about Jekyll. Unlike WordPress, it&#8217;s Ruby code. It&#8217;s also very little code, so it&#8217;s easy to modify to your own needs. I did not enjoy modifying the WordPress PHP code.</p>
+
+<p>With Jekyll, you can edit blog content in your favorite editor and use version control. The fact that the generated blog is all static files means very good performance. I like how caching is a given.</p>
+
+<p>I used the WordPress importer provided by Jekyll with <a href="http://gist.github.com/100135">some modifications</a> to get tags, times and to fix some markup issues particular to my blog.</p>
+
+<p>With a static site, you need some sort of hosted comments. I use <a href="http://disqus.com">Disqus</a> which seems decent. Since comments are added with JavaScript, they won&#8217;t be indexed along your blog post by Google, but Disqus has indexable comment threads on their site, linked back to posts.</p>
+
+<p>To import WordPress comments into Disqus, you need to install a <a href="http://wordpress.org/extend/plugins/disqus-comment-system/">WordPress plugin</a> and do it from there. Disqus did not make this very clear.</p>
+
+<p>It would be nice to have some <a href="http://macromates.com/">TextMate</a> commands to create the file for a new post, to update the timestamps and slug and so on. I may write them some time.</p>
+
+<h2>My additions and fixes</h2>
+
+<p>I&#8217;ve added things in <a href="http://github.com/henrik/jekyll">my Jekyll fork</a> that are not in the <a href="http://github.com/mojombo/jekyll">main version</a>. To see examples of how to use these additions, have a look in <a href="http://github.com/henrik/henrik.nyh.se">the source for this blog</a>.</p>
+
+<p>A big one for me is support for <a href="http://haml.hamptoncatlin.com/">Haml</a>. Regular Jekyll uses <a href="http://www.liquidmarkup.org/">Liquid</a> for templates and pages. This makes a lot of sense for a hosted setup like GitHub Pages, since it limits users to a small set of safe operations. But for my own blog, I found this way too limiting. Also, I enjoy using Haml.</p>
+
+<p>Haml support has been added, but Liquid support has not been removed. In fact, it&#8217;s still needed for things like highlighting. I may tear it out entirely at some point, though supporting Liquid as well means it&#8217;s easier to port over blogs from Liquid to Haml file by file.</p>
+
+<p>It also supports <a href="http://haml.hamptoncatlin.com/docs/sass">Sass</a> for CSS.</p>
+
+<p>There are some Rails-inspired helper methods provided, <code>h(text)</code> and <code>link_to(text, url)</code>. You can include a <code>_helpers.rb</code> file in your blog with more helpers. This keeps the Haml views clean.</p>
+
+<p>You can set default post metadata in your <code>_config.yml</code> file, typically the layout to use. My version can also set the metadata title from the first Markdown or Textile header in the post. This means that you may get by without specifying a metadata block at all.</p>
+
+<p>You can change date format in post URLs, e.g. drop the day and only use the year and month, like on this blog. Posts can have a time, not just a date. The original filename for the generated post is available, so you can do fun stuff like <a href="http://github.com/henrik/henrik.nyh.se/commit/afdf2682d09ffab1ce29cc95d4583d8317bc0d9d">&#8220;Edit in TextMate&#8221; links</a>. Static sites and some imagination go a long way.</p>
+
+<p>Collated posts (by year, month and day in nested hashes) are available to pages, to easily create an archive. Posts by tag are available. Tags are basically like regular Jekyll categories or topics, but are not reflected in the URL.</p>
+
+<p>Jekyll&#8217;s syntax highlighting (using <a href="http://pygments.org/">Pygments</a>) can take a while. I added a simple file cache that reduced generation time for this blog from around 90 seconds to around 3 seconds.</p>
+
+<p>There are also some bugfixes. Pygments highlighting would break on non-ASCII characters. I worked around a RDiscount (Markdown) bug where it would not convert text after a highlighted block. These fixes have been sent upstream.</p>
+
+<h2>Deployment</h2>
+
+<p>Though you can set things up so your blog is regenerated when it&#8217;s pushed to some Git repository, I don&#8217;t currently want this. Instead I use a simple shell script in <code>tasks/deploy</code> under the blog root:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/usr/bin/env bash</span>
+</span><span class='line'>jekyll <span class="o">&amp;&amp;</span> rsync -avz --delete _site/ nyh:henrik.nyh.se/jekyll
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That means I can deploy by typing <code>tasks/deploy</code> from a Terminal in the blog root. <code>nyh</code> is a SSH alias.</p>
+
+<p>The <code>henrik.nyh.se</code> directory is the webroot for the <code>http://henrik.nyh.se</code> URL. I wanted the generated blog to go in a <code>jekyll</code> subdirectory to keep it separate from a ton of other stuff I have under the webroot. Requests to the domain should be rewritten to this subdirectory unless the file exists outside it. To my surprise, getting that working was fairly tricky. I ended up with <a href="http://gist.github.com/97822">these <code>.htaccess</code> files</a>.</p>
+
+<h2>Tips</h2>
+
+<p>Some lessons learned:</p>
+
+<p>Using the <code>--auto</code> flag with Jekyll will swallow exceptions. Don&#8217;t use it if you want to see error traces. When you do use it, I recommend something like <code>rm -rf _site/* &amp;&amp; jekyll --server --auto</code>. By removing previously generated files first, you notice if an error prevents them regenerating.</p>
+
+<p>If you&#8217;re hacking on Jekyll itself, put its <code>bin</code> directory (in my case, <code>/Users/henrik/Code/jekyll/bin</code>) in your <code>PATH</code> so you don&#8217;t have to rebuild the gem all the time.</p>
+
+<p>Make sure to precede highlight blocks in Markdown posts with a blank line or they will get paragraph tags inserted. I will probably look into patching this.</p>
+
+<h2>Feedback</h2>
+
+<p>There are bound to be issues with the markup in the imported old posts. If you notice anything, let me know.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2009/06/vnc-stacks/">VNC Stacks in OS X</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2009/03/time-zones-and-multidimensional-grouping-with-active-record-and-mysql/">Time zones and multidimensional grouping with Active Record and MySQL</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2009/04/jekyll/';
+        var disqus_url = 'http://henrik.nyh.se/2009/04/jekyll/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Autologin script gets extraction tool - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2006/10/autologin-script-gets-extraction-tool/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2006/10/autologin-script-gets-extraction-tool/">Autologin script gets extraction tool</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2006-10-15T01:47:00+02:00" pubdate data-updated="true">October 15, 2006 at 01:47 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/firefox/'>Firefox</a>, <a class='category' href='/tag/greasemonkey/'>Greasemonkey</a>, <a class='category' href='/tag/javascript/'>JavaScript</a>, <a class='category' href='/tag/os-x/'>OS X</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Before I switched to Firefox, I was using <a href="http://www.flashpeak.com/sbrowser/">SlimBrowser</a>.</p>
+
+<p>Though comparably sucky (no Greasemonkey!), it has something Firefox doesn&#8217;t: an autologin feature. Basically you fill out a log-in form on some page, select a menu command, and an autologin will be created. Running that autologin, e.g. through something similar to Firefox bookmark keywords, will direct you to that page, fill out the form and submit it.</p>
+
+<p>Firefox can auto-fill form values, but doesn&#8217;t submit the form afterwards. Though that&#8217;s <a href="http://www.userscripts.org/scripts/show/750">easily greasemonkeyed</a>, it only works if you&#8217;ve a single account.</p>
+
+<p>About a year ago, I first released the <a href="http://www.userscripts.org/scripts/show/1595">Autologin</a> userscript, that worked somewhat like the SlimBrowser autologin.</p>
+
+<p>Today, I updated the script, making it a lot easier to use.</p>
+
+<!--more-->
+
+
+<p>With <a href="http://www.userscripts.org/scripts/show/1595">the new script</a>, you can add an autologin by simply filling out the log-in form, making sure the focus (typically the caret) is in the form, and selecting <code>Tools &gt; User Script Commands &gt; Create autologin from form</code>. Previously, you had to poke through the page source and compose the autologin URL yourself.</p>
+
+<h4>Behind the code</h4>
+
+
+<p>Detecting the focused form with JavaScript was pretty interesting.</p>
+
+<p>There is, to my knowledge, no obvious way to check for focus on a form (or otherwise) element.</p>
+
+<p>One way of achieving this would be to add <code>focus</code> event handlers to every form element, so that every time a form element gains focus, it stores itself into some variable.</p>
+
+<p>I went with another, rather clever solution. The idea is to use the CSS <code>:focus</code> pseudo-class to set some attribute value on the focused element, and then sniff for that attribute.</p>
+
+<p>This idea was suggested by <a href="http://ecmanaut.blogspot.com">ecmananut</a>. In the original suggestion, the dummy attribute to set was <a href="http://developer.mozilla.org/en/docs/CSS:azimuth">azimuth</a> (being unlikely to clash with actual attributes set); for whatever reason, using that particular attribute didn&#8217;t work, so I went with <code>background-attachment:fixed</code> instead. Though less uncommon than <code>azimuth</code>, it&#8217;s probably very rare that the <code>background-attachment</code> of a (non-textarea) form field is set to <code>fixed</code>.</p>
+
+<p>The pertinent code follows. <code>with_each()</code> wraps a <code>for</code> loop applying a callback function to each element matched by some XPath expression.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">get_focused_form</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">GM_addStyle</span><span class="p">(</span><span class="s2">&quot;input:focus, select:focus {background-attachment:fixed;}&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">with_each</span><span class="p">(</span><span class="s2">&quot;//input | //select&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">bAt</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">getComputedStyle</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="kc">null</span><span class="p">).</span><span class="nx">backgroundAttachment</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">bAt</span> <span class="o">==</span> <span class="s2">&quot;fixed&quot;</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">return</span> <span class="p">(</span><span class="nx">result</span> <span class="o">=</span> <span class="nx">element</span><span class="p">);</span>  <span class="c1">// Return into get_focused_form</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">result</span><span class="p">.</span><span class="nx">form</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2006/10/rss-for-cyanide-and-happiness-with-images-worldofwar-se-handdator-se/">RSS for Cyanide and Happiness (with images), WorldOfWar.se, Handdator.se</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2006/10/helgon-net-new-visitor-awareness/">Helgon.net new visitor awareness</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2006/10/autologin-script-gets-extraction-tool/';
+        var disqus_url = 'http://henrik.nyh.se/2006/10/autologin-script-gets-extraction-tool/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

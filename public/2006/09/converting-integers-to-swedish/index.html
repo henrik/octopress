@@ -1,0 +1,499 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Converting integers to Swedish - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2006/09/converting-integers-to-swedish/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2006/09/converting-integers-to-swedish/">Converting integers to Swedish</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2006-09-27T17:53:00+02:00" pubdate data-updated="true">September 27, 2006 at 17:53 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/ruby/'>Ruby</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I wrote some Ruby code to convert positive decimal integers (like <code>123</code>) or strings (like <code>"123"</code>) into strings of Swedish (like <code>"etthundratjugotre"</code>).</p>
+
+<!--more-->
+
+
+<p>I was pleasantly surprised at how little code was needed. I suppose anything else would be odd (or contain redundant code), since it&#8217;s a system of predictable patterns.</p>
+
+<p>The code shouldn&#8217;t be too hard to adapt for English or any other language with a similar numbers-to-words mapping to Swedish. Keep in mind that the names for large numbers vary even between American and British English.</p>
+
+<p>The code was implemented as an <code>Integer.to_swedish</code> class method (e.g. <code>Integer.to_swedish("123")</code>), also available through an <code>Integer</code> instance method (e.g. <code>123.to_swedish</code>).</p>
+
+<p>Every named power of ten listed in <a href="http://sv.wikipedia.org/wiki/R%C3%A4kneord#Lista_.C3.B6ver_r.C3.A4kneord">Swedish Wikipedia</a> is handled, except for googolplex and googolplexian, being <a href="http://en.wikipedia.org/wiki/Googolplex#How_big_is_a_googolplex.3F">too large to store within the known universe</a>.</p>
+
+<p>Numbers recurse if necessary, so whereas the highest named number is &#8220;centiljard&#8221; (10<sup>603</sup>), you can have any number of those, limited only by available memory.</p>
+
+<p>The use of whitespace (between parts except within hundreds and tens) is obviously debatable.</p>
+
+<h4>The algorithm</h4>
+
+
+<p>The input is turned into a reverse array of digits, so <code>"123"</code> becomes <code>[3,2,1]</code>.</p>
+
+<p>That array is turned into output (a list of strings, eventually joined together) starting at the beginning (the left-hand side) and moving towards the end.</p>
+
+<p>Zeroes and empty input are given special treatment: the program bails early, returning the proper value, if they are present.</p>
+
+<p>A private class method, <code>Integer.below_thousand</code> handles the numbers 1&ndash;999. Its workings are rather obvious. If in the range 10&ndash;19, a stored &#8220;teen&#8221; value is chosen. If outside that range, singles and tens are appended to the output as appropriate. If there are any hundreds involved, those are appended to the output next.</p>
+
+<p>The rest of the code basically consists of applying <code>Integer.unit</code> to various named powers of ten and their ranges, in the right order. The input of this method is the entire number (in that reverse array representation), the name, and the positions of the number that this name ranges over. So e.g. thousands range from 10<sup>3</sup> to 10<sup>5</sup> (i.e. 1000&ndash;999 000 are some number of thousands). 10<sup>6</sup> to 10<sup>8</sup> is the range for millions, and so on. How many thousands, millions etc is determined recursively.</p>
+
+<p>For the most part, it&#8217;s just ten to the power of some multiple of three, which is a reason you don&#8217;t need a lot of code. There is the odd exception, though, that needs special handling.</p>
+
+<p>For the largest implemented named power of ten, &#8220;centiljarder&#8221;, the range is from 10<sup>603</sup> to the end of the input.</p>
+
+<p>After joining the output together into a string, two regular expression substitutions are applied, to fix gender and number agreement issues.</p>
+
+<h4>The code</h4>
+
+
+<p>The code (<a href="http://henrik.nyh.se/uploads/numbers.rb">download</a>):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#! /usr/bin/env ruby</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Henrik Nyh &lt;http://henrik.nyh.se&gt; 2006-09-27</span>
+</span><span class='line'><span class="c1"># Free to modify and redistribute non-commercially with due credit.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Turns integer strings into Swedish words. Handles units up to and including &quot;centiljard&quot;, per &lt;http://sv.wikipedia.org/wiki/R%C3%A4kneord#Lista_.C3.B6ver_r.C3.A4kneord&gt;.</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Array</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">singles</span><span class="p">;</span> <span class="n">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="k">end</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">tens</span><span class="p">;</span> <span class="n">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="k">end</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hundreds</span><span class="p">;</span> <span class="n">slice</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">tens?</span>
+</span><span class='line'>    <span class="n">tens</span> <span class="ow">and</span> <span class="n">tens</span><span class="o">.</span><span class="n">nonzero?</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hundreds?</span>
+</span><span class='line'>    <span class="n">hundreds</span> <span class="ow">and</span> <span class="n">hundreds</span><span class="o">.</span><span class="n">nonzero?</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">contain_positive_integers?</span>
+</span><span class='line'>    <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">any?</span> <span class="p">{</span><span class="o">|</span><span class="n">int</span><span class="o">|</span> <span class="nb">self</span><span class="o">.</span><span class="n">include?</span> <span class="n">int</span><span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Integer</span>
+</span><span class='line'>  <span class="no">SINGLES</span> <span class="o">=</span> <span class="sx">%w{noll ett två tre fyra fem sex sju åtta nio}</span>
+</span><span class='line'>  <span class="no">TEENS</span> <span class="o">=</span> <span class="sx">%w{tio elva tolv tretton fjorton femton sexton sjutton arton nitton}</span>
+</span><span class='line'>  <span class="no">TENS</span> <span class="o">=</span> <span class="sx">%w{_ _ tjugo trettio fyrtio femtio sextio sjuttio åttio nittio}</span>
+</span><span class='line'>  <span class="no">HUNDREDS</span><span class="p">,</span> <span class="no">GOOGOLS</span><span class="p">,</span> <span class="no">CENTILLIONS</span><span class="p">,</span> <span class="no">CENTILLIARDS</span> <span class="o">=</span> <span class="sx">%w{hundra googoler centiljoner centiljarder}</span>
+</span><span class='line'>  <span class="no">CUBES</span> <span class="o">=</span> <span class="sx">%w{tusen}</span>
+</span><span class='line'>  <span class="sx">%w{m b tr kvadr kvint sext sept okt non dec undec duodec tredec quattuordec quindec sexdec septendec octodec novemdec vigint}</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">prefix</span><span class="o">|</span>
+</span><span class='line'>    <span class="no">CUBES</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">iljoner&quot;</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">iljarder&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_swedish</span>
+</span><span class='line'>    <span class="nb">Integer</span><span class="o">.</span><span class="n">to_swedish</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">to_swedish</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">number</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\d/</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="n">n</span><span class="o">.</span><span class="n">to_i</span><span class="p">}</span><span class="o">.</span><span class="n">reverse</span>  <span class="c1"># &quot;00123&quot; becomes [3,2,1,0,0]</span>
+</span><span class='line'>    <span class="n">number</span><span class="o">.</span><span class="n">pop</span> <span class="k">while</span> <span class="n">number</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">number</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">zero?</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">number</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>    <span class="k">return</span> <span class="no">SINGLES</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="k">if</span> <span class="n">number</span> <span class="o">==</span> <span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">output</span> <span class="o">=</span> <span class="n">below_thousand</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">CUBES</span><span class="o">.</span><span class="n">each_with_index</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="p">,</span><span class="n">index</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">exponent</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span>
+</span><span class='line'>      <span class="k">case</span> <span class="n">exponent</span>
+</span><span class='line'>      <span class="k">when</span> <span class="mi">99</span>  <span class="c1"># special treatment for sexdeciljard since 10^100 is googol</span>
+</span><span class='line'>        <span class="n">output</span> <span class="o">+=</span> <span class="n">unit</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">output</span> <span class="o">+=</span> <span class="n">unit</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="no">GOOGOLS</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">when</span> <span class="mi">123</span>  <span class="c1"># vigintiljard spans 10^123 - 10^599</span>
+</span><span class='line'>        <span class="n">output</span> <span class="o">+=</span> <span class="n">unit</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="mi">123</span><span class="o">.</span><span class="n">.</span><span class="mi">599</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="n">output</span> <span class="o">+=</span> <span class="n">unit</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">exponent</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">output</span> <span class="o">+=</span> <span class="n">unit</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="no">CENTILLIONS</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">output</span> <span class="o">+=</span> <span class="n">unit</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="no">CENTILLIARDS</span><span class="p">,</span> <span class="mi">603</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">reverse</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># Fix singular determiners</span>
+</span><span class='line'>    <span class="n">output</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/\bett (\w+)er/</span><span class="p">,</span> <span class="s1">&#39;en \1&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">output</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/ett (\w+er)/</span><span class="p">,</span> <span class="s1">&#39;en \1&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">output</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>  <span class="c1"># Helper methods</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">below_thousand</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>  <span class="c1"># Turns e.g. [3,2,1] (for 123) into words</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">[]</span> <span class="k">unless</span> <span class="n">number</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="o">].</span><span class="n">contain_positive_integers?</span>
+</span><span class='line'>    <span class="n">output</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">number</span><span class="o">.</span><span class="n">tens</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="n">output</span> <span class="o">&lt;&lt;</span> <span class="no">TEENS</span><span class="o">[</span><span class="n">number</span><span class="o">.</span><span class="n">singles</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">output</span> <span class="o">&lt;&lt;</span> <span class="no">SINGLES</span><span class="o">[</span><span class="n">number</span><span class="o">.</span><span class="n">singles</span><span class="o">]</span> <span class="k">unless</span> <span class="n">number</span><span class="o">.</span><span class="n">singles</span><span class="o">.</span><span class="n">zero?</span>
+</span><span class='line'>      <span class="n">output</span> <span class="o">&lt;&lt;</span> <span class="no">TENS</span><span class="o">[</span><span class="n">number</span><span class="o">.</span><span class="n">tens</span><span class="o">]</span> <span class="k">if</span> <span class="n">number</span><span class="o">.</span><span class="n">tens?</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">output</span> <span class="o">&lt;&lt;</span> <span class="no">HUNDREDS</span> <span class="o">&lt;&lt;</span> <span class="no">SINGLES</span><span class="o">[</span><span class="n">number</span><span class="o">.</span><span class="n">hundreds</span><span class="o">]</span> <span class="k">if</span> <span class="n">number</span><span class="o">.</span><span class="n">hundreds?</span>
+</span><span class='line'>    <span class="o">[</span><span class="n">output</span><span class="o">.</span><span class="n">reverse</span><span class="o">.</span><span class="n">join</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">unit</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">exponent_or_range</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># The amount of a unit, ranging over part of the number</span>
+</span><span class='line'>    <span class="n">list</span> <span class="o">=</span> <span class="k">if</span> <span class="n">exponent_or_range</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Range</span><span class="p">)</span> <span class="k">then</span> <span class="n">number</span><span class="o">[</span><span class="n">exponent_or_range</span><span class="o">]</span> <span class="k">else</span> <span class="n">number</span><span class="o">[</span><span class="n">exponent_or_range</span><span class="p">,</span><span class="n">places</span><span class="o">]</span> <span class="k">end</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">[]</span> <span class="k">unless</span> <span class="n">list</span> <span class="ow">and</span> <span class="n">list</span><span class="o">.</span><span class="n">contain_positive_integers?</span>
+</span><span class='line'>    <span class="o">[</span><span class="n">unit</span><span class="p">,</span> <span class="n">to_swedish</span><span class="p">(</span><span class="n">list</span><span class="o">.</span><span class="n">reverse</span><span class="p">)</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="bp">__FILE__</span> <span class="o">==</span> <span class="vg">$0</span>
+</span><span class='line'>  <span class="c1"># Test run</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">to_swedish</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="mi">0</span><span class="o">.</span><span class="n">to_swedish</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">to_swedish</span><span class="p">(</span><span class="s2">&quot;000foo0001&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">to_swedish</span><span class="p">(</span><span class="s2">&quot;1,024,908,267,229&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">to_swedish</span><span class="p">(</span><span class="s2">&quot;1.</span><span class="si">#{</span><span class="s2">&quot;0&quot;</span><span class="o">*</span><span class="mi">1_205</span><span class="si">}</span><span class="s2">1&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>outputs:</p>
+
+<pre><code>nil
+noll
+ett
+en biljon tjugofyra miljarder niohundraåtta miljoner tvåhundrasextiosju tusen tvåhundratjugonio
+en centiljard centiljarder ett
+</code></pre>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2006/09/exporting-adium-log-message-bodies-for-markov-chain-fun/">Exporting Adium log message bodies for Markov Chain fun</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2006/09/delicious-bookmarklet-that-opens-in-new-tab-or-window/">Del.icio.us bookmarklet that opens in new tab (or window)</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2006/09/converting-integers-to-swedish/';
+        var disqus_url = 'http://henrik.nyh.se/2006/09/converting-integers-to-swedish/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

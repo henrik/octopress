@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Transferring data from Windows to an HFS+ formatted disk - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2006/09/transferring-data-from-windows-to-an-hfs-formatted-disk/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2006/09/transferring-data-from-windows-to-an-hfs-formatted-disk/">Transferring data from Windows to an HFS+ formatted disk</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2006-09-16T14:47:00+02:00" pubdate data-updated="true">September 16, 2006 at 14:47 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/os-x/'>OS X</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Much of this is probably obvious, but I&#8217;m writing this mainly for other Win/OS X file transfer newbies and my future self.</p>
+
+<p>I got a new hard disk drive (500 GB) yesterday, to use as external FireWire/USB drive with my MacBook.</p>
+
+<p>I transferred about 100 GBs of data from my old NTFS-formatted external HDD to a computer running Windows, because that computer had loads of free space. Then I put the new HDD in the enclosure.</p>
+
+<p>All that remained was a simple matter of transferring the data from Windows to my new HDD &ndash; or so I thought.</p>
+
+<!--more-->
+
+
+
+
+<h4>MacDrive</h4>
+
+
+<p>OS X can read but not write NTFS. Both OS X and Windows can read and write FAT32, but it limits file sizes to a maximum of 4 GB. OS X prefers HFS+, but Windows cannot read or write that without e.g. <a href="http://www.mediafour.com/products/macdrive6/">MacDrive</a>.</p>
+
+<p>I formatted the drive with HFS+ and installed the MacDrive trial under Windows. Things went well initially, but after a while I got a Blue Screen of Death (IRQL_NOT_LESS_THAN_OR_EQUAL). This fouled up the file system, so the disk had to be reformatted. Good thing I didn&#8217;t have anything else on the new drive.</p>
+
+<p>I tried again, after <a href="http://assist.mediafour.com/index.php?_a=knowledgebase&_j=questiondetails&_i=77">uninstalling Daemon Tools and the SPTD driver</a> since they are apparently in conflict with MacDrive. Still got a <abbr title="Blue Screen of Death">BSOD</abbr> and had to reformat.</p>
+
+<p>At this point, I considered FAT32, but it seemed silly to use an ancient file system just for one transfer from Windows, and more importantly because backup archives could go way above 4 GB.</p>
+
+<h4>SMB</h4>
+
+
+<p>Instead, I <a href="http://www.networkworld.com/columnists/2006/050106internet.html">set up a FireWire network</a> between the Windows computer and my MacBook, connected the HDD to the MacBook through USB, shared the folder in question on the network and mounted it in OS X.</p>
+
+<p>Then I tried to drag-and-drop files from the mounted folder to the HDD. This turned the Finder very sluggish, when it did not stall completely. When I finally got the transfer started, the estimated time until completion was something like 27 days for my 40 MBs of test data.</p>
+
+<h4>FTP to the rescue</h4>
+
+
+<p>I activated the OS X FTP server (in the Sharing prefpane), connected from a Windows FTP client (I like <a href="http://filezilla.sourceforge.net/">FileZilla</a>) using the Mac&#8217;s IP address and my OS X account name and password, and proceeded to transfer the files to <code>/Volumes/Axolotl</code> &ndash; the name of the HDD.</p>
+
+<p>One gotcha I encountered was that Windows and OS X aren&#8217;t quite agreed on what constitutes an acceptable filename, so FileZilla failed with some files, and I had to rename them in batch and transfer anew.</p>
+
+<p>Using <a href="http://www.albert.nu/programs/renamer/main.htm">Renamer</a>, I replaced occurrences of <code>:åäöÅÄÖ</code> and various other umlauted or accented characters with something more acceptable (e.g. <code>--</code>, <code>aa</code>, &hellip;). Not that OS X minds diacritics, but FileZilla had problems transferring them &ndash; perhaps something to do with encodings. For some directories with too many weird characters to replace even in batch (e.g. early Björk albums), I created RAR archives and transferred those.</p>
+
+<p>At one point, FileZilla crashed, and the error log made mention of Norton Antivirus, so I uninstalled the latter &ndash; an application that does not offer a &#8220;Quit&#8221; option deserves no better.</p>
+
+<p>Aside from those issues, FTP transfer seems like the way to go. It&#8217;s reasonably fast, though not insanely so. I average something like 4 MB/s. Speeds would perhaps be higher if the computers networked through Ethernet and if the HDD <a href="http://en.wikipedia.org/wiki/Subjunctive_mood#Form">were</a> connected through FireWire (as opposed to USB), but I didn&#8217;t have the cables for it.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2006/09/associate-commenters-with-comments-on-feber-se/">Associate commenters with comments on Feber.se</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2006/09/wikipedia-on-braille/">Wikipedia on Braille</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2006/09/transferring-data-from-windows-to-an-hfs-formatted-disk/';
+        var disqus_url = 'http://henrik.nyh.se/2006/09/transferring-data-from-windows-to-an-hfs-formatted-disk/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

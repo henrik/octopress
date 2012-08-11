@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Partial wrapper for libxml with REXML fallback - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2006/07/partial-wrapper-for-libxml-with-rexml-fallback/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2006/07/partial-wrapper-for-libxml-with-rexml-fallback/">Partial wrapper for libxml with REXML fallback</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2006-07-24T17:02:00+02:00" pubdate data-updated="true">July 24, 2006 at 17:02 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/ruby/'>Ruby</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&#8217;m currently working on Ruby code to parse XMLTV data, apply a set of &#8220;favorite shows&#8221; rules, and export the intersection as an iCalendar file with alarms, to be used in iCal.</p>
+
+<p>This might ship with <a href="http://www-und.ida.liu.se/~gusax840/xmltv/">the Swedish Xmltv widget</a> somewhere along the road, so ideally it should not require any module that does not ship with OS X/Ruby. However, <a href="http://www.ruby-doc.org/stdlib/libdoc/rexml/rdoc/">REXML</a>, which ships with Ruby, is many times slower than <a href="libxml.rubyforge.org/">libxml</a>, which doesn&#8217;t. Parsing the data with REXML takes around 11 seconds on my computer, whereas using libxml is a one second job.</p>
+
+<p>My solution was to write a wrapper that uses libxml when available, and REXML as fallback when it&#8217;s not.</p>
+
+<!--more-->
+
+
+<p>This wrapper is only adapted for my needs for this project, and thus only covers the very basics of reading XML data &ndash; just a small part of what libxml and REXML can do. Still, I&#8217;m posting it here in case it&#8217;s of use to someone else.</p>
+
+<p>The interface is part libxml/part REXML/part whatever I figured was nicer than what either provided.</p>
+
+<p>Usage examples are comments in the code.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># LEXML by Henrik Nyh &lt;http://henrik.nyh.se&gt; 2006-07-24</span>
+</span><span class='line'><span class="c1"># Free to modify, but please credit.</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># Very simple wrapper that uses the fast libxml</span>
+</span><span class='line'><span class="c1"># &lt;http://libxml.rubyforge.org/&gt; if available, otherwise the slower</span>
+</span><span class='line'><span class="c1"># but bundled-with-Ruby-1.8+ REXML</span>
+</span><span class='line'><span class="c1"># &lt;http://www.ruby-doc.org/stdlib/libdoc/rexml/rdoc/&gt;. Handles the</span>
+</span><span class='line'><span class="c1"># very basics of reading XML data.</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">LEXML</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="nb">require</span> <span class="s2">&quot;rubygems&quot;</span>
+</span><span class='line'>    <span class="nb">require</span> <span class="s2">&quot;xml/libxml&quot;</span>
+</span><span class='line'>    <span class="no">GOT_LIBXML</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="no">XML</span><span class="o">::</span><span class="no">Parser</span><span class="o">.</span><span class="n">default_warnings</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="no">LoadError</span>  <span class="c1"># Fall back to REXML</span>
+</span><span class='line'>    <span class="nb">require</span> <span class="s2">&quot;rexml/document&quot;</span>
+</span><span class='line'>    <span class="no">GOT_LIBXML</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">libxml?</span>
+</span><span class='line'>    <span class="c1"># e.g:</span>
+</span><span class='line'>    <span class="c1"># puts LEXML::libxml? ? &quot;Using libxml&quot; : &quot;Using REXML&quot;</span>
+</span><span class='line'>    <span class="no">GOT_LIBXML</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1"># e.g:</span>
+</span><span class='line'>    <span class="c1"># xml = LEXML.new(&quot;file.xml&quot;)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="no">LEXML</span><span class="o">::</span><span class="n">libxml?</span>
+</span><span class='line'>      <span class="vi">@handle</span> <span class="o">=</span> <span class="no">XML</span><span class="o">::</span><span class="no">Document</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>  <span class="c1"># Fall back to REXML</span>
+</span><span class='line'>      <span class="vi">@handle</span> <span class="o">=</span> <span class="no">REXML</span><span class="o">::</span><span class="no">Document</span><span class="o">.</span><span class="n">new</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">root</span>
+</span><span class='line'>    <span class="no">Node</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@handle</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">Nodeset</span> <span class="o">&lt;</span> <span class="nb">Array</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">Node</span> <span class="o">&lt;</span> <span class="nb">String</span>
+</span><span class='line'>    <span class="c1"># For a node &lt;dog size=&quot;small&quot; cute=&quot;true&quot;&gt;pug&lt;/dog&gt;:</span>
+</span><span class='line'>    <span class="c1">#   node =&gt; &quot;pug&quot;</span>
+</span><span class='line'>    <span class="c1">#   node[:size] =&gt; &quot;small&quot;; node[&quot;size&quot;] =&gt; &quot;small&quot;</span>
+</span><span class='line'>    <span class="c1">#   size, cute = node[:size, :cute]</span>
+</span><span class='line'>    <span class="c1"># For a node &lt;animals&gt;&lt;dogs&gt;&lt;dog&gt;Fabulous&lt;/dog&gt;&lt;dog&gt;Spanko&lt;/dog&gt;&lt;/dogs&gt;:</span>
+</span><span class='line'>    <span class="c1">#   node.child(&quot;dogs&quot;) =&gt; the dogs node</span>
+</span><span class='line'>    <span class="c1">#   node.children(&quot;dogs/dog&quot;) =&gt; both dog nodes</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</span><span class='line'>      <span class="vi">@node</span> <span class="o">=</span> <span class="n">node</span>
+</span><span class='line'>      <span class="k">super</span><span class="p">((</span><span class="no">LEXML</span><span class="o">::</span><span class="n">libxml?</span> <span class="p">?</span> <span class="vi">@node</span><span class="o">.</span><span class="n">content</span> <span class="p">:</span> <span class="vi">@node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">||</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">[]</span><span class="p">(</span><span class="o">*</span><span class="n">attributes</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">list</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">attribute</span><span class="o">|</span> <span class="no">LEXML</span><span class="o">::</span><span class="n">libxml?</span> <span class="p">?</span> <span class="vi">@node</span><span class="o">[</span><span class="n">attribute</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span> <span class="p">:</span> <span class="vi">@node</span><span class="o">.</span><span class="n">attributes</span><span class="o">[</span><span class="n">attribute</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span>  <span class="p">}</span>
+</span><span class='line'>      <span class="n">list</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">?</span> <span class="n">list</span><span class="o">.</span><span class="n">first</span> <span class="p">:</span> <span class="n">list</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="n">type</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="no">LEXML</span><span class="o">::</span><span class="n">libxml?</span>
+</span><span class='line'>        <span class="no">LEXML</span><span class="o">::</span><span class="no">Nodeset</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">type</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">{</span> <span class="o">|</span><span class="n">e</span><span class="o">|</span> <span class="no">Node</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="n">kids</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>        <span class="vi">@node</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">type</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">e</span><span class="o">|</span> <span class="n">kids</span> <span class="o">&lt;&lt;</span> <span class="no">Node</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+</span><span class='line'>        <span class="no">LEXML</span><span class="o">::</span><span class="no">Nodeset</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">kids</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">child</span><span class="p">(</span><span class="n">type</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">children</span><span class="p">(</span><span class="n">type</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2006/07/icaltv-ical-reminders-for-favorite-tv-shows-through-xmltv/">iCalTV: iCal reminders for favorite TV shows through XMLTV</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2006/07/modifying-the-transmit-widget-to-copy-urls-to-clipboard/">Modifying the Transmit widget to copy URLs to clipboard</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2006/07/partial-wrapper-for-libxml-with-rexml-fallback/';
+        var disqus_url = 'http://henrik.nyh.se/2006/07/partial-wrapper-for-libxml-with-rexml-fallback/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

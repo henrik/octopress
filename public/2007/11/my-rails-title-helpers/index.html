@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>My Rails title helpers - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/11/my-rails-title-helpers/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/11/my-rails-title-helpers/">My Rails title helpers</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-11-26T17:37:00+01:00" pubdate data-updated="true">November 26, 2007 at 17:37 CET</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I figured I should blog the title helpers I made of late.</p>
+
+<h4>Usage</h4>
+
+
+<p>First, example usage. In an erb view:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='rhtml'><span class='line'><span class="cp">&lt;%</span> <span class="nb">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Foo&quot;</span> <span class="cp">-%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>gives a title like &#8220;Foo – My Site&#8221;.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='rhtml'><span class='line'><span class="cp">&lt;%</span> <span class="nb">self</span><span class="o">.</span><span class="n">full_title</span> <span class="o">=</span> <span class="s2">&quot;Foo&quot;</span> <span class="cp">-%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>gives the title &#8220;Foo&#8221;.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='rhtml'><span class='line'><span class="cp">&lt;%</span> <span class="nb">self</span><span class="o">.</span><span class="n">full_title</span> <span class="o">=</span> <span class="s2">&quot;Welcome to %s!&quot;</span> <span class="cp">-%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>gives the title &#8220;Welcome to My Site!&#8221;.</p>
+
+<p>Things look even nicer in <a href="http://haml.hamptoncatlin.com/">Haml</a>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">-</span> <span class="nb">self</span><span class="o">.</span><span class="n">full_title</span> <span class="o">=</span> <span class="s2">&quot;Welcome to %s!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!--more-->
+
+
+
+
+<h4>Displaying the title</h4>
+
+
+<p>I like to define an <code>ApplicationLayoutHelper</code> for helpers that will only be used in that layout (you&#8217;ll need to declare <code>helper :all</code> or <code>helper ApplicationLayoutHelper</code> in your <code>ApplicationController</code>). If you want to, though, you can just stick this helper method in <code>ApplicationHelper</code>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">title</span>
+</span><span class='line'>  <span class="n">h</span><span class="p">(</span><span class="vi">@title_full</span> <span class="p">?</span> <span class="vi">@title_full</span> <span class="p">:</span> <span class="o">[</span><span class="vi">@title_prefix</span><span class="p">,</span> <span class="no">SITE_TITLE</span><span class="o">].</span><span class="n">compact</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; – &#39;</span><span class="p">))</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>SITE_TITLE</code> is e.g. &#8220;My Site&#8221; from the examples above. Instead of a constant, you might want to use an environment variable or a configuration object – whatever.</p>
+
+<p>Note that we apply <code>h()</code> in this helper, so don&#8217;t apply it to the title again or things can become overescaped.</p>
+
+<p>Now, just use this helper where you want to display the title – typically in your application layout:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='rhtml'><span class='line'><span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h4>Setting the title</h4>
+
+
+<p>I like to be able to set the title from controller as well as from its views. Thus, the setters are defined in <code>ApplicationController</code>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">helper_method</span> <span class="ss">:title</span><span class="o">=</span><span class="p">,</span> <span class="ss">:full_title</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="err">⋮</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">protected</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">title</span><span class="o">=</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@title_prefix</span> <span class="o">=</span> <span class="n">title</span>
+</span><span class='line'>    <span class="vi">@template</span><span class="o">.</span><span class="n">instance_variable_set</span><span class="p">(</span><span class="s2">&quot;@title_prefix&quot;</span><span class="p">,</span> <span class="vi">@title_prefix</span><span class="p">)</span>  <span class="c1"># Necessary if set from view</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">full_title</span><span class="o">=</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@title_full</span> <span class="o">=</span> <span class="n">title</span> <span class="o">%</span> <span class="no">SITE_TITLE</span>
+</span><span class='line'>    <span class="vi">@template</span><span class="o">.</span><span class="n">instance_variable_set</span><span class="p">(</span><span class="s2">&quot;@title_full&quot;</span><span class="p">,</span> <span class="vi">@title_full</span><span class="p">)</span>  <span class="c1"># Necessary if set from view</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>instance_variable_set</code> bits are necessary when you set the title from a view: in Rails, controllers and views only share instance variables because Rails copies them to the view behind the scenes. If we set an instance variable on the controller <em>after</em> that has happened, we must copy it over ourselves.</p>
+
+<p>Bonus tip: you can override these setters per-controller if you want to:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'><span class="kp">protected</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">title</span><span class="o">=</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">super</span><span class="p">(</span><span class="s2">&quot;Users: </span><span class="si">#{</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This isn&#8217;t rocket surgery, but I thought it was worth blogging. I like the <code>self.title=</code> syntax a lot.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/12/epson-stylus-photo-r300-ink-levels-and-the-airport-extreme/">Epson Stylus Photo R300 ink levels and the Airport Extreme</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/11/eyetv-hybrid-can-pause-and-rewind-live-analog-tv/">EyeTV Hybrid can pause and rewind live analog tv</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/11/my-rails-title-helpers/';
+        var disqus_url = 'http://henrik.nyh.se/2007/11/my-rails-title-helpers/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

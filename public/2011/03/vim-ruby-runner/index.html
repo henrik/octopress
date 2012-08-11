@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Vim Ruby Runner - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2011/03/vim-ruby-runner/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2011/03/vim-ruby-runner/">Vim Ruby Runner</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2011-03-19T22:50:00+01:00" pubdate data-updated="true">March 19, 2011 at 22:50 CET</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/vim/'>Vim</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>When I <a href="/2011/01/textmate-to-vim-with-training-wheels">switched to Vim from TextMate</a>, I missed TextMate&#8217;s <code class="kb">⌘R</code> command to execute a Ruby script and show the output.</p>
+
+<p>There are ways to execute Ruby code from a Vim buffer, such as <code>:w ! ruby</code> or <code>:! ruby %</code>, which you could map to any shortcut, but they have annoying limitations.</p>
+
+<p>Hence, I&#8217;ve been tinkering with a better solution for a while in <a href="https://github.com/henrik/dotfiles">my dotfiles</a>. It finally felt mature enough to pack into a plugin, so I did:</p>
+
+<p><a href="https://github.com/henrik/vim-ruby-runner"><img src="http://dl.dropbox.com/u/546793/blog/RubyRunner.png" alt="Screenshot" /></a></p>
+
+<p>Get it from GitHub: <a href="https://github.com/henrik/vim-ruby-runner">https://github.com/henrik/vim-ruby-runner</a></p>
+
+<h2>Usage</h2>
+
+<p>The default keybindings are only available in buffers with filetype <code>ruby</code>. I recommend defining a command in your <code>~/.vimrc</code> like</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>command<span class="p">!</span> FR <span class="k">set</span> <span class="k">filetype</span><span class="p">=</span><span class="k">ruby</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>so you can set that filetype with a simple <code>:FR</code>.</p>
+
+<p>When you have a Ruby buffer, <code class="kb">⌘r</code> (lowercase r) will execute its contents (even if it is an unnamed, unsaved buffer) as Ruby code and output the results into a new split buffer.</p>
+
+<p>The output buffer gains focus, and you can hit <code class="kb">⌘r</code> again to close it.</p>
+
+<p><code class="kb">⌘R</code> (capital R, so <code class="kb">⇧⌘r</code>) will keep focus in the input buffer.
+If you&#8217;re in input mode, you&#8217;ll even stay in that mode. So you can keep hitting <code class="kb">⌘R</code> as you type, any time you have valid Ruby code.</p>
+
+<p>Just like with <code>:help</code>, one and the same output buffer is reused per tab page.</p>
+
+<h2>Comparison and caveats</h2>
+
+<p>The main benefit in comparison to the TextMate command is, of course, that it runs in Vim ;)</p>
+
+<p>In some ways, though, this plugin compares unfavorably to TextMate.</p>
+
+<p>Whereas TextMate will show you output incrementally, I <a href="http://stackoverflow.com/questions/5329931/in-vim-can-i-stream-the-output-of-e-g-w-ruby-into-a-buffer-line-by-line">haven&#8217;t been able</a> to find a good way to achieve that in Vim.
+The Vim window will be unresponsive while the script executes, and will only show the output all at once after completion.</p>
+
+<p>Also, script execution does not wait for <code>gets</code>. The value of any <code>gets</code> will be nil.</p>
+
+<h2>Alternatives</h2>
+
+<p>If you need to see incremental output, you could instead do</p>
+
+<pre><code>:w ! ruby
+</code></pre>
+
+<p>That very command is at the heart of the plugin, but it only outputs incrementally when run on its own.
+Be aware that you get the output below the command line, not in a buffer, and have to discard it to be able to continue using Vim.</p>
+
+<p>You could also write to an output file on disk and tail that from a terminal, with e.g. (in Vim):</p>
+
+<pre><code>:w ! ruby &gt; /tmp/out.txt
+</code></pre>
+
+<p>and (in a terminal):</p>
+
+<pre><code>tail -f /tmp/out.txt
+</code></pre>
+
+<p>Or you could <a href="http://stackoverflow.com/questions/5329931/in-vim-can-i-stream-the-output-of-e-g-w-ruby-into-a-buffer-line-by-line/5330279#5330279">tail in Vim</a>, but that doesn&#8217;t seem to work perfectly.</p>
+
+<p>The Vim wiki has <a href="http://vim.wikia.com/wiki/Preview_output_from_interpreter_in_new_window">an article</a> on a command a little like this plugin, but that lets you run only visually selected lines. I may attempt to copy that feature.</p>
+
+<p>A completely different approach is <a href="http://vimcasts.org/episodes/running-vim-within-irb/">to launch Vim from IRB</a>, edit in Vim and execute in IRB. I&#8217;ve had that set up for a while, but haven&#8217;t found myself using it in practice.</p>
+
+<p>Please try the plugin and suggest or contribute improvements. If you use something else, feel free to share in the comments.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2011/07/usability-trumps-security/">Usability trumps security</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2011/01/textmate-to-vim-with-training-wheels/">TextMate to Vim with training wheels</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2011/03/vim-ruby-runner/';
+        var disqus_url = 'http://henrik.nyh.se/2011/03/vim-ruby-runner/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

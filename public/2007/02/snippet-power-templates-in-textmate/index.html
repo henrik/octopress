@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Snippet-power templates in TextMate - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/02/snippet-power-templates-in-textmate/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/02/snippet-power-templates-in-textmate/">Snippet-power templates in TextMate</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-02-27T21:22:00+01:00" pubdate data-updated="true">February 27, 2007 at 21:22 CET</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/os-x/'>OS X</a>, <a class='category' href='/tag/textmate/'>TextMate</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://macromates.com/">TextMate</a> has powerful <a href="http://macromates.com/textmate/manual/snippets">snippets</a>, where you can input a keyword and press tab to expand it to some piece of code with tab stops and placeholders (and transformations, interpolated shell code, smoke and mirrors).</p>
+
+<p>TextMate&#8217;s <a href="http://macromates.com/textmate/manual/templates">templates</a>, however, are seemingly a lot less powerful. It&#8217;s pretty much just a text file which allows placeholder strings that are replaced with the author name, year or date as a new file is created.</p>
+
+<p>If one wants a template with tab stops, placeholders et cetera (a snipplate?), one solution is to first create a snippet (named e.g. <code>template</code>) and then create a template containing just that snippet tab trigger keyword, e.g.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>template
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> Then you can manually move the caret to after the trigger and expand it every time you create a new file.</p>
+
+<p>However, there are a couple of ways to include a snippet that expands <em>automatically</em> as a new file is created from template.</p>
+
+<!--more-->
+
+
+
+
+<h4>The shell script</h4>
+
+
+<p>The placeholder replacement is possible because each template is in effect a shell script preprocessor in addition to the template files. This shell script can actually be used to add snippet powers to templates.</p>
+
+<p>For a new template, the default script is:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[[</span> ! -f <span class="s2">&quot;$TM_NEW_FILE&quot;</span> <span class="o">]]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">   </span><span class="nv">TM_YEAR</span><span class="o">=</span><span class="sb">`</span>date +%Y<span class="sb">`</span> <span class="se">\</span>
+</span><span class='line'>   <span class="nv">TM_DATE</span><span class="o">=</span><span class="sb">`</span>date +%Y-%m-%d<span class="sb">`</span> <span class="se">\</span>
+</span><span class='line'>   <span class="nv">TM_USERNAME</span><span class="o">=</span><span class="sb">`</span>niutil -readprop / /users/<span class="se">\$</span>USER realname<span class="sb">`</span> <span class="se">\</span>
+</span><span class='line'>   perl -pe <span class="s1">&#39;s/\$\{([^}]*)\}/$ENV{$1}/g&#39;</span> <span class="se">\</span>
+</span><span class='line'>      &lt; template_in.txt &gt; <span class="s2">&quot;$TM_NEW_FILE&quot;</span>
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h4>Sending keystrokes</h4>
+
+
+<p>If a template includes a snippet tab trigger keyword, e.g. <code>template</code>, automatically moving the caret to after that keyword and sending a &#x21E5; keystroke will expand it.</p>
+
+<p>That can be achieved by adding this after the default contents of the shell script:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">{</span> <span class="c"># Detach a process</span>
+</span><span class='line'>  osascript -e <span class="s1">&#39;tell app &quot;System Events&quot; to keystroke &quot;e&quot; using {control down}&#39;</span> -e <span class="s1">&#39;tell app &quot;System Events&quot; to keystroke tab&#39;</span>
+</span><span class='line'>END
+</span><span class='line'><span class="o">}</span> &amp;&gt;/dev/null &amp;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>osascript</code> line runs AppleScript code to jump to the end of the line by emulating pressing &#x2303;E, and then perform a &#x21E5; keystroke to expand the snippet.</p>
+
+<p>The curly brackets and whatnot run the contained commands in a detached process (or something like that), which in this case means it will run slightly <em>after</em> the new file has been opened.</p>
+
+<p>This solution is simple, but it has some caveats:</p>
+
+<p>It&#8217;s not quite instantaneous. On my MacBook, it takes something like half a second until the caret is moved and the snippet expanded.</p>
+
+<p>The snippet will not be expanded if you&#8217;re pressing other keys as the tab keystroke is sent. So if you use some key equivalent to create a new file from template, the snippet will not be auto-expanded unless you&#8217;ve released those keys by then. In that sense, the delay mentioned in the previous paragraph is a good thing.</p>
+
+<p>Solving this without generating keystrokes would seem preferable. And it can be done, by using a perhaps little-known TextMate AppleScript command.</p>
+
+<h4>Insert as snippet</h4>
+
+
+<p>In the AppleScript dictionary for TextMate, there is a command <code>insert Unicode text [as snippet boolean]</code> that will insert a piece of text into the active document, interpreting it as a snippet. This is quite useful.</p>
+
+<p>The new code to add to the shell script is this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">{</span> <span class="c"># Detach a process</span>
+</span><span class='line'>  osascript <span class="s2">&quot;${TM_BUNDLE_SUPPORT}/load_snippet.scpt&quot;</span> <span class="s2">&quot;mysnippet.code&quot;</span>
+</span><span class='line'><span class="o">}</span> &amp;&gt;/dev/null &amp;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>load_snippet.scpt</code> file contains the following AppleScript (and must be encoded in MacRoman, for the sake of the chevrons):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='applescript'><span class='line'><span class="k">on</span> <span class="nb">run</span> <span class="nv">args</span>
+</span><span class='line'>  <span class="k">set</span> <span class="nv">loaded_snippet</span> <span class="k">to</span> <span class="nb">read</span> <span class="p">(</span><span class="nv">POSIX</span> <span class="nv">file</span> <span class="p">(</span><span class="nb">item</span> <span class="mi">1</span> <span class="k">of</span> <span class="nv">args</span><span class="p">))</span> <span class="k">as</span> «<span class="nb">class utf8</span>»
+</span><span class='line'>  <span class="k">tell</span> <span class="nv">app</span> <span class="s2">&quot;TextMate&quot;</span> <span class="k">to</span> <span class="nv">insert</span> <span class="nv">loaded_snippet</span> <span class="k">as</span> <span class="nv">snippet</span> <span class="no">true</span>
+</span><span class='line'><span class="k">end</span> <span class="nb">run</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The AppleScript goes into the bundle support directory. <code>mysnippet.code</code> is an additional template file that contains the actual snippet, e.g.</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Foo ${1:bar}.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What happens is quite simply that the AppleScript is passed the name of the snippet file as an argument, reads the contents of that file and tells TextMate to insert that string as a snippet.</p>
+
+<p>The benefits of this solution to the keystroke one is that it works even if you&#8217;re slow on releasing the key equivalent after creating a new file, and that you won&#8217;t have a snippet in your bundle for all to see that is just for setting up the template. It&#8217;s tucked away inside the support folder, safe and warm.</p>
+
+<p>Install the <a href="http://henrik.nyh.se/uploads/Snipplate.tmbundle.zip">Snipplate bundle</a> and create a new file from its template, for a demonstration.</p>
+
+<div class="updated">
+  <h5>Update 2007-03-02</h5>
+  <p>Thoroughly rewritten again, merging all edits. Sorry.</p>
+</div>
+
+
+
+
+<div class="updated">
+  <h5>Update 2007-03-02b</h5>
+  <p>Added downloadable example bundle. Realized the AppleScript shouldn&#8217;t be in the template directory, and that the snippet file should.</p>
+</div>
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/03/dollars2/">Dollars²</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/02/bookmarklet-to-get-page-from-google-cache/">Bookmarklet to get page from Google cache</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/02/snippet-power-templates-in-textmate/';
+        var disqus_url = 'http://henrik.nyh.se/2007/02/snippet-power-templates-in-textmate/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

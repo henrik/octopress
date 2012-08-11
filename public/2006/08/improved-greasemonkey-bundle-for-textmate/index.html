@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Improved Greasemonkey bundle for TextMate - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2006/08/improved-greasemonkey-bundle-for-textmate/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2006/08/improved-greasemonkey-bundle-for-textmate/">Improved Greasemonkey bundle for TextMate</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2006-08-31T16:27:00+02:00" pubdate data-updated="true">August 31, 2006 at 16:27 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/firefox/'>Firefox</a>, <a class='category' href='/tag/greasemonkey/'>Greasemonkey</a>, <a class='category' href='/tag/javascript/'>JavaScript</a>, <a class='category' href='/tag/os-x/'>OS X</a>, <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/textmate/'>TextMate</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I extended <a href="http://adamv.com/dev/textmate/greasemonkey">Adam V&#8217;s TextMate Greasemonkey bundle 1.0</a> with some useful commands, modified the snippets and template slightly and also added <code>unsafeWindow</code>, <code>GM_setValue()</code> and friends to the language grammar.</p>
+
+<p class="center"><img src="http://henrik.nyh.se/uploads/greasemonkeybundle.png" alt="[Screenshot]" style="border:1px solid #000;" /></p>
+
+
+
+
+<!--more-->
+
+
+<p><a href="http://henrik.nyh.se/filer/Greasemonkey.tmbundle.zip">Download</a> (16 KB).</p>
+
+<p>The grammar and the snippets are mainly by Adam.</p>
+
+<p>This is what the bundle currently contains, other than the grammar.</p>
+
+<h4>Template</h4>
+
+
+<p>Select <code>File &gt; New From Template &gt; Greasemonkey &gt; Userscript</code> to create a new script from template. The template outputs this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">header</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Your favorite functions go here */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should change the template (<code>File &gt; New From Template &gt; Edit Templates&hellip;</code>) to include whatever functions you commonly use. I decided against including mine to make the bundle less controversial. I will probably blog them at a later date.</p>
+
+<p>The <code>header</code> bit is to be used with a snippet. Hopefully, TextMate will support snippety placeholders in templates directly at some point.</p>
+
+<h4>Snippets</h4>
+
+
+<p>The <code>header</code> snippet outputs a userscript header with placeholders, like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// ==UserScript==</span>
+</span><span class='line'><span class="c1">// @name          Name</span>
+</span><span class='line'><span class="c1">// @namespace     http://www.example.com</span>
+</span><span class='line'><span class="c1">// @description   Description.</span>
+</span><span class='line'><span class="c1">// @include       *</span>
+</span><span class='line'><span class="c1">// ==/UserScript==</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you set a <code>TM_NAMESPACE</code> shell variable in the TextMate preferences, this will be used as the default <code>@namespace</code>.</p>
+
+<p>Within the header, the snippets <code>i</code> and <code>e</code> add <code>@include</code> and <code>@exclude</code> directives. Sadly, TextMate doesn&#8217;t support snippets-within-snippets yet, so this does not work until after you&#8217;ve broken out of the <code>header</code> snippet. However, the &#8220;Continue Header URL&#8221; command works fine.</p>
+
+<h4>Commands</h4>
+
+
+
+
+<h5>Continue Header URL</h5>
+
+
+<p>Available when writing <code>@include</code> and <code>@exclude</code> directives. Hitting <code>&#x2305;</code> will add another of the same directive on the next line, moving the caret as appropriate.</p>
+
+<h5>Install and Edit</h5>
+
+
+<p>If you start writing a new script and then hit <code>&#x2318;B</code>, the script will be installed, closed and the installed version opened for editing. This makes starting new scripts vastly less annoying.</p>
+
+<p>Caveats: &#8220;Enable access for assistive devices&#8221; must be toggled on in the Universal Access prefpane, otherwise closing the old file will not work. The command assumes the file is unsaved. If it is not, you will hear a system beep as it fails to click &#8220;Don&#8217;t Save Changes&#8221;.</p>
+
+<h5>Update Metadata</h5>
+
+
+<p>Hit <code>&#x2318;D</code> (conveniently next to the <code>S</code> of saving fame) to update the metadata from the values in the script file.</p>
+
+<p>Greasemonkey stores the <code>@name</code>, <code>@include</code> and <code>@exclude</code> values and friends when a script is installed. After that time, these values must be changed in the &#8220;Manage User Scripts&#8221; window &ndash; unless you use this command.</p>
+
+<p>Caveat: The command replaces the metadata values with the script values. This means that if you&#8217;ve e.g. changed <code>@include</code>s in &#8220;Manage User Scripts&#8221; but not in the script itself, your modifications are lost.</p>
+
+<h5>Uninstall Script</h5>
+
+
+<p>Uninstalls the currently open script. Has no keyboard shortcut by default. Prompts for confirmation.</p>
+
+<h5>Open Installed Script&hellip;</h5>
+
+
+<p>Displays a dialog listing every installed userscript, ordered alphabetically. Select one and confirm to open it. Has no keyboard shortcut by default.</p>
+
+<h5>Reload Firefox</h5>
+
+
+<p>Hit <code>&#x2318;R</code> to activate Firefox and reload the current page. Caveats: Either &#8220;Enable access for assistive devices&#8221; must be on, or Firefox should <em>not</em> be set to open URLs from external applications in new tabs.</p>
+
+<h5>References</h5>
+
+
+<p>There are also three commands to look up more information on XPath expressions, the Gecko DOM or Greasemonkey-specific functions. These are all bound by default to <code>&#x2303;&#x2325;&#x2318;H</code>.</p>
+
+<h4>To do</h4>
+
+
+<p>Suggestions are very welcome. Some things I am considering adding are:</p>
+
+<p>A command like &#8220;Open Installed Script&#8230;&#8221; but with the scripts sorted in reverse chronological order of installation, or modifying this command to offer that choice.</p>
+
+<p>Submit (as new or an update) the current script to <a href="http://userscripts.org/">userscripts.org</a>.</p>
+
+<p>Updating metadata on <code>&#x2318;S</code> along with saving a script.</p>
+
+<p class="updated"><a href="http://henrik.nyh.se/2006/09/minor-updates-to-greasemonkey-bundle/">Some updates have been made.</a></p>
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2006/08/fixed-size-scrollable-quotes-in-livejournal-comment-notification-mails/">Fixed-size scrollable quotes in LiveJournal comment notification mails</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2006/08/wikipedia-on-the-24-hour-clock/">Wikipedia on the 24-hour clock</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2006/08/improved-greasemonkey-bundle-for-textmate/';
+        var disqus_url = 'http://henrik.nyh.se/2006/08/improved-greasemonkey-bundle-for-textmate/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

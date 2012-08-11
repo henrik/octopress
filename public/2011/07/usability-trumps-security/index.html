@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Usability trumps security - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2011/07/usability-trumps-security/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2011/07/usability-trumps-security/">Usability trumps security</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2011-07-16T02:05:00+02:00" pubdate data-updated="true">July 16, 2011 at 02:05 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/annoyances/'>Annoyances</a>, <a class='category' href='/tag/ui/'>UI</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>After complaining about it on Twitter for the third time or so, I thought I should blog about a recurring UI annoyance.</p>
+
+<p>It&#8217;s all too common that login forms tell you that the username <em>or</em> password is incorrect, but not which one. I love <a href="https://www.pivotaltracker.com/">Pivotal Tracker</a>, but they made me laugh out loud by adding a third possible source of error:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/pivotal-login.png" alt="Failed login stating &quot;Invalid username, password, or invitation.&quot;" /></p>
+
+<p>The reason usually given is security. By not revealing to an attacker whether they got the username right, they may waste their time trying to crack the password of non-existent accounts.</p>
+
+<p>That&#8217;s right as far as it goes, but I would argue that this is a case where usability should trump security.</p>
+
+<p>As a user, it&#8217;s very frustrating to repeatedly fail to log in without knowing if you&#8217;re using the wrong one out of several usernames or emails, or the wrong one out of several passwords. Or the wrong invitation. If you even have an account.</p>
+
+<p><a href="http://tripadvisor.com">TripAdvisor</a> gets this right:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/tripadvisor-login.png" alt="Failed login stating &quot;There is no account for nonuser@example.com&quot;." /></p>
+
+<p>There are definitely cases where it&#8217;s the user-friendly thing not to reveal if a username or email is in use. Such as on a dating site, where the user may be embarrassed or worse to be revealed as a member.</p>
+
+<p>Obviously security is important. But this is <a href="http://en.wikipedia.org/wiki/Security_through_obscurity">security by obscurity</a>. An attacker is unlikely to try email addresses entirely at random. They will probably know or suspect that the account exists before starting out. And your site should probably not rely on the username being a secret for security.</p>
+
+<p>Also, if you do insist on not telling the user, please think things through.</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/pivotal-pwreset.png" alt="Password reset form stating &quot;Invalid username or email&quot;." /></p>
+
+<p>If other pages, such as user profiles or password reset, can tell if an account exists, your page is only one request safer. Any attacker worth their <a href="http://en.wikipedia.org/wiki/Salt_(cryptography)">salt</a> can first try that page to find an existing account, then attack your login page.</p>
+
+<p>Another common and amusing miss is to be unspecific if the username is known, but specific if unknown, such as on <a href="http://flickr.com">Flickr</a>. Incorrect password:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/yahoo-wrongpw.png" alt="Failed login stating &quot;Invalid ID or password.&quot;" /></p>
+
+<p>Incorrect username:</p>
+
+<p><img src="http://dl.dropbox.com/u/546793/blog/2011-07-16-usability-trumps-security/yahoo-wrongname.png" alt="Failed login stating &quot;This ID is not yet taken.&quot;" /></p>
+
+<p>I&#8217;m not saying it&#8217;s objectively wrong to be vague about what credential is incorrect. But it is often user-unfriendly, and my opinion is that this is a case where usability trumps security.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2012/07/randomize-your-factories/">Randomize your factories</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2011/03/vim-ruby-runner/">Vim Ruby Runner</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2011/07/usability-trumps-security/';
+        var disqus_url = 'http://henrik.nyh.se/2011/07/usability-trumps-security/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

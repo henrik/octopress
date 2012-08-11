@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>TextMate command to toggle writing deltas - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/03/textmate-command-to-toggle-writing-deltas/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/03/textmate-command-to-toggle-writing-deltas/">TextMate command to toggle writing deltas</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-03-24T12:54:00+01:00" pubdate data-updated="true">March 24, 2007 at 12:54 CET</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/os-x/'>OS X</a>, <a class='category' href='/tag/textmate/'>TextMate</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="http://henrik.nyh.se/filer/TMBundle.png" alt="" class="left" /></p>
+
+<p><a href="http://macromates.com/">TextMate</a>&#8217;s bundle system is pretty cool. If you make modifications to bundles, the difference is written as deltas to <code>~/Library/Application Support/<wbr />TextMate/<wbr />Bundles</code>. The original bundle is kept in its unchanged, pristine state – inside the TextMate application, in <code>~/Library/Application Support/<wbr />TextMate/<wbr />Pristine Copy/Bundles</code> if downloaded and installed, or in <code>/Library/Application Support/<wbr />TextMate/<wbr />Bundles</code> if you did a SVN checkout. (See <a href="http://blog.circlesixdesign.com/2007/03/02/textmate-bundles-explained/">this post</a> for a fuller explanation of where bundles go and why.)</p>
+
+<p>Since your local changes are kept apart from the distributed bundle, updates by the bundle author do not overwrite your own changes, and all is well.</p>
+
+<p>But what if you <em>are</em> the bundle author?</p>
+
+<!--more-->
+
+
+
+
+<h4>Developing bundles</h4>
+
+
+<p>If you distribute the bundle as a web download, you can just drag-and-drop it from the Bundle Editor to the desktop, zip it up and share. The bundle you share will include any local changes.</p>
+
+<p>If you version control a bundle you&#8217;re developing, though, you probably don&#8217;t want deltas, but to have any changes made in the Bundle Editor written directly to the bundle itself. This is achieved by keeping the bundle in <code>~/Library/Application Support/<wbr />TextMate/<wbr />Bundles</code> (which is, incidentally, where bundles go when you do &#8220;New Bundle&#8221; in the Bundle Editor). No deltas are created; all changes are written directly to the bundle.</p>
+
+<p>But sometimes you <em>do</em> want deltas. For my <a href="http://henrik.nyh.se/2007/03/textmate-greasemonkey-bundle-in-official-repository/">Greasemonkey bundle</a>, I want TextMate-global keyboard shortcuts for some stuff (creating a new userscript from template, opening an installed userscript), but bundles should not be <em>distributed</em> with TextMate-global keyboard shortcuts unless it&#8217;s necessary (e.g. the Subversion bundle).</p>
+
+<p>To be able to easily switch between writing changes as deltas and writing changes to the bundle proper would be quite useful. So I wrote a TextMate command for this.</p>
+
+<h4>The command</h4>
+
+
+<p>Download: <a href="http://henrik.nyh.se/filer/MyBundle%20Toggle%20Deltas.tmCommand">MyBundle Toggle Deltas.tmCommand</a>.</p>
+
+<p><img src="http://henrik.nyh.se/filer/gm_toggle_deltas-growl.png" alt="" class="right" /></p>
+
+<p>The command assumes you keep the bundle in <code>~/Library/Application Support/<wbr />TextMate/<wbr />Bundles</code>. When run, the command switches the deltas and the complete bundle between that directory and <code>Pristine Copy/Bundles</code>. When the deltas are in the non-pristine directory, any changes you make become deltas, and local changes (e.g. my global keyboard shortcuts) are available to use and modify. When the deltas are in the pristine directory, they are ignored. Changes are written directly to the bundle, and your personal, local changes are not available.</p>
+
+<p>The command requires you have <a href="http://growl.info/">Growl</a> installed, with <a href="http://growl.info/documentation/growlnotify.php">growlnotify</a> – it informs you of the current editing mode with a Growl notification. The notification is sticky, meaning it doesn&#8217;t go away until you click it. The idea is to keep you aware of the current mode.</p>
+
+<p>You need to edit the command to specify the name of the bundle in question. I only maintain one bundle, so the command only handles one. You can simply create several copies of the command, one for each bundle.</p>
+
+<p>The code:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;TM_SUPPORT_PATH&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/lib/escape&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">BUNDLE</span> <span class="o">=</span> <span class="s2">&quot;MyBundle&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">GROWLNOTIFY</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/bin/growlnotify&quot;</span>
+</span><span class='line'><span class="no">TM_SUPPORT_DIR</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/Library/Application Support/TextMate&quot;</span>
+</span><span class='line'><span class="no">DIRTY</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">TM_SUPPORT_DIR</span><span class="si">}</span><span class="s2">/Bundles/</span><span class="si">#{</span><span class="no">BUNDLE</span><span class="si">}</span><span class="s2">.tmbundle/&quot;</span>
+</span><span class='line'><span class="no">PRISTINE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">TM_SUPPORT_DIR</span><span class="si">}</span><span class="s2">/Pristine Copy/Bundles/</span><span class="si">#{</span><span class="no">BUNDLE</span><span class="si">}</span><span class="s2">.tmbundle/&quot;</span>
+</span><span class='line'><span class="no">LIMBO</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">TM_SUPPORT_DIR</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="no">BUNDLE</span><span class="si">}</span><span class="s2">.tmbundle/&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">writing_deltas?</span>
+</span><span class='line'>  <span class="ow">not</span> <span class="sb">`find </span><span class="si">#{</span><span class="n">e_sh</span> <span class="no">DIRTY</span><span class="si">}</span><span class="sb"> -regex &quot;.*\.tmDelta$&quot;`</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">reload_bundles!</span>
+</span><span class='line'>  <span class="sb">`osascript -e &#39;tell app &quot;TextMate&quot; to reload bundles&#39;`</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">mv</span><span class="p">(</span><span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span>
+</span><span class='line'>  <span class="sb">`mv </span><span class="si">#{</span><span class="n">e_sh</span> <span class="n">from</span><span class="si">}</span><span class="sb"> </span><span class="si">#{</span><span class="n">e_sh</span> <span class="n">to</span><span class="si">}</span><span class="sb">`</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="n">from</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">reload_bundles!</span>  <span class="c1"># Reload before moving, so any pending changes are (I hope) written to the right place</span>
+</span><span class='line'><span class="n">mv</span><span class="p">(</span><span class="no">DIRTY</span><span class="p">,</span> <span class="no">LIMBO</span><span class="p">);</span> <span class="n">mv</span><span class="p">(</span><span class="no">PRISTINE</span><span class="p">,</span> <span class="no">DIRTY</span><span class="p">);</span> <span class="n">mv</span><span class="p">(</span><span class="no">LIMBO</span><span class="p">,</span> <span class="no">PRISTINE</span><span class="p">)</span>
+</span><span class='line'><span class="n">reload_bundles!</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">BUNDLE</span><span class="si">}</span><span class="s2">: </span><span class="si">#{</span><span class="n">writing_deltas?</span> <span class="p">?</span> <span class="s2">&quot;Deltas&quot;</span> <span class="p">:</span> <span class="s2">&quot;Distribution&quot;</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="n">message</span> <span class="o">=</span> <span class="k">if</span> <span class="n">writing_deltas?</span>
+</span><span class='line'>  <span class="s2">&quot;Changes become deltas and are only available locally.&quot;</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="s2">&quot;Changes are written directly to the distributed bundle; local changes are unavailable.&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="sb">`</span><span class="si">#{</span><span class="n">e_sh</span> <span class="no">GROWLNOTIFY</span><span class="si">}</span><span class="sb"> -s --icon=&quot;tmbundle&quot; -t </span><span class="si">#{</span><span class="n">e_sh</span> <span class="n">title</span><span class="si">}</span><span class="sb"> -m </span><span class="si">#{</span><span class="n">e_sh</span> <span class="n">message</span><span class="si">}</span><span class="sb">`</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Bug reports and suggestions are very welcome.</p>
+
+<div class="updated">
+<h5>Update 2007-03-31</h5>
+
+Switching the bundles does not reload the grammar used for currently open documents: if you&#8217;ve made local grammar modifications, switching into or out of those modifications won&#8217;t actually change any scopes (or highlighting) in open documents. You have to open the Bundle Editor and click &#8220;Test&#8221; next to the grammar to change scopes/highlighting. This is a TextMate limitation.
+</div>
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/03/gmail-greasemonkey-scripts-bottom-posting-plain-text-formatting/">Gmail Greasemonkey scripts: bottom posting, plain text formatting</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/03/ruby-wordwrap-method/">Ruby wordwrap method</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/03/textmate-command-to-toggle-writing-deltas/';
+        var disqus_url = 'http://henrik.nyh.se/2007/03/textmate-command-to-toggle-writing-deltas/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

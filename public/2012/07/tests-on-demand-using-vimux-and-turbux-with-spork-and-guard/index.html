@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tests on demand using Vimux and Turbux with Spork and Guard - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard/">Tests on demand using Vimux and Turbux with Spork and Guard</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2012-07-13T18:15:00+02:00" pubdate data-updated="true">July 13, 2012 at 18:15 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/ruby/'>Ruby</a>, <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>, <a class='category' href='/tag/testing/'>Testing</a>, <a class='category' href='/tag/vim/'>Vim</a>, <a class='category' href='/tag/tmux/'>tmux</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="https://dl.dropbox.com/u/546793/blog/vimux-spork.png" alt="Screenshot" /></p>
+
+<p>My development environment these days is <a href="http://henrik.nyh.se/2011/01/textmate-to-vim-with-training-wheels">Vim</a> inside <a href="http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/">tmux</a>.</p>
+
+<p>Among other benefits (which I may write about later), this lets me split my terminal so I can run tests right next to my editor.</p>
+
+<p>I used to run tests with <a href="https://github.com/guard/guard/">Guard</a>. You start it in a terminal with <code>guard</code>, and when it detects that you saved a file, it runs the corresponding test. In your project&#8217;s <code>Guardfile</code>, you can map files to tests any way you please. Typically, you&#8217;ll have <code>models/user.rb</code> trigger <code>spec/models/user_spec.rb</code> and so on. You might also, for example, have it run <code>user_spec.rb</code> whenever you modify <code>user_factory.rb</code>.</p>
+
+<p>There&#8217;s also <a href="https://github.com/sporkrb/spork/">Spork</a>, which loads your app up in a test server, so you don&#8217;t have to wait for it to load on every test run. <a href="https://github.com/guard/guard-spork">Guard::Spork</a> helps Guard make use of Spork.</p>
+
+<h2>The downsides of Guard</h2>
+
+<p>While wonderful in theory, Guard can get annoying.</p>
+
+<p>If you&#8217;re fixing a failing integration test, you may alternate between that test and the integrating classes. Any time you modify and save one of the integrating classes, its tests will run. If they&#8217;re not lightning-fast, it quickly gets frustrating waiting for them to complete so you can run the integration test.</p>
+
+<p>Or perhaps you make some trivial change to a file, such as tweaking copy or stripping trailing whitespace, and that triggers a test run that you&#8217;d rather not wait for.</p>
+
+<p>When you switch branches or rebase, Guard may detect changed files and cause their tests to run.</p>
+
+<p>If you save one file while another test is running, it&#8217;s queued up. This means that a series of small tweaks can cause a bunch of tests to run, whether you want them to or not.</p>
+
+<p>Sometimes, Guard gets the idea that you probably want to run all the tests, when you really don&#8217;t.</p>
+
+<p>It happens that you accidentally forget you have a Guard running and start a second one, causing conflicts in tests that hit the database.</p>
+
+<p>Also, sometimes Guard&#8217;s file detection gets choked up for whatever reason and won&#8217;t run tests immediately when you save a file, or at all.</p>
+
+<p>All this is, of course, more of an annoyance if you have a slow test suite. But it gets pretty frustrating with sub-second tests as well, as you recalibrate your impatience.</p>
+
+<p>As it turns out, there&#8217;s a way to get the benefits of Guard and Spork without these downsides.</p>
+
+<h2>Vimux</h2>
+
+<p><a href="https://github.com/benmills/vimux/">Vimux</a> is a Vim plugin that lets you send commands to another tmux pane without leaving Vim.</p>
+
+<p>A simple example of what it lets you do is</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rspec spec/my_spec.rb&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By default, Vimux opens a new pane (and then reuses it) to run the command. As I tend to manually set up my workspace with about 80% editor on the left, 20% test runner on the right, I&#8217;ve configured it to just use the nearest pane instead:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> <span class="k">g</span>:VimuxUseNearestPane <span class="p">=</span> <span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Turbux</h2>
+
+<p>Then there&#8217;s <a href="https://github.com/jgdavey/vim-turbux">Turbux</a> (<a href="http://joshuadavey.com/post/15619414829/faster-tdd-feedback-with-tmux-tslime-vim-and">author&#8217;s blog post</a>), which builds on Vimux (or a Vimux alternative called tslime.vim). Turbux adds mappings to Vim to run the test you&#8217;re currently editing, with RSpec (or test-unit or Cucumber), using Vimux. What&#8217;s more, it uses some <a href="https://github.com/tpope/vim-rails">rails.vim</a> magic to figure out that if you&#8217;re in <code>models/user.rb</code>, you want to run <code>spec/models/user_spec.rb</code>.</p>
+
+<p>As I already use <code>,t</code> and <code>,T</code> for <a href="https://github.com/wincent/Command-T">Command-T</a>, I remapped Turbux to <code>,m</code> and <code>,M</code>:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> <span class="k">g</span>:no_turbux_mappings <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'>map <span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">m</span> <span class="p">&lt;</span>Plug<span class="p">&gt;</span>SendTestToTmux
+</span><span class='line'>map <span class="p">&lt;</span>leader<span class="p">&gt;</span>M <span class="p">&lt;</span>Plug<span class="p">&gt;</span>SendFocusedTestToTmux
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What does <code>,M</code> (<code>SendFocusedTestToTmux</code>) do? The same as <code>rspec spec/my_spec.rb:123</code> – it tells RSpec the current line number, so it can run only the test(s) encompassing that line, and not the entire file.</p>
+
+<p>Another great feature of Turbux is that if it can&#8217;t figure out a test to run, it will re-run the last one. So if you modify <code>user.rb</code> and trigger Turbux, it will run <code>user_spec.rb</code>. If you then open <code>en.yml</code> to localize some user attributes, triggering Turbux will run <code>user_spec.rb</code> again.</p>
+
+<h2>The benefits of Vimux and Turbux over Guard</h2>
+
+<p>With Turbux, you&#8217;re in control of when your tests run. You can save files all you want, and the tests will only run when you tell them to. And you can tell them with a simple mapping from inside Vim. You won&#8217;t be waiting for tests you didn&#8217;t want to run.</p>
+
+<p>There&#8217;s no confusion waiting for Guard to notice your changes. Tests run in a terminal window as if you typed the commands manually, so the current state is obvious.</p>
+
+<p>If you want to tweak some RSpec options (perhaps to provide a random seed) or set some environment variables for the tests, just change the command Turbux sends:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">let</span> <span class="k">g</span>:turbux_command_rspec <span class="p">=</span> <span class="s1">&#39;FOO=bar rspec --order rand:123&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You&#8217;d have to restart Guard (including the Guard::Spork app environment) to do the same.</p>
+
+<p>And because the commands are just sent to a shell in another pane, you have a lot of flexibility. If you want to try some one-off modifications to the commands, you can just edit them in that pane, using the shell history.</p>
+
+<p>If you have Rake tasks to run some subset of tests, just run that task in the same pane, manually or with Vimux. You can run tests any way you like and still see them in the same tmux pane.</p>
+
+<h2>Vimux without Turbux</h2>
+
+<p>You can use Vimux without Turbux. It&#8217;s great for one-off mappings. On my Swedish keyboard, <code>§</code> is conveniently located and underused, so I do things like:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>map § :<span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rspec spec/some_file.rb&quot;</span><span class="p">)&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This can be useful if you&#8217;re running one integration test over and over, while modifying a bunch of different files.</p>
+
+<p>Or if you want a more permanent mapping, you could do something like:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">,</span><span class="k">x</span> :VimuxRunLastCommand<span class="p">&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rspec spec/some_file.rb&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">,</span><span class="k">x</span>
+</span><span class='line'><span class="p">,</span><span class="k">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Vimux also lets you <code>:VimuxPromptCommand</code> if you prefer a prompt, though the function form lets you do things like refer to the current file dynamically:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span><span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;cat &quot;</span>.expand<span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once you have Vimux in your toolbox, you&#8217;ll find it&#8217;s not just for running tests. I used it recently to repeatedly run a script I was working on through <code>rails runner</code>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>map § :<span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;rails runner some_script.rb&quot;</span><span class="p">)&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Using Spork</h2>
+
+<p>With Turbux, you&#8217;re effectively running your tests in a regular terminal. Compared to Guard with Spork, this is slow, as every test run needs to load your app environment.</p>
+
+<p>Luckily, Spork works fine divorced from Guard. And, indeed, married to Turbux. Just start Spork (I like to put it in a small pane in the bottom-right) and then make sure your tests connect to it. I do this in my <code>~/.vimrc</code>:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> <span class="k">g</span>:turbux_command_rspec <span class="p">=</span> <span class="s1">&#39;rspec --drb&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&#8217;s it. As long as you have a Spork running, your Turbux test runs will use it.</p>
+
+<p>It&#8217;s kind of nice to have Spork separate from your test runner. If you introduce an endless loop and a test hangs, just kill the test and run it again when the issue has been fixed. The app will remain loaded in Spork. If you make changes that require Spork to restart, just restart it. If you make many such changes and Spork gets in the way, just kill Spork and keep running the tests without it. With Guard::Spork, your test running and your test server are tied together.</p>
+
+<p>Guard::Spork does offer the convenience of reloading Spork automatically when necessary, like when you modify <code>environment.rb</code>. It&#8217;s not something I&#8217;ve been missing, though. It&#8217;s easy enough to restart Spork yourself when you need to.</p>
+
+<h2>Using Guard</h2>
+
+<p>But if you do want that convenience, you can even use Vimux with Guard.</p>
+
+<p>This is not what I do myself – I just use Spork as described above – but it&#8217;s an interesting option that I&#8217;ve looked into. It gets you the Guard::Spork autoreloading as well as any special file mapping you&#8217;ve set up in your <code>Guardfile</code>, while you still get to decide when to trigger a run.</p>
+
+<p>After starting Guard, hit <code>p⏎</code> to pause the automatic &#8220;file modification listening&#8221;.</p>
+
+<p>Rather than trigger when it detects modified files, Guard will now only trigger <em>if you tell it a file has been modified</em>. Add a mapping like:</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">,</span><span class="k">x</span> :<span class="k">call</span> VimuxRunCommand<span class="p">(</span><span class="s2">&quot;change &quot;</span>.expand<span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))&lt;</span>CR<span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then when you hit <code>,x</code>, you will send the command <code>change current/file.rb</code> to Guard, filling in the current filename. Guard will see the file as modified and do its magic.</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2012/07/project-wide-search-and-replace-in-vim-with-qdo/">Project Wide Search And Replace In Vim With Qdo</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2012/07/randomize-your-factories/">Randomize your factories</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard/';
+        var disqus_url = 'http://henrik.nyh.se/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

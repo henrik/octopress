@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Importing legacy data into Core Data with the find-or-create (or delete) pattern - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/01/importing-legacy-data-into-core-data-with-the-find-or-create-or-delete-pattern/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/01/importing-legacy-data-into-core-data-with-the-find-or-create-or-delete-pattern/">Importing legacy data into Core Data with the find-or-create (or delete) pattern</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-01-18T18:12:00+01:00" pubdate data-updated="true">January 18, 2007 at 18:12 CET</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/cocoa/'>Cocoa</a>, <a class='category' href='/tag/os-x/'>OS X</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&#8217;m currently playing with Objective-C/Cocoa, writing an improved (and <abbr title="Graphical User Interface">GUI</abbr>&#8216;d up) version of <a href="http://henrik.nyh.se/?s=iCalTV">iCalTV</a>.</p>
+
+<p>I&#8217;m learning a great deal. Core Data, the modelling/persistence framework, is interesting and daunting.</p>
+
+<p>The <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/CoreData/">Core Data Programming Guide</a> has a chapter on <a href="http://developer.apple.com/documentation/Cocoa/Conceptual/CoreData/index.html?http://developer.apple.com/documentation/Cocoa/Conceptual/CoreData/Articles/cdImporting.html">Efficiently Importing Legacy Data</a>.</p>
+
+<p>That chapter gives examples on implementing the &#8220;find-or-create&#8221; pattern &ndash; when you want to compare some fresh data (e.g. recently downloaded TV channel lists) with stored Core Data (e.g. channel entity objects) and (efficiently) <em>add</em> whatever items weren&#8217;t in Core Data already, and only <em>update</em> those that already were.</p>
+
+<p>Apple&#8217;s sample code ends after creating a list of identifiers for the new items, and a list of the old items.</p>
+
+<p>I filled in the blanks, and modified the code to &#8220;find (and update)-or-create-or-remove&#8221;. That is: if the identifier is already represented in Core Data, <em>update</em> some of its attributes (but maintain the identifier and relations); if the identifier is not represented, <em>create</em> a new object; if there are identifiers in Core Data that are not represented among the new items, <em>remove</em> those objects.</p>
+
+<p>I also generalized it into a method on <code>NSManagedObjectContext</code> (using a category), so that I can use it both when importing channels and when importing programs, without duplicate code.</p>
+
+<p>Hopefully this is of use to someone else.</p>
+
+<!--more-->
+
+
+<p>The usage is simply</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='obj-c'><span class='line'><span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">myManagedObjectContext</span> <span class="nl">updateEntity:</span> <span class="s">@&quot;Channel&quot;</span>
+</span><span class='line'>                      <span class="nl">fromDictionary:</span> <span class="n">channelsToImport</span>
+</span><span class='line'>                      <span class="nl">withIdentifier:</span> <span class="s">@&quot;identifier&quot;</span>
+</span><span class='line'>                         <span class="nl">overwriting:</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObject:</span><span class="s">@&quot;baseURL&quot;</span><span class="p">]</span>
+</span><span class='line'>                            <span class="nl">andError:</span> <span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>where <code>channelsToImport</code> is a dictionary with the identifiers as keys, and dictionaries as values. Those nested dictionaries have attribute names as keys and attribute values as values. So, in pseudo-code (actually Ruby ;p):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">{</span><span class="s2">&quot;channel.123&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">&quot;displayName&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;Some Channel&quot;</span><span class="p">,</span> <span class="s2">&quot;baseURL&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;http://www.example.com/&quot;</span><span class="p">}}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If the identifier is <em>not</em> already represented in Core Data, those are the attributes (along with the identifier) that will be written. The <code>overwriting:</code> argument is an array of strings, enumerating the attributes that will be updated from the dictionary if the identifier <em>is</em> already represented in Core Data.</p>
+
+<p>Identifiers are assumed to be strings. The error variable will be populated with any errors that occur when fetching the entities.</p>
+
+<p>I did not add support for passing a predicate to limit the entities you want, since I will always want to compare to the full set of channels, but it could be easily done, and I may do so later, if the need arises.</p>
+
+<p>The code (<a href="http://henrik.nyh.se/uploads/NSManagedObjectContext_UpdateEntity.h">download</a>, don&#8217;t forget to <code>#import</code> the file):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+</pre></td><td class='code'><pre><code class='obj-c'><span class='line'><span class="k">@interface</span> <span class="nc">NSManagedObjectContext</span> <span class="nl">(UpdateEntity)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateEntity:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">entity</span> <span class="nf">fromDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">importDict</span> <span class="nf">withIdentifier:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">identifier</span> <span class="nf">overwriting:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">overwritables</span> <span class="nf">andError:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">**</span><span class="p">)</span><span class="nv">error</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">NSManagedObjectContext</span> <span class="nl">(UpdateEntity)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">  Expects an import dictionary like</span>
+</span><span class='line'><span class="cm">  {&quot;some.channel.se&quot; =&gt; {&quot;displayName&quot; =&gt; &quot;Some Channel&quot;, &quot;baseURL&quot; =&gt; &quot;http://www.example.com/&quot;}}.</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateEntity:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">entity</span> <span class="nf">fromDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">importDict</span> <span class="nf">withIdentifier:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">identifier</span> <span class="nf">overwriting:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">overwritables</span> <span class="nf">andError:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">**</span><span class="p">)</span><span class="nv">error</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Get the sorted import identifiers</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">identifiersToImport</span> <span class="o">=</span> <span class="p">[[</span><span class="n">importDict</span> <span class="n">allKeys</span><span class="p">]</span> <span class="nl">sortedArrayUsingSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">compare:</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Get the entities as managed objects</span>
+</span><span class='line'>  <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">fetchRequest</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchRequest</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">fetchRequest</span> <span class="nl">setEntity:</span><span class="p">[</span><span class="n">NSEntityDescription</span> <span class="nl">entityForName:</span><span class="n">entity</span> <span class="nl">inManagedObjectContext:</span><span class="n">self</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">fetchRequest</span> <span class="nl">setSortDescriptors:</span><span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObject:</span><span class="p">[[[</span><span class="n">NSSortDescriptor</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithKey:</span><span class="n">identifier</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]</span> <span class="n">autorelease</span><span class="p">]]];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">managedObjects</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">executeFetchRequest:</span><span class="n">fetchRequest</span> <span class="nl">error:</span><span class="n">error</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">fetchRequest</span> <span class="n">release</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Compare import identifiers with managed object identifiers</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSEnumerator</span><span class="o">*</span> <span class="n">importIterator</span> <span class="o">=</span> <span class="p">[</span><span class="n">identifiersToImport</span> <span class="n">objectEnumerator</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSEnumerator</span><span class="o">*</span> <span class="n">objectIterator</span> <span class="o">=</span> <span class="p">[</span><span class="n">managedObjects</span> <span class="n">objectEnumerator</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">thisImportIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">importIterator</span> <span class="n">nextObject</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSManagedObject</span> <span class="o">*</span><span class="n">thisObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">objectIterator</span> <span class="n">nextObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Loop through both lists, comparing identifiers, until both are empty</span>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">thisImportIdentifier</span> <span class="o">||</span> <span class="n">thisObject</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Compare identifiers</span>
+</span><span class='line'>    <span class="n">NSComparisonResult</span> <span class="n">comparison</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">thisImportIdentifier</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// If the import list has run out, the import identifier sorts last (i.e. remove remaining objects)</span>
+</span><span class='line'>      <span class="n">comparison</span> <span class="o">=</span> <span class="n">NSOrderedDescending</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">thisObject</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// If managed object list has run out, the import identifier sorts first (i.e. add remaining objects)</span>
+</span><span class='line'>      <span class="n">comparison</span> <span class="o">=</span> <span class="n">NSOrderedAscending</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>  <span class="c1">// If neither list has run out, compare with the object</span>
+</span><span class='line'>      <span class="n">comparison</span> <span class="o">=</span> <span class="p">[</span><span class="n">thisImportIdentifier</span> <span class="nl">compare:</span><span class="p">[</span><span class="n">thisObject</span> <span class="nl">valueForKey:</span><span class="n">identifier</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">comparison</span> <span class="o">==</span> <span class="n">NSOrderedSame</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// Identifiers match</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">overwritables</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// Merge the allowed non-identifier properties, if not nil</span>
+</span><span class='line'>        <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">importAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">importDict</span> <span class="nl">objectForKey:</span><span class="n">thisImportIdentifier</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">overwriteAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjects:</span><span class="p">[</span><span class="n">importAttributes</span> <span class="nl">objectsForKeys:</span><span class="n">overwritables</span> <span class="nl">notFoundMarker:</span><span class="s">@&quot;&quot;</span><span class="p">]</span> <span class="nl">forKeys:</span><span class="n">overwritables</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">thisObject</span> <span class="nl">setValuesForKeysWithDictionary:</span><span class="n">overwriteAttributes</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// Move ahead in both lists</span>
+</span><span class='line'>      <span class="n">thisObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">objectIterator</span> <span class="n">nextObject</span><span class="p">];</span>
+</span><span class='line'>      <span class="n">thisImportIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">importIterator</span> <span class="n">nextObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">comparison</span> <span class="o">==</span> <span class="n">NSOrderedAscending</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// Imported item sorts before stored item</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// The imported item is previously unseen - add it and move ahead to the next import identifier</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">NSManagedObject</span> <span class="o">*</span><span class="n">newObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSEntityDescription</span> <span class="nl">insertNewObjectForEntityForName:</span><span class="n">entity</span> <span class="nl">inManagedObjectContext:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">newObject</span> <span class="nl">setValue:</span><span class="n">thisImportIdentifier</span> <span class="nl">forKey:</span><span class="n">identifier</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">newObject</span> <span class="nl">setValuesForKeysWithDictionary:</span><span class="p">[</span><span class="n">importDict</span> <span class="nl">objectForKey:</span><span class="n">thisImportIdentifier</span><span class="p">]];</span>
+</span><span class='line'>      <span class="n">thisImportIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">importIterator</span> <span class="n">nextObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>  <span class="c1">// Imported item sorts after stored item</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// The stored item is not among those imported, and should be removed, then move ahead to the next stored item</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="p">[</span><span class="n">self</span> <span class="nl">deleteObject:</span><span class="n">thisObject</span><span class="p">];</span>
+</span><span class='line'>      <span class="n">thisObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">objectIterator</span> <span class="n">nextObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/01/youtube-comments-next-to-videos/">YouTube comments next to videos</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/01/scrolltoy/">ScrollToY</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/01/importing-legacy-data-into-core-data-with-the-find-or-create-or-delete-pattern/';
+        var disqus_url = 'http://henrik.nyh.se/2007/01/importing-legacy-data-into-core-data-with-the-find-or-create-or-delete-pattern/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Project Wide Search And Replace In Vim With Qdo - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2012/07/project-wide-search-and-replace-in-vim-with-qdo/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2012/07/project-wide-search-and-replace-in-vim-with-qdo/">Project Wide Search And Replace In Vim With Qdo</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2012-07-17T16:30:00+02:00" pubdate data-updated="true">July 17, 2012 at 16:30 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/vim/'>Vim</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In <a href="/2011/01/textmate-to-vim-with-training-wheels">my blog post about switching to Vim</a>, I mentioned that I had yet to find a project-wide search-and-replace solution that I like.</p>
+
+<p>Now I have: I use <a href="https://github.com/henrik/git-grep-vim">git-grep-vim</a> for project-wide search, then <a href="https://github.com/henrik/vim-qargs">vim-qargs</a> to run a vim search-and-replace command over every result file.</p>
+
+<h2>Less convenience, more power</h2>
+
+<p>I think it&#8217;s unlikely that Vim will have a solution any time soon fully as convenient and well-integrated as in more modern editors. The per-buffer find-and-replace in Vim is dusted with enough special Vim magic that it won&#8217;t match up perfectly with the syntax of project-wide search tools like ack, grep or git-grep. And in a large project, you need fast tools like those.</p>
+
+<p>So while I don&#8217;t know of a solution that is on par with the convenience of search-and-replace in other editors, I do consider this one more convenient than switching to another editor – for a while I used TextMate alongside Vim for project-wide find-and-replace.</p>
+
+<p>And as usual with Vim, you get a lot of power you may not find in those other editors.</p>
+
+<h2>Project-wide search with git-grep</h2>
+
+<p>I use <a href="https://github.com/henrik/git-grep-vim">my fork of git-grep-vim</a> for project-wide search in Vim.</p>
+
+<p>It&#8217;s based on <a href="https://github.com/mileszs/ack.vim/">ack.vim</a> but uses git-grep instead of ack.</p>
+
+<p>You search like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep some.*pattern</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can optionally specify one or several directories to limit the search to:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep some.*pattern app/models lib spec</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And pass in flags (<code>-w</code> makes it match only at word boundaries):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep -w hello</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add the results of a new search to the existing result list:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep hello
+</span><span class='line'>:GitGrepAdd goodbye</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With multiple words or some special characters, quote the search string:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep "hello there"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or cheat to save some typing (the regex <code>.</code> matches any character, including a space):</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep hello.there</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To save some typing, this line in my <code>~/.vimrc</code> brings up the search prompt when I hit <code>,a</code> (the &#8220;a&#8221; was for &#8220;ack&#8221;, once):</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="c">&quot; We want the trailing space.</span>
+</span><span class='line'>exe <span class="s2">&quot;nnoremap &lt;leader&gt;a :GitGrep &quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As long as you&#8217;re in a Git repository, I much prefer git-grep to ack. It&#8217;s faster, and <a href="https://github.com/protocool/ack-tmbundle/wiki/recognizing-files">ack will ignore unknown filetypes (like Haml) unless reconfigured</a>.</p>
+
+<p>That said, git-grep can also mislead. It won&#8217;t find results in new files before they&#8217;ve been added to Git, or in <code>.gitignore</code>d files, and as mentioned, it only works in directories managed by Git. You can trade in some speed for removing these gotchas with the <a href="http://www.kernel.org/pub/software/scm/git/docs/git-grep.html">flags</a> <code>--untracked</code>, <code>--no-exclude-standard</code> and <code>--no-index</code>.</p>
+
+<p>I use project-wide search all the time. It&#8217;s not just for search-and-replace, of course.</p>
+
+<h2>The quickfix window</h2>
+
+<p><img src="https://dl.dropbox.com/u/546793/blog/git-grep-quickfix.png" alt="Screenshot" /></p>
+
+<p>The search results end up in <a href="http://vimdoc.sourceforge.net/htmldoc/quickfix.html">the quickfix window</a>, a split window in Vim that you can move through like any Vim buffer. Hitting <code>⏎</code> will show the result from the current line.</p>
+
+<p>There&#8217;s a bunch of commands to open items from the quickfix list, without even needing to have it open (close it with <code>:cclose</code>).</p>
+
+<p>I&#8217;ve mapped the <code>+</code> and <code>-</code> keys to <code>:cnext</code> and <code>:cprevious</code>, for skipping one item at the time. I&#8217;ve mapped <code>g+</code> and <code>g-</code> to <code>:cpfile</code> and <code>:cnfile</code>, for skipping one <em>file</em> at the time.</p>
+
+<p>Some of my favorite commands for the quickfix list are <code>:colder</code> and <code>:cnewer</code>, to revisit the previous or next item list. This means you can run one project search for &#8220;foo&#8221;, notice some issue with bars, search for &#8220;bar&#8221;, do stuff, then run <code>:colder</code> and you&#8217;re back in the &#8220;foo&#8221; search. It&#8217;s effectively a stack of project searches to pop and push at leisure.</p>
+
+<h2>Qdo</h2>
+
+<p>Vim has a couple of commands like <code>:bufdo</code> and <code>:windo</code>, which let you run a command in every open buffer or window. Drew Neil (of <a href="http://vimcasts.org/">Vimcasts</a> and <a href="http://pragprog.com/book/dnvim/practical-vim">Practical Vim</a>) with other contributors <a href="http://stackoverflow.com/a/5686810/6962">wrote a :Qargdo</a> for when you want to run a command against every file in the quickfix list.</p>
+
+<p><a href="https://github.com/henrik/vim-qargs">My fork of vim-qargs</a> uses the conveniently short <code>:Qdo</code> for the same.</p>
+
+<p>For project-wide search-and-replace, then, you would simply do something like this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:GitGrep foo.*bar
+</span><span class='line'>:Qdo %s/foo.*bar/baz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You probably want to configure</p>
+
+<figure class='code'><figcaption><span>~/.vimrc</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="c">&quot; Automatically save changes before switching buffer with some</span>
+</span><span class='line'><span class="c">&quot; commands, like :cnfile.</span>
+</span><span class='line'><span class="k">set</span> <span class="nb">autowrite</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>so each buffer is saved automatically when it moves to the next one. Otherwise, you could do:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>:Qdo %s/foo.*bar/baz | update</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The upside of separate steps</h2>
+
+<p>It is, of course, a bit inconvenient to repeat the search string. But because the syntax of git-grep (or some other tool) will often diverge from the Vim search syntax, I&#8217;ve settled for typing the search string twice rather than having it automatically reused.</p>
+
+<p>While I would prefer to only type the search string once in the common case, there is an upside to having separate steps for the global find and the local search-and-replace, and that&#8217;s flexibility.</p>
+
+<p>You have your choice of global search tool, with their different features and trade-offs. The raw speed of git-grep in a Git repository is a wonderful thing. With <code>:GitGrepAdd</code> you can search for &#8220;x&#8221; in directory a plus &#8220;y&#8221; in directory b.</p>
+
+<p>And on the other end, you get all the magic (or <a href="http://vimdoc.sourceforge.net/htmldoc/options.html#'nomagic'">nomagic</a>) of Vim. Though I don&#8217;t think I&#8217;ve used it with <code>:Qdo</code> yet, you could apply some complex macro and not just a substitution.</p>
+
+<p>One thing I have done is chain multiple substitutions (replace &#8220;a&#8221; with &#8220;b&#8221; if present and then &#8220;c&#8221; with &#8220;d&#8221; if present), which I think would be more difficult with a more convenient but less flexible setup.</p>
+
+<h2>Fin</h2>
+
+<p>I&#8217;m curious to hear what others use. Let me know!</p>
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2012/07/rails-i18n-tips/">Rails i18n tips</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2012/07/tests-on-demand-using-vimux-and-turbux-with-spork-and-guard/">Tests on demand using Vimux and Turbux with Spork and Guard</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2012/07/project-wide-search-and-replace-in-vim-with-qdo/';
+        var disqus_url = 'http://henrik.nyh.se/2012/07/project-wide-search-and-replace-in-vim-with-qdo/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>

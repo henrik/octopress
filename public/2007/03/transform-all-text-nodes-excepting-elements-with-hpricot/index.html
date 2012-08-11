@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Transform all text nodes (excepting elements) with Hpricot - The Pug Automatic</title>
+  <meta name="author" content="Henrik Nyh">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://henrik.nyh.se/2007/03/transform-all-text-nodes-excepting-elements-with-hpricot/">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
+  
+
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8429899-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  
+  <link href="/images/custom/favicon.ico" rel="icon">
+</head>
+
+<body   >
+  <div id="main">
+    <div id="content">
+      <div>
+
+
+
+
+
+
+
+
+
+
+
+<article class="hentry " role="article">
+  
+  <header>
+    <h1 class="entry-title">
+
+<a href="/2007/03/transform-all-text-nodes-excepting-elements-with-hpricot/">Transform all text nodes (excepting elements) with Hpricot</a>
+
+</h1>
+
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+Written <time datetime="2007-03-28T22:16:00+02:00" pubdate data-updated="true">March 28, 2007 at 22:16 CEST</time>.
+        
+
+<span class="categories">
+  Tagged
+  
+    <a class='category' href='/tag/hpricot/'>Hpricot</a>, <a class='category' href='/tag/ruby/'>Ruby</a>.
+  
+</span>
+
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Christoffer Sawicki wrote a useful <a href="http://code.whytheluckystiff.net/hpricot/">Hpricot</a> extension, <a href="http://termos.vemod.net/hpricot-goodies">Hpricot Text GSub</a>, to <code>gsub!</code> in HTML text nodes only.</p>
+
+<p>Though I love an overextended regexp as much as the next guy, I realized that I should use an actual HTML parser for things like <a href="http://henrik.nyh.se/2007/03/ruby-wordwrap-method/">wordwrapping in text nodes outside of <code>pre</code> elements</a>.</p>
+
+<p>So I wrote my own extension, <code>HpricotTextTransform</code>, based on Christoffer&#8217;s code. It works much the same way, but rather than being limited to <code>gsub!</code> ((Which you could arguably do anything with, though:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">gsub!</span><span class="p">(</span><span class="sr">/.*/m</span><span class="p">)</span> <span class="p">{</span> <span class="n">anything</span><span class="p">(</span><span class="vg">$&amp;</span><span class="p">)</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>)) you can put whatever text transformations you want in a block – text nodes are passed as arguments to that block. This is useful to e.g. apply an autolink method to text nodes. Also, you can specify elements whose descendant text nodes should <em>not</em> be transformed.</p>
+
+<!--more-->
+
+
+<p>This is the wordwrap method using <code>HpricotTextTransform</code>:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">wordwrap</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">&quot;&lt;wbr /&gt;&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kp">nil</span> <span class="k">unless</span> <span class="n">text</span>
+</span><span class='line'>  <span class="no">Hpricot</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">text_transform!</span><span class="p">(</span><span class="ss">:except</span> <span class="o">=&gt;</span> <span class="ss">:pre</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">text</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">text</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(\S{</span><span class="si">#{</span><span class="n">width</span><span class="si">}</span><span class="sr">})(?=\S)/</span><span class="p">)</span> <span class="p">{</span> <span class="s2">&quot;#$1</span><span class="si">#{</span><span class="n">string</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the extension itself (<a href="http://henrik.nyh.se/uploads/hpricot_text_transform.rb">download</a>), including some tests:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># By Henrik Nyh &lt;http://henrik.nyh.se&gt; 2007-03-28.</span>
+</span><span class='line'><span class="c1"># Based on http://vemod.net/code/hpricot_goodies/hpricot_text_gsub.rb.</span>
+</span><span class='line'><span class="c1"># Licensed under the same terms as Ruby.</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;rubygems&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;hpricot&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">HpricotTextTransform</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">NodeWithChildrenExtension</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">text_transform!</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{},</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">Array</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:except</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="nb">name</span><span class="o">.</span><span class="n">to_sym</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">children</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">c</span><span class="o">.</span><span class="n">text_transform!</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">TextNodeExtension</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">text_transform!</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{},</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">content</span><span class="o">.</span><span class="n">replace</span> <span class="k">yield</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">BogusETagExtension</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">text_transform!</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{},</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Hpricot</span><span class="o">::</span><span class="no">Doc</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span>  <span class="no">HpricotTextTransform</span><span class="o">::</span><span class="no">NodeWithChildrenExtension</span><span class="p">)</span>
+</span><span class='line'><span class="no">Hpricot</span><span class="o">::</span><span class="no">Elem</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="no">HpricotTextTransform</span><span class="o">::</span><span class="no">NodeWithChildrenExtension</span><span class="p">)</span>
+</span><span class='line'><span class="no">Hpricot</span><span class="o">::</span><span class="no">BogusETag</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="no">HpricotTextTransform</span><span class="o">::</span><span class="no">BogusETagExtension</span><span class="p">)</span>
+</span><span class='line'><span class="no">Hpricot</span><span class="o">::</span><span class="no">Text</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="no">HpricotTextTransform</span><span class="o">::</span><span class="no">TextNodeExtension</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="bp">__FILE__</span> <span class="o">==</span> <span class="vg">$0</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s2">&quot;test/unit&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">HpricotTextTransformTest</span> <span class="o">&lt;</span> <span class="no">Test</span><span class="o">::</span><span class="no">Unit</span><span class="o">::</span><span class="no">TestCase</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">assert_hpricot_transform</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{},</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">doc</span> <span class="o">=</span> <span class="no">Hpricot</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">doc</span><span class="o">.</span><span class="n">text_transform!</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">assert_equal</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">test_with_gsub</span>
+</span><span class='line'>      <span class="n">input</span>    <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;xxx&quot;&gt;xxx&lt;/a&gt;&#39;</span>
+</span><span class='line'>      <span class="n">expected</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;xxx&quot;&gt;yyy&lt;/a&gt;&#39;</span>
+</span><span class='line'>      <span class="n">assert_hpricot_transform</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="p">{})</span> <span class="p">{</span> <span class="o">|</span><span class="n">text</span><span class="o">|</span> <span class="n">text</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">test_with_reverse</span>
+</span><span class='line'>      <span class="n">input</span>    <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;hello&lt;/a&gt; world from &lt;code&gt;ruby&lt;/code&gt;&#39;</span>
+</span><span class='line'>      <span class="n">expected</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;olleh&lt;/a&gt; morf dlrow &lt;code&gt;ybur&lt;/code&gt;&#39;</span>
+</span><span class='line'>      <span class="n">assert_hpricot_transform</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="p">{})</span> <span class="p">{</span> <span class="o">|</span><span class="n">text</span><span class="o">|</span> <span class="n">text</span><span class="o">.</span><span class="n">reverse</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">test_with_reverse_exclude_one_tag</span>
+</span><span class='line'>      <span class="n">input</span>    <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;hello&lt;/a&gt; world from &lt;code&gt;ruby&lt;/code&gt;&#39;</span>
+</span><span class='line'>      <span class="n">expected</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;olleh&lt;/a&gt; morf dlrow &lt;code&gt;ruby&lt;/code&gt;&#39;</span>
+</span><span class='line'>      <span class="n">assert_hpricot_transform</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="p">{</span><span class="ss">:except</span> <span class="o">=&gt;</span> <span class="ss">:code</span><span class="p">})</span> <span class="p">{</span> <span class="o">|</span><span class="n">text</span><span class="o">|</span> <span class="n">text</span><span class="o">.</span><span class="n">reverse</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">test_with_reverse_exclude_multiple_tags</span>
+</span><span class='line'>      <span class="n">input</span>    <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;hello&lt;/a&gt; world from &lt;code&gt;ruby&lt;/code&gt;&#39;</span>
+</span><span class='line'>      <span class="n">expected</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;hello&lt;/a&gt; morf dlrow &lt;code&gt;ruby&lt;/code&gt;&#39;</span>
+</span><span class='line'>      <span class="n">assert_hpricot_transform</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="p">{</span><span class="ss">:except</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:code</span><span class="o">]</span><span class="p">})</span> <span class="p">{</span> <span class="o">|</span><span class="n">text</span><span class="o">|</span> <span class="n">text</span><span class="o">.</span><span class="n">reverse</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">test_with_reverse_exclude_nested_tag</span>
+</span><span class='line'>      <span class="n">input</span>    <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;hello&lt;/a&gt; world from &lt;pre&gt;&lt;code&gt;&lt;a&gt;ruby&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&#39;</span>
+</span><span class='line'>      <span class="n">expected</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;attribute&quot;&gt;olleh&lt;/a&gt; morf dlrow &lt;pre&gt;&lt;code&gt;&lt;a&gt;ruby&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&#39;</span>
+</span><span class='line'>      <span class="n">assert_hpricot_transform</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="p">{</span><span class="ss">:except</span> <span class="o">=&gt;</span> <span class="ss">:code</span><span class="p">})</span> <span class="p">{</span> <span class="o">|</span><span class="n">text</span><span class="o">|</span> <span class="n">text</span><span class="o">.</span><span class="n">reverse</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+
+  <footer>
+    <p class="meta">
+      
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+
+</div>
+
+    
+    <p class="meta">
+      
+        <p>
+          <strong>Newer:</strong>
+          <a href="/2007/03/greasemonkey-bundle-syntax-highlighting/">Greasemonkey bundle syntax highlighting</a>
+        </p>
+      
+      
+        <p>
+          <strong>Older:</strong>
+          <a href="/2007/03/gmail-greasemonkey-scripts-bottom-posting-plain-text-formatting/">Gmail Greasemonkey scripts: bottom posting, plain text formatting</a>
+        </p>
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <header class="site-header">
+  <div class="pug">
+    <a href="/">
+      <img src="/images/custom/pug.png" alt="">
+    </a>
+  </div>
+  <h1 class="site-title"><a href="/">The Pug Automatic</a></h1>
+  <p class="site-intro">
+    A blog by <a href="/about/">Henrik Nyh</a>.
+    <a href="/atom.xml">Subscribe by RSS.</a>
+  </p>
+
+  
+  <form action="http://google.com/search" method="get">
+    <fieldset role="search">
+      <input type="hidden" name="q" value="site:henrik.nyh.se" />
+      <input class="search" type="search" name="q" results="0" placeholder="Search via Google"/>
+    </fieldset>
+  </form>
+  
+</header>
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://twitter.com/henrik"><img src="/images/custom/twitter.png" alt="henrik @ Twitter" title="henrik @ Twitter"></a>
+  </p>
+
+  <ul id="tweets" data-user="henrik" data-count="3" data-replies="false">
+    <li class="loading">Loading tweets…</li>
+  </ul>
+</section>
+
+
+
+
+
+<section>
+  <p class="service-icon">
+    <a href="http://pinboard.in/u:henrik"><img src="/images/custom/pinboard.png" alt="henrik @ Pinboard" title="henrik @ Pinboard"></a>
+  </p>
+
+  <ul id="pinboard_linkroll">Fetching bookmarks…</ul>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+    pinboard.getFeed({
+        target: 'pinboard_linkroll' //id target for pinboard list
+      , user: "henrik"
+      , count: 3
+    });
+  });
+</script>
+<script src="/javascripts/pinboard.js" type="text/javascript"></script>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer class="blog-footer" role="contentinfo"><p>
+  &copy; 2012 Henrik Nyh.
+  Pug art by <a href="http://johannaost.com">Johanna Öst</a>.
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pug';
+      var disqus_developer = '0';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://henrik.nyh.se/2007/03/transform-all-text-nodes-excepting-elements-with-hpricot/';
+        var disqus_url = 'http://henrik.nyh.se/2007/03/transform-all-text-nodes-excepting-elements-with-hpricot/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+</body>
+</html>
