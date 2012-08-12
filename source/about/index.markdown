@@ -9,15 +9,17 @@ title: "About me"
   </a>
 </div>
 
-I’m Henrik Nyh. I was born <span id="birthday">July 26, 1983</span> and live in Stockholm, Sweden with [Johanna](http://johannaost.com).
-
-I currently work as a developer (mostly Ruby on Rails) at [Barsoom](http://barsoom.se/). I have a master’s degree in computational linguistics, though I’ve found I enjoy computers and linguistics more when they’re separate.
-
-I [tweet](http://twitter.com/henrik), [gist](https://gist.github.com/henrik) or [GitHub](http://github.com/henrik) findings and experiences more often than I blog them.
+I’m Henrik Nyh. I was born in 1983 and I live in Stockholm, Sweden with [Johanna](http://johannaost.com).
 
 You can reach me at [@henrik](http://twitter.com/henrik) or <henrik@nyh.se>.
 
-I enjoy reading, running, the gym, travel, cooking, baking, photography and pugs, but web development is my main interest. I’m particularly into user interfaces, well-considered flows and delightful touches. I love solving small problems really well.
+See my [gists](https://gist.github.com/henrik) and my [GitHub](http://github.com/henrik).
+
+I work at [Barsoom](http://barsoom.se/), doing mostly full-stack Ruby on Rails.
+
+I have a master’s degree in computational linguistics, though I’ve found I enjoy computers and linguistics more when they’re separate.
+
+I like reading, running, the gym, travel, cooking, baking, photography and pugs, but my main passion is web development. I'm particularly into flows, user interfaces and delightful touches.
 
 
 ## This blog
@@ -26,4 +28,4 @@ This blog is powered by [Octopress](http://octopress.org), with a customized the
 
 Unless otherwise noted, all code I publish is under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
 
-As for the name, I simply like pugs and automation. Oh, and “pug” sounds vaguely like “blog”.
+As for the name, I simply like pugs and automation.
