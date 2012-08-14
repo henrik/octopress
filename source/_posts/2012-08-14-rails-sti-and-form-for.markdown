@@ -32,7 +32,7 @@ end
   = f.select :type, [Item.name, SpecialItem.name]
 ```
 
-You want `edit_admin_item_path(@item)` but Rails tries the non-existent `edit_admin_special_item_path(@item)`.
+You want this form to PUT to `admin_item_path(@item)` but Rails will PUT to the non-existent `admin_special_item_path(@item)`.
 
 The [Rails form helper guide](http://guides.rubyonrails.org/form_helpers.html) says you can't rely on record identification with STI.
 

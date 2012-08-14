@@ -136,7 +136,7 @@ Written <time datetime="2012-08-14T12:15:00+02:00" pubdate data-updated="true">A
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You want <code>edit_admin_item_path(@item)</code> but Rails tries the non-existent <code>edit_admin_special_item_path(@item)</code>.</p>
+<p>You want this form to PUT to <code>admin_item_path(@item)</code> but Rails will PUT to the non-existent <code>admin_special_item_path(@item)</code>.</p>
 
 <p>The <a href="http://guides.rubyonrails.org/form_helpers.html">Rails form helper guide</a> says you can&#8217;t rely on record identification with STI.</p>
 
