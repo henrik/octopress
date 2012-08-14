@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-08-14T12:16:08+02:00</updated>
+  <updated>2012-08-14T12:27:59+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -32,7 +32,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This would become <code>POST admin_items_path</code> for a new record, or <code>PUT admin_item_path(@item)</code> for an existing record.</p>
+<p>It&#8217;s also used to figure out the HTTP verb, the field name prefixes, HTML classes and HTML id.</p>
+
+<p>So this form would POST to <code>admin_items_path</code> for a new record, or PUT to <code>admin_item_path(@item)</code> for an existing record.</p>
 
 <p>But it can break when you use STI (Single Table Inheritance).</p>
 
@@ -56,7 +58,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You want <code>admin_items_path</code> but Rails tries the non-existent <code>admin_special_items_path</code>.</p>
+<p>You want <code>edit_admin_item_path(@item)</code> but Rails tries the non-existent <code>edit_admin_special_item_path(@item)</code>.</p>
 
 <p>The <a href="http://guides.rubyonrails.org/form_helpers.html">Rails form helper guide</a> says you can&#8217;t rely on record identification with STI.</p>
 

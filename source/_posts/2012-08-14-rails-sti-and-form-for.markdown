@@ -14,7 +14,9 @@ Rails' `form_for` conveniently uses "record identification" to figure out the co
   = f.text_field :name
 ```
 
-This would become `POST admin_items_path` for a new record, or `PUT admin_item_path(@item)` for an existing record.
+It's also used to figure out the HTTP verb, the field name prefixes, HTML classes and HTML id.
+
+So this form would POST to `admin_items_path` for a new record, or PUT to `admin_item_path(@item)` for an existing record.
 
 But it can break when you use STI (Single Table Inheritance).
 
@@ -30,7 +32,7 @@ end
   = f.select :type, [Item.name, SpecialItem.name]
 ```
 
-You want `admin_items_path` but Rails tries the non-existent `admin_special_items_path`.
+You want `edit_admin_item_path(@item)` but Rails tries the non-existent `edit_admin_special_item_path(@item)`.
 
 The [Rails form helper guide](http://guides.rubyonrails.org/form_helpers.html) says you can't rely on record identification with STI.
 
