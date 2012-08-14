@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-08-14T12:30:10+02:00</updated>
+  <updated>2012-08-14T14:08:29+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -68,8 +68,8 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">form_for</span><span class="p">(</span><span class="o">[</span><span class="ss">:admin</span><span class="p">,</span> <span class="vi">@item</span><span class="o">.</span><span class="n">dup</span><span class="o">.</span><span class="n">becomes</span><span class="p">(</span><span class="no">Item</span><span class="p">)</span><span class="o">]</span><span class="p">)</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
-</span><span class='line'>  <span class="p">-</span> <span class="n">f</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="vi">@item</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">form_for</span><span class="p">(</span><span class="o">[</span><span class="ss">:admin</span><span class="p">,</span> <span class="vi">@item</span><span class="o">.</span><span class="n">becomes</span><span class="p">(</span><span class="no">Item</span><span class="p">)</span><span class="o">]</span><span class="p">)</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="p">-</span> <span class="n">f</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="vi">@item</span><span class="o">.</span><span class="n">becomes</span><span class="p">(</span><span class="vi">@item</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
 </span><span class='line'>  <span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span>
 </span><span class='line'>  <span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">select</span> <span class="ss">:type</span><span class="p">,</span> <span class="o">[</span><span class="no">Item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="no">SpecialItem</span><span class="o">.</span><span class="n">name</span><span class="o">]</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -77,9 +77,12 @@
 
 <p><a href="http://apidock.com/rails/ActiveRecord/Persistence/becomes">#becomes</a> changes the <code>SpecialItem</code> to an <code>Item</code> for the benefit of the record identification.</p>
 
-<p>But then the form will have a plain <code>Item</code>, so our <code>type</code> dropdown won&#8217;t pre-select &#8220;SpecialItem&#8221;. So to fix that, I restore the form object on line 2.</p>
+<p>But then the form will have a plain <code>Item</code>, so our <code>type</code> dropdown won&#8217;t pre-select &#8220;SpecialItem&#8221;. So to fix that, we restore the form object on line 2.</p>
 
-<p>Also note that I used <code>@item.dup</code> on line 1, because <code>#becomes</code> will otherwise mutate the attributes inside the original <code>@item</code>.</p>
+<p>Because <code>#becomes</code> mutates the attributes inside the original <code>@item</code>, we must use <code>#becomes</code> again on line 2.
+My first attempt was to do <code>@item.dup.becomes(Item)</code> on line 1 so the <code>@item</code> is untouched. But that breaks the form&#8217;s <code>@item.new_record?</code> check…</p>
+
+<p>Whatever you go with, make sure to test your forms, as this is fragile territory.</p>
 ]]></content>
     </entry>
   

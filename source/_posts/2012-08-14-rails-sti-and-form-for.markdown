@@ -39,14 +39,17 @@ The [Rails form helper guide](http://guides.rubyonrails.org/form_helpers.html) s
 You can, though, with some fiddling. This is what I just did:
 
 ``` haml _form.html.haml
-= form_for([:admin, @item.dup.becomes(Item)]) |f|
-  - f.object = @item
+= form_for([:admin, @item.becomes(Item)]) |f|
+  - f.object = @item.becomes(@item.class)
   = f.text_field :name
   = f.select :type, [Item.name, SpecialItem.name]
 ```
 
 [#becomes](http://apidock.com/rails/ActiveRecord/Persistence/becomes) changes the `SpecialItem` to an `Item` for the benefit of the record identification.
 
-But then the form will have a plain `Item`, so our `type` dropdown won't pre-select "SpecialItem". So to fix that, I restore the form object on line 2.
+But then the form will have a plain `Item`, so our `type` dropdown won't pre-select "SpecialItem". So to fix that, we restore the form object on line 2.
 
-Also note that I used `@item.dup` on line 1, because `#becomes` will otherwise mutate the attributes inside the original `@item`.
+Because `#becomes` mutates the attributes inside the original `@item`, we must use `#becomes` again on line 2.
+My first attempt was to do `@item.dup.becomes(Item)` on line 1 so the `@item` is untouched. But that breaks the form's `@item.new_record?` check…
+
+Whatever you go with, make sure to test your forms, as this is fragile territory.
