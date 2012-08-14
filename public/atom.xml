@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-08-12T11:02:18+02:00</updated>
+  <updated>2012-08-14T12:16:08+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -11,6 +11,75 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Rails STI and form_for]]></title>
+<link href="http://henrik.nyh.se/2012/08/rails-sti-and-form-for/"/>
+<updated>2012-08-14T12:15:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/08/rails-sti-and-form-for</id>
+
+      <content type="html"><![CDATA[<p>Rails&#8217; <code>form_for</code> conveniently uses &#8220;record identification&#8221; to figure out the correct URL based on the model:</p>
+
+<figure class='code'><figcaption><span>_form.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">form_for</span><span class="p">(</span><span class="o">[</span><span class="ss">:admin</span><span class="p">,</span> <span class="vi">@item</span><span class="o">]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This would become <code>POST admin_items_path</code> for a new record, or <code>PUT admin_item_path(@item)</code> for an existing record.</p>
+
+<p>But it can break when you use STI (Single Table Inheritance).</p>
+
+<figure class='code'><figcaption><span>items_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">edit</span>
+</span><span class='line'>  <span class="vi">@item</span> <span class="o">=</span> <span class="no">Item</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>  <span class="c1"># A SpecialItem record.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>_form.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">form_for</span><span class="p">(</span><span class="o">[</span><span class="ss">:admin</span><span class="p">,</span> <span class="vi">@item</span><span class="o">]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span>
+</span><span class='line'>  <span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">select</span> <span class="ss">:type</span><span class="p">,</span> <span class="o">[</span><span class="no">Item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="no">SpecialItem</span><span class="o">.</span><span class="n">name</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You want <code>admin_items_path</code> but Rails tries the non-existent <code>admin_special_items_path</code>.</p>
+
+<p>The <a href="http://guides.rubyonrails.org/form_helpers.html">Rails form helper guide</a> says you can&#8217;t rely on record identification with STI.</p>
+
+<p>You can, though, with some fiddling. This is what I just did:</p>
+
+<figure class='code'><figcaption><span>_form.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">form_for</span><span class="p">(</span><span class="o">[</span><span class="ss">:admin</span><span class="p">,</span> <span class="vi">@item</span><span class="o">.</span><span class="n">dup</span><span class="o">.</span><span class="n">becomes</span><span class="p">(</span><span class="no">Item</span><span class="p">)</span><span class="o">]</span><span class="p">)</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="p">-</span> <span class="n">f</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="vi">@item</span>
+</span><span class='line'>  <span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span>
+</span><span class='line'>  <span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">select</span> <span class="ss">:type</span><span class="p">,</span> <span class="o">[</span><span class="no">Item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="no">SpecialItem</span><span class="o">.</span><span class="n">name</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://apidock.com/rails/ActiveRecord/Persistence/becomes">#becomes</a> changes the <code>SpecialItem</code> to an <code>Item</code> for the benefit of the record identification.</p>
+
+<p>But then the form will have a plain <code>Item</code>, so our <code>type</code> dropdown won&#8217;t pre-select &#8220;SpecialItem&#8221;. So to fix that, I restore the form object on line 2.</p>
+
+<p>Also note that I used <code>@item.dup</code> on line 1, because <code>#becomes</code> will otherwise mutate the attributes inside the original <code>@item</code>.</p>
+]]></content>
+    </entry>
   
     <entry>
       
@@ -2083,41 +2152,6 @@ If you see something you like, you can create a <code>~/.vimrc.local</code> or <
 
 
 
-]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[git reset --soft as stash replacement and undo]]></title>
-<link href="http://henrik.nyh.se/2009/02/git-reset-soft-as-stash-replacement-and-undo/"/>
-<updated>2009-02-20T10:17:00+01:00</updated>
-<id>http://henrik.nyh.se/2009/02/git-reset-soft-as-stash-replacement-and-undo</id>
-
-      <content type="html"><![CDATA[<p>With <a href="http://git-scm.com/">Git</a>, if you have some work in progress and find you need to switch to another incompatible branch, you can <code>git stash</code> the changes and later restore them with <code>git stash pop</code>.</p>
-
-<p>However, I dislike having to remember I have something stashed. It&#8217;s easy to forget. (Idea: make the shell prompt indicate stash.) Instead, when I have work in progress, I just commit it as usual, with something like &#8220;WiP&#8221; as the message:</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>git commit -a -m <span class="s2">&quot;WiP&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>When I get back to a branch, find that the last commit is &#8220;WiP&#8221; and want to restore my previous state, I do</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>git reset --soft HEAD^
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This will leave the working tree in the WiP state, but roll back the current HEAD one commit, as though you never made that commit.</p>
-
-<p>Just remember not to share the branch with a WiP commit or someone else may build upon it and object when you rewrite history.</p>
-
-<p>More generally, <code>git reset --soft HEAD<sup></code></sup> is great for undoing non-pushed commits. If I realize I committed a file I shouldn&#8217;t have, I do a soft reset and then redo the commit properly. It can be easier than amending or interactively rebasing.</p>
 ]]></content>
     </entry>
   
