@@ -50,6 +50,6 @@ You can, though, with some fiddling. This is what I just did:
 But then the form will have a plain `Item`, so our `type` dropdown won't pre-select "SpecialItem". So to fix that, we restore the form object on line 2.
 
 Because `#becomes` mutates the attributes inside the original `@item`, we must use `#becomes` again on line 2.
-My first attempt was to do `@item.dup.becomes(Item)` on line 1 so the `@item` is untouched. But that breaks the form's `@item.new_record?` check…
+My first attempt was to do `@item.dup.becomes(Item)` on line 1 so the `@item` is untouched. But that breaks the form's `new_record?` check…
 
 Whatever you go with, make sure to test your forms, as this is fragile territory.
