@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-08-14T14:10:59+02:00</updated>
+  <updated>2012-08-19T01:23:20+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -11,6 +11,209 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[The Rails flash isn't just for messages]]></title>
+<link href="http://henrik.nyh.se/2012/08/the-rails-flash/"/>
+<updated>2012-08-19T01:00:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/08/the-rails-flash</id>
+
+      <content type="html"><![CDATA[<p><a href="http://guides.rubyonrails.org/action_controller_overview.html#the-flash">The Rails flash</a> is typically used for short messages:</p>
+
+<figure class='code'><figcaption><span>app/controllers/sessions_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">redirect_to</span> <span class="n">root_url</span><span class="p">,</span> <span class="n">notice</span><span class="p">:</span> <span class="s2">&quot;You have been logged out.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But it can be used for more than that, any time that you redirect and want to pass along some state without making it part of the URL.</p>
+
+<p>These are some things I&#8217;ve used it for.</p>
+
+<h2>Identifiers for more complex messages</h2>
+
+<p>Maybe you want to show a more complex message after signing up, containing things like links and bullet points.</p>
+
+<p>Rather than send all that in the flash, you can send some identifier that your views know how to handle.</p>
+
+<p>This could be the name of a partial:</p>
+
+<figure class='code'><figcaption><span>app/controllers/users_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">actually_create_user</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:partial</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;welcome&quot;</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">some_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">-</span> <span class="k">if</span> <span class="n">flash</span><span class="o">[</span><span class="ss">:partial</span><span class="o">]</span>
+</span><span class='line'>  <span class="p">=</span> <span class="n">render</span> <span class="n">partial</span><span class="p">:</span> <span class="s2">&quot;shared/flashes/</span><span class="si">#{</span><span class="n">flash</span><span class="o">[</span><span class="ss">:partial</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/shared/flashes/_welcome.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="nt">%p</span> Welcome!
+</span><span class='line'><span class="nt">%ul</span>
+</span><span class='line'>  <span class="nt">%li</span><span class="p">=</span> <span class="n">link_to</span><span class="p">(</span><span class="s2">&quot;Do this!&quot;</span><span class="p">,</span> <span class="n">this_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="nt">%li</span><span class="p">=</span> <span class="n">link_to</span><span class="p">(</span><span class="s2">&quot;Do that!&quot;</span><span class="p">,</span> <span class="n">that_path</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or just a flag:</p>
+
+<figure class='code'><figcaption><span>app/controllers/users_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">flash</span><span class="o">[</span><span class="ss">:signed_up</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'><span class="n">redirect_to</span> <span class="n">root_path</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/welcomes/show.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">-</span> <span class="k">if</span> <span class="n">flash</span><span class="o">[</span><span class="ss">:signed_up</span><span class="o">]</span>
+</span><span class='line'>  <span class="nt">%p</span> Welcome!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Pass on the referer</h2>
+
+<p>Say you have some filter redirecting incoming requests. Maybe you&#8217;re detecting the locale and adding it to the URL, or verifying credentials.</p>
+
+<p>You can use the flash to make sure the redirected-to controller gets the original referer.</p>
+
+<figure class='code'><figcaption><span>app/controllers/application_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:make_locale_explicit</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">make_locale_explicit</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:locale</span><span class="o">].</span><span class="n">blank?</span> <span class="o">&amp;&amp;</span> <span class="n">request</span><span class="o">.</span><span class="n">get?</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:referer</span><span class="o">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">referer</span>
+</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">params</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">locale</span><span class="p">:</span> <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, any controller that cares about the referer could get it with:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">flash</span><span class="o">[</span><span class="ss">:referer</span><span class="o">]</span> <span class="o">||</span> <span class="n">request</span><span class="o">.</span><span class="n">referer</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Google Analytics events</h2>
+
+<p>Say you want to track a <a href="https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide">Google Analytics event</a> event with JavaScript when a user has signed up.
+You could do something like this.</p>
+
+<p>Send event data from the controller in the flash:</p>
+
+<figure class='code'><figcaption><span>app/controllers/users_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">actually_create_user</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:events</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span> <span class="o">[</span><span class="s2">&quot;_trackEvent&quot;</span><span class="p">,</span> <span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="s2">&quot;signup&quot;</span><span class="o">]</span> <span class="o">]</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">some_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then turn it into JavaScript in your view:</p>
+
+<figure class='code'><figcaption><span>app/helpers/layout_helper.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">analytics_events</span>
+</span><span class='line'>  <span class="nb">Array</span><span class="p">(</span><span class="n">flash</span><span class="o">[</span><span class="ss">:events</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">event</span><span class="o">|</span>
+</span><span class='line'>    <span class="s2">&quot;_gaq.push(</span><span class="si">#{</span><span class="n">raw</span> <span class="n">event</span><span class="o">.</span><span class="n">to_json</span><span class="si">}</span><span class="s2">);&quot;</span>
+</span><span class='line'>  <span class="k">end</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="nd">:javascript</span>
+</span><span class='line'>  <span class="nd">= analytics_events</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The flash vs. params</h2>
+
+<p>You may have considered that any of the above could have be done with query parameters instead. Including common flash messages:</p>
+
+<figure class='code'><figcaption><span>app/controllers/sessions_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">redirect_to</span> <span class="n">root_url</span><span class="p">(</span><span class="n">notice</span><span class="p">:</span> <span class="s2">&quot;You have been logged out.&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.haml</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">-</span> <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span>
+</span><span class='line'>  <span class="nt">%p</span><span class="p">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using the flash means that the passed data doesn&#8217;t show in the URL, so it won&#8217;t happen twice if the link is shared, bookmarked or reloaded. Also the URL will be a little cleaner.</p>
+
+<p>Additionally, the user can&#8217;t manipulate the flash, as it&#8217;s stored in the session. This adds some protection. If the flash partial example above used <code>params</code>, a user could pass in <code>../../admin/some_partial</code> to see things they shouldn&#8217;t.</p>
+
+<h2>Fin</h2>
+
+<p>I&#8217;d love to hear about what unconventional uses you&#8217;ve put the flash to!</p>
+]]></content>
+    </entry>
   
     <entry>
       
@@ -2074,89 +2277,6 @@ If you see something you like, you can create a <code>~/.vimrc.local</code> or <
 <h2>Feedback</h2>
 
 <p>There are bound to be issues with the markup in the imported old posts. If you notice anything, let me know.</p>
-]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[Time zones and multidimensional grouping with Active Record and MySQL]]></title>
-<link href="http://henrik.nyh.se/2009/03/time-zones-and-multidimensional-grouping-with-active-record-and-mysql/"/>
-<updated>2009-03-26T12:37:00+01:00</updated>
-<id>http://henrik.nyh.se/2009/03/time-zones-and-multidimensional-grouping-with-active-record-and-mysql</id>
-
-      <content type="html"><![CDATA[<p>I&#8217;ve been writing a lot of statistics queries in Active Record/MySQL lately and noticed some possibly non-obvious things.</p>
-
-<h4>Time zones</h4>
-
-
-<p>Our database is configured to use UTC time. In Rails 2.1, we use <code>config.active_record.default_timezone = :utc</code>. In 2.3, I believe it&#8217;s <code>config.time_zone = 'UTC'</code>, and set that way by default.</p>
-
-<p>A lot of my statistics queries involved time ranges, grouping per day or only using data from a certain period. I found that a query like</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;created_at BETWEEN ? AND ?&#39;</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">beginning_of_day</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">end_of_day</span><span class="o">]</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>did not do any time zone conversions as you may expect. If <code>some_day.beginning_of_day</code> is a non-UTC local time (e.g. 00:00 on March 26th CET), that date and time is passed into the query as &#8220;2009-03-26 00:00:00&#8221; and compared to the UTC datetimes in the database.</p>
-
-<p>Instead, you should do</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;created_at BETWEEN ? AND ?&#39;</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">beginning_of_day</span><span class="o">.</span><span class="n">utc</span><span class="p">,</span> <span class="n">some_day</span><span class="o">.</span><span class="n">end_of_day</span><span class="o">.</span><span class="n">utc</span><span class="o">]</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In this case, &#8220;2009-03-25 23:00:00&#8221; would be passed into the query.</p>
-
-<p>If you want to do that another way, or to group on local-time dates, you could instead do something like</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="ss">:group</span> <span class="o">=&gt;</span> <span class="s1">&#39;DATE(CONVERT_TZ(created_at, &quot;UTC&quot;, &quot;CET&quot;))&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Without the conversion, it&#8217;d group on UTC dates instead of local CET dates. That would mean a customer that was created at 00:59 CET on March 26 would be grouped under March 25 instead.</p>
-
-<p>Note that you need to <a href="http://dev.mysql.com/doc/refman/5.1/en/time-zone-support.html">set up the MySQL time zone tables</a> with something like</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>On OS X with MySQL 5 from MacPorts, the invocation was</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mysql_tzinfo_to_sql5 /usr/share/zoneinfo | mysql -u root mysql
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Warnings about time zones that couldn&#8217;t be loaded are fine as long as they&#8217;re not the ones you&#8217;re using.</p>
-
-<p>You can convert time zones without those tables, but then you need to specify the UTC offset manually, and since it changes with daylight saving, I wouldn&#8217;t recommend it.</p>
-
-<h4>Multidimensional grouping</h4>
-
-
-<p>Another thing I noticed was that Active Record calculation queries (using e.g. <code>.count</code>) don&#8217;t seem to support grouping by multiple columns at once. It&#8217;s easy to do with <code>.all</code> and <code>#map</code>, though:</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Item</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
-</span><span class='line'>  <span class="ss">:select</span> <span class="o">=&gt;</span> <span class="s1">&#39;COUNT(*) AS count, age, gender&#39;</span><span class="p">,</span>
-</span><span class='line'>  <span class="ss">:group</span> <span class="o">=&gt;</span> <span class="s1">&#39;age, gender&#39;</span>
-</span><span class='line'><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="o">[</span><span class="n">i</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">gender</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">count</span><span class="o">.</span><span class="n">to_i</span><span class="o">]</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
     </entry>
   
