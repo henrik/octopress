@@ -1,0 +1,48 @@
+---
+layout: post
+title: "Don't include all helpers"
+date: 2012-08-30 22:30
+comments: true
+categories:
+  - Ruby on Rails
+---
+
+In Rails, all helpers are included in all views by default.
+
+So your `UsersHelper` methods are also available to your `ItemsController` views.
+
+I don't like having that much stuff in the same namespace. Method names may collide, or else require overlong method names.
+
+This setting makes things more sensible:
+
+``` ruby config/application.rb
+config.action_controller.include_all_helpers = false
+```
+
+`ApplicationHelper` is still included in all views. `Admin::UsersHelper` is only included in `Admin::UsersController` views. If that controller inherits from `Admin::BaseController`, then `Admin::BaseHelper` will be included as well.
+
+And here's a nice (and fairly obvious) trick: you can still use regular Ruby modules to organize your methods into more than one file.
+
+For example, I like to have a `LayoutHelper` that the application layout template can use:
+
+``` ruby app/helpers/layout_helper.rb
+module LayoutHelper
+  def some_layout_helper_method
+    "Flappity flippity."
+  end
+end
+```
+
+``` ruby app/helpers/application_helper.rb
+module ApplicationHelper
+  include LayoutHelper
+
+  def some_global_helper_method
+    "Hippity wippity."
+  end
+end
+```
+
+With `include_all_helpers` off, the `LayoutHelper` isn't automatically included anywhere. But by simply `include`ing it in the global `ApplicationHelper`, now its methods are global too.
+
+You get the benefits of splitting helpers into multiple files, without the downsides of having every helper available everywhere.
