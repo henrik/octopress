@@ -94,7 +94,7 @@ flash[:referer] || request.referer
 Say you want to track a [Google Analytics event](https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide) event with JavaScript when a user has signed up.
 You could do something like this.
 
-Send event data from the controller in the flash:
+Send event data from the controller:
 
 ``` ruby app/controllers/users_controller.rb
 class UsersController < ApplicationController

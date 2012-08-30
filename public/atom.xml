@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-08-19T01:23:20+02:00</updated>
+  <updated>2012-08-19T01:27:46+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -144,7 +144,7 @@
 <p>Say you want to track a <a href="https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide">Google Analytics event</a> event with JavaScript when a user has signed up.
 You could do something like this.</p>
 
-<p>Send event data from the controller in the flash:</p>
+<p>Send event data from the controller:</p>
 
 <figure class='code'><figcaption><span>app/controllers/users_controller.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
 <span class='line-number'>2</span>
