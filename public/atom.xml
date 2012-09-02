@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-08-30T22:30:24+02:00</updated>
+  <updated>2012-09-02T08:38:58+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -27,7 +27,7 @@
 
 <p>So your <code>UsersHelper</code> methods are also available to your <code>ItemsController</code> views.</p>
 
-<p>I don&#8217;t like having that much stuff in the same namespace. Method names may collide, or else require overlong method names.</p>
+<p>I don&#8217;t like having that much stuff in the same namespace. Method names may collide, or else need inelegant prefixes.</p>
 
 <p>This setting makes things more sensible:</p>
 

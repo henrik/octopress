@@ -11,7 +11,7 @@ In Rails, all helpers are included in all views by default.
 
 So your `UsersHelper` methods are also available to your `ItemsController` views.
 
-I don't like having that much stuff in the same namespace. Method names may collide, or else require overlong method names.
+I don't like having that much stuff in the same namespace. Method names may collide, or else need inelegant prefixes.
 
 This setting makes things more sensible:
 
