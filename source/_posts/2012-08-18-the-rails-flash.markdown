@@ -69,24 +69,29 @@ You can use the flash to make sure the redirected-to controller gets the origina
 
 ``` ruby app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
+  before_filter :keep_original_referer
   before_filter :make_locale_explicit
 
   private
 
   def make_locale_explicit
     if params[:locale].blank? && request.get?
-      flash[:referer] = request.referer
       redirect_to params.merge(locale: I18n.locale)
     end
+  end
+
+  def keep_original_referer
+    # Don't overwrite existing value, for redirect chains.
+    flash[:original_referer] ||= request.referer
+  end
+
+  def original_referer
+    flash[:original_referer]
   end
 end
 ```
 
-Now, any controller that cares about the referer could get it with:
-
-``` ruby
-flash[:referer] || request.referer
-```
+Now, any controller that cares about the referer could get it with `original_referer`.
 
 
 ## Google Analytics events

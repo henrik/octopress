@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-09-02T08:38:58+02:00</updated>
+  <updated>2012-09-06T18:42:31+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -185,27 +185,40 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:keep_original_referer</span>
 </span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:make_locale_explicit</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="kp">private</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">make_locale_explicit</span>
 </span><span class='line'>    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:locale</span><span class="o">].</span><span class="n">blank?</span> <span class="o">&amp;&amp;</span> <span class="n">request</span><span class="o">.</span><span class="n">get?</span>
-</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:referer</span><span class="o">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">referer</span>
 </span><span class='line'>      <span class="n">redirect_to</span> <span class="n">params</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">locale</span><span class="p">:</span> <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span><span class="p">)</span>
 </span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">keep_original_referer</span>
+</span><span class='line'>    <span class="c1"># Don&#39;t overwrite existing value, for redirect chains.</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:original_referer</span><span class="o">]</span> <span class="o">||=</span> <span class="n">request</span><span class="o">.</span><span class="n">referer</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">original_referer</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:original_referer</span><span class="o">]</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Now, any controller that cares about the referer could get it with:</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">flash</span><span class="o">[</span><span class="ss">:referer</span><span class="o">]</span> <span class="o">||</span> <span class="n">request</span><span class="o">.</span><span class="n">referer</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<p>Now, any controller that cares about the referer could get it with <code>original_referer</code>.</p>
 
 <h2>Google Analytics events</h2>
 
