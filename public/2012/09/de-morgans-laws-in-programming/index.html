@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Don't include all helpers - The Pug Automatic</title>
+  <title>De Morgan's laws in programming - The Pug Automatic</title>
   <meta name="author" content="Henrik Nyh">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://henrik.nyh.se/2012/08/helpers/">
+  <link rel="canonical" href="http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming/">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
@@ -66,7 +66,7 @@
   <header>
     <h1 class="entry-title">
 
-<a href="/2012/08/helpers/">Don't include all helpers</a>
+<a href="/2012/09/de-morgans-laws-in-programming/">De Morgan's laws in programming</a>
 
 </h1>
 
@@ -85,13 +85,13 @@
 
 
 
-Written <time datetime="2012-08-30T22:30:00+02:00" pubdate data-updated="true">August 30, 2012 at 22:30 CEST</time>.
+Written <time datetime="2012-09-19T22:00:00+02:00" pubdate data-updated="true">September 19, 2012 at 22:00 CEST</time>.
         
 
 <span class="categories">
   Tagged
   
-    <a class='category' href='/tag/ruby-on-rails/'>Ruby on Rails</a>.
+    <a class='category' href='/tag/general-programming/'>General programming</a>, <a class='category' href='/tag/logic/'>Logic</a>, <a class='category' href='/tag/ruby/'>Ruby</a>.
   
 </span>
 
@@ -101,60 +101,76 @@ Written <time datetime="2012-08-30T22:30:00+02:00" pubdate data-updated="true">A
   </header>
 
 
-<div class="entry-content"><p>In Rails, all helpers are included in all views by default.</p>
+<div class="entry-content"><p>I learned about <a href="http://en.wikipedia.org/wiki/De_Morgan's_laws">De Morgan&#8217;s laws</a> back in logic class.</p>
 
-<p>So your <code>UsersHelper</code> methods are also available to your <code>ItemsController</code> views.</p>
+<p>There&#8217;s two of them, and they&#8217;re very straightforward. All they say is that for any A and B, this is true:</p>
 
-<p>I don&#8217;t like having that much stuff in the same namespace. Method names may collide, or else need inelegant prefixes.</p>
-
-<p>This setting makes things more sensible:</p>
-
-<figure class='code'><figcaption><span>config/application.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">action_controller</span><span class="o">.</span><span class="n">include_all_helpers</span> <span class="o">=</span> <span class="kp">false</span>
+<figure class='code'><figcaption><span>de_morgans_laws.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">!</span><span class="p">(</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="o">!</span><span class="n">a</span> <span class="o">||</span> <span class="o">!</span><span class="n">b</span><span class="p">)</span>
+</span><span class='line'><span class="o">!</span><span class="p">(</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="o">!</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">b</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>ApplicationHelper</code> is still included in all views. <code>Admin::UsersHelper</code> is only included in <code>Admin::UsersController</code> views. If that controller inherits from <code>Admin::BaseController</code>, then <code>Admin::BaseHelper</code> will be included as well.</p>
+<p>Or in logical representation:</p>
 
-<p>And here&#8217;s a nice (and fairly obvious) trick: you can still use regular Ruby modules to organize your methods into more than one file.</p>
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>¬(A ∧ B) ⇔ (¬A) ∨ (¬B)
+</span><span class='line'>¬(A ∨ B) ⇔ (¬A) ∧ (¬B)</span></code></pre></td></tr></table></div></figure>
 
-<p>For example, I like to have a <code>LayoutHelper</code> that the application layout template can use:</p>
 
-<figure class='code'><figcaption><span>app/helpers/layout_helper.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<p>I&#8217;ve found them pretty useful in programming.</p>
+
+<p>Granted, they are fairly trivial and no more than you could figure out yourself with some thought.</p>
+
+<p>But having a name for these transformations means that you&#8217;re more likely to recognize when they can be applied, and quicker and more confident about applying them. No need to ponder the truth tables – De Morgan already did.</p>
+
+<p>So if you see this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">LayoutHelper</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">some_layout_helper_method</span>
-</span><span class='line'>    <span class="s2">&quot;Flappity flippity.&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="o">!</span><span class="n">funny?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cute?</span>
+</span><span class='line'>  <span class="n">destroy</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>You know straight off that this is equivalent:</p>
 
-
-<figure class='code'><figcaption><span>app/helpers/application_helper.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ApplicationHelper</span>
-</span><span class='line'>  <span class="kp">include</span> <span class="no">LayoutHelper</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">some_global_helper_method</span>
-</span><span class='line'>    <span class="s2">&quot;Hippity wippity.&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">funny?</span> <span class="o">||</span> <span class="n">cute?</span>
+</span><span class='line'>  <span class="n">destroy</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>With <code>include_all_helpers</code> off, the <code>LayoutHelper</code> isn&#8217;t automatically included anywhere. But by simply <code>include</code>ing it in the global <code>ApplicationHelper</code>, now its methods are global too.</p>
+<p>And if you see this:</p>
 
-<p>You get the benefits of splitting helpers into multiple files, without the downsides of having every helper available everywhere.</p>
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="o">!</span><span class="n">big?</span> <span class="o">||</span> <span class="o">!</span><span class="n">heavy?</span>
+</span><span class='line'>  <span class="n">send_as_letter</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You won&#8217;t hesitate to change it to:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">big?</span> <span class="o">&amp;&amp;</span> <span class="n">heavy?</span>
+</span><span class='line'>  <span class="n">send_as_letter</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;m very curious to hear about other rules of logic or mathematics or otherwise that you&#8217;ve found generally useful in programming, and that might not be widely known.</p>
 </div>
 
 
@@ -176,15 +192,10 @@ Written <time datetime="2012-08-30T22:30:00+02:00" pubdate data-updated="true">A
     
     <p class="meta">
       
-        <p>
-          <strong>Newer:</strong>
-          <a href="/2012/09/de-morgans-laws-in-programming/">De Morgan's laws in programming</a>
-        </p>
-      
       
         <p>
           <strong>Older:</strong>
-          <a href="/2012/08/the-rails-flash/">The Rails flash isn't just for messages</a>
+          <a href="/2012/08/helpers/">Don't include all helpers</a>
         </p>
       
     </p>
@@ -284,8 +295,8 @@ Written <time datetime="2012-08-30T22:30:00+02:00" pubdate data-updated="true">A
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://henrik.nyh.se/2012/08/helpers/';
-        var disqus_url = 'http://henrik.nyh.se/2012/08/helpers/';
+        var disqus_identifier = 'http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming/';
+        var disqus_url = 'http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming/';
         var disqus_script = 'embed.js';
       
     (function () {

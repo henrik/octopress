@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-09-06T18:42:31+02:00</updated>
+  <updated>2012-09-19T22:19:51+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -11,6 +11,90 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[De Morgan's laws in programming]]></title>
+<link href="http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming/"/>
+<updated>2012-09-19T22:00:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming</id>
+
+      <content type="html"><![CDATA[<p>I learned about <a href="http://en.wikipedia.org/wiki/De_Morgan's_laws">De Morgan&#8217;s laws</a> back in logic class.</p>
+
+<p>There&#8217;s two of them, and they&#8217;re very straightforward. All they say is that for any A and B, this is true:</p>
+
+<figure class='code'><figcaption><span>de_morgans_laws.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">!</span><span class="p">(</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="o">!</span><span class="n">a</span> <span class="o">||</span> <span class="o">!</span><span class="n">b</span><span class="p">)</span>
+</span><span class='line'><span class="o">!</span><span class="p">(</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="o">!</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">b</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or in logical representation:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='plain'><span class='line'>¬(A ∧ B) ⇔ (¬A) ∨ (¬B)
+</span><span class='line'>¬(A ∨ B) ⇔ (¬A) ∧ (¬B)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;ve found them pretty useful in programming.</p>
+
+<p>Granted, they are fairly trivial and no more than you could figure out yourself with some thought.</p>
+
+<p>But having a name for these transformations means that you&#8217;re more likely to recognize when they can be applied, and quicker and more confident about applying them. No need to ponder the truth tables – De Morgan already did.</p>
+
+<p>So if you see this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="o">!</span><span class="n">funny?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cute?</span>
+</span><span class='line'>  <span class="n">destroy</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You know straight off that this is equivalent:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">funny?</span> <span class="o">||</span> <span class="n">cute?</span>
+</span><span class='line'>  <span class="n">destroy</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And if you see this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="o">!</span><span class="n">big?</span> <span class="o">||</span> <span class="o">!</span><span class="n">heavy?</span>
+</span><span class='line'>  <span class="n">send_as_letter</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You won&#8217;t hesitate to change it to:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">big?</span> <span class="o">&amp;&amp;</span> <span class="n">heavy?</span>
+</span><span class='line'>  <span class="n">send_as_letter</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;m very curious to hear about other rules of logic or mathematics or otherwise that you&#8217;ve found generally useful in programming, and that might not be widely known.</p>
+]]></content>
+    </entry>
   
     <entry>
       
@@ -2212,68 +2296,6 @@ If you see something you like, you can create a <code>~/.vimrc.local</code> or <
 <p>The command is available as <a href="http://gist.github.com/129167">a Gist</a>. <a href="http://gist.github.com/gists/129167/download">Download it</a>, unpack it and double-click <code>Open Finder.tmCommand</code> to install.</p>
 
 <p>I think I&#8217;ve written a command for this before, but I couldn&#8217;t find it, so I made a new one. If you have my old command, it would be interesting to see.</p>
-]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[VNC Stacks in OS X]]></title>
-<link href="http://henrik.nyh.se/2009/06/vnc-stacks/"/>
-<updated>2009-06-12T21:10:00+02:00</updated>
-<id>http://henrik.nyh.se/2009/06/vnc-stacks</id>
-
-      <content type="html"><![CDATA[<p><img src="https://dl.dropbox.com/u/546793/blog/2009-06-vnc-stack.png" alt="VNC stack screenshot" /></p>
-
-<p>OS X Leopard comes with a VNC client, <code>/System/Library/CoreServices/Screen Sharing.app</code>.</p>
-
-<p>Connecting to favorite servers isn&#8217;t as easy as it should be. If the remote computer is in your local network, you can click &#8220;Share Screen&#8221; in Finder. You can also type a <code>vnc://</code> URI in a browser, do <code>open vnc://…</code> from Terminal etc.</p>
-
-<p>As has been blogged <a href="http://lifehacker.com/software/remote-control/add-more-functionality-to-leopards-screen-sharing-334759.php">elsewhere</a>, you can run</p>
-
-<pre><code>defaults write com.apple.ScreenSharing ShowBonjourBrowser_Debug 1
-</code></pre>
-
-<p>in Terminal to see a list of local and manually added computers on launching Screen Sharing. Turn it off again with</p>
-
-<pre><code>defaults write com.apple.ScreenSharing ShowBonjourBrowser_Debug 0
-</code></pre>
-
-<p>What&#8217;s less well known is that you can drag the computer names from this list to e.g. the desktop. This creates a <code>.vncloc</code> shortcut file. Double-click it to connect to that computer.</p>
-
-<p>If you don&#8217;t want to bother with the Bonjour browser, you can create them manually. They look like this:</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-</span><span class='line'><span class="cp">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span>
-</span><span class='line'><span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'><span class="nt">&lt;dict&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;key&gt;</span>URL<span class="nt">&lt;/key&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;string&gt;</span>vnc://Nyx.local.<span class="nt">&lt;/string&gt;</span>
-</span><span class='line'><span class="nt">&lt;/dict&gt;</span>
-</span><span class='line'><span class="nt">&lt;/plist&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Just change the URI.</p>
-
-<p>These shortcuts are handy, but I don&#8217;t like them on my desktop, so I put them in a Stack.</p>
-
-<p>First, I created a <code>~/Library/Remote Machines</code> directory and put the shortcuts in there. Then, I dragged it to the right-hand side (or bottom, in my case) of the dock, next to the Trash, where Stacks go.</p>
-
-<p>That&#8217;s it, really. The effect is a nice menu for your VNC favorites.</p>
-
-<p>To make it look nicer, find an icon in <code>/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources</code>. It&#8217;s one of the <code>com.apple.</code> files for a Mac, or <code>public.generic-pc</code> otherwise. Select the icon, run <code class="kb">⌘I</code>. Click the icon in the top left of the info pane (not the proxy icon in the title bar) so that it&#8217;s highlighted, and copy it with <code class="kb">⌘C</code>. Select the <code>.vncloc</code> file, run <code class="kb">⌘I</code>, select its icon and paste with <code class="kb">⌘V</code>. Done!</p>
 ]]></content>
     </entry>
   
