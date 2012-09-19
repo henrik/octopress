@@ -63,4 +63,4 @@ unless big? && heavy?
 end
 ```
 
-I'm very curious to hear about other rules of logic or mathematics or otherwise that you've found generally useful in programming, and that might not be widely known.
+I'm very curious to hear about other transformation rules of logic or mathematics or similar that you've found generally useful in programming, and that might not be widely known.
