@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-09-19T22:21:48+02:00</updated>
+  <updated>2012-09-20T08:33:32+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -44,7 +44,7 @@
 
 <p>I&#8217;ve found them pretty useful in programming.</p>
 
-<p>Granted, they are fairly trivial and no more than you could figure out yourself with some thought.</p>
+<p>Granted, they are fairly trivial and no more than you could figure out yourself with some thinking.</p>
 
 <p>But having a name for these transformations means that you&#8217;re more likely to recognize when they can be applied, and quicker and more confident about applying them. No need to ponder the truth tables – De Morgan already did.</p>
 

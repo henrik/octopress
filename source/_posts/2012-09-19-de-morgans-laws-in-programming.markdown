@@ -27,7 +27,7 @@ Or in logical representation:
 
 I've found them pretty useful in programming.
 
-Granted, they are fairly trivial and no more than you could figure out yourself with some thought.
+Granted, they are fairly trivial and no more than you could figure out yourself with some thinking.
 
 But having a name for these transformations means that you're more likely to recognize when they can be applied, and quicker and more confident about applying them. No need to ponder the truth tables – De Morgan already did.
 
