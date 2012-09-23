@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-09-20T08:33:32+02:00</updated>
+  <updated>2012-09-23T21:04:32+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -11,6 +11,54 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Brackets in regular expressions]]></title>
+<link href="http://henrik.nyh.se/2012/09/brackets-in-regular-expressions/"/>
+<updated>2012-09-23T21:00:00+02:00</updated>
+<id>http://henrik.nyh.se/2012/09/brackets-in-regular-expressions</id>
+
+      <content type="html"><![CDATA[<p>For some reason, people often seem to confuse <code>()</code> and <code>[]</code> in regular expressions.</p>
+
+<p>Say you want to match only the strings &#8220;bar&#8221; and &#8220;car&#8221;.</p>
+
+<p>I sometimes see this mistake:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/[b|c]ar/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It will indeed match &#8220;bar&#8221; and &#8220;car&#8221; as intended. But it will also match &#8220;|ar&#8221;.</p>
+
+<p>Round parentheses do grouping (and capture groups, and some other things). Within the group, you can use <code>|</code> for alternation. So this would work as expected:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/(b|c)ar/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But square brackets are <em>not</em> the same as round brackets. Square brackets are syntax sugar for character-level alternation.</p>
+
+<p><code>[abcd]</code> is syntax sugar that effectively expands to <code>(a|b|c|d)</code>.</p>
+
+<p>So if you do <code>[b|c]</code>, that&#8217;s syntax sugar for <code>(b|\||c)</code>. Probably not what you want.</p>
+
+<p>Instead do this:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/[bc]ar/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+    </entry>
   
     <entry>
       
@@ -2269,33 +2317,6 @@ If you see something you like, you can create a <code>~/.vimrc.local</code> or <
 <p>See it in the context of <a href="http://userscripts.org/scripts/review/4169">a real userscript</a>.</p>
 
 <p>Many thanks to <a href="http://ecmanaut.blogspot.com/">Johan Sundström</a> who did most of the work figuring this out.</p>
-]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[TextMate "Open Finder" command]]></title>
-<link href="http://henrik.nyh.se/2009/06/tm-open-finder/"/>
-<updated>2009-06-13T11:55:00+02:00</updated>
-<id>http://henrik.nyh.se/2009/06/tm-open-finder</id>
-
-      <content type="html"><![CDATA[<p><a href="http://macromates.com">TextMate</a> comes with an &#8220;Open Terminal&#8221; (<code class="kb">⌃⇧O</code>) command, in the Shell Script bundle.</p>
-
-<p>This command will open a new Terminal window in the directory of the active TextMate file. Quite handy.</p>
-
-<p>I made an &#8220;Open Finder&#8221; (<code class="kb">⌃⇧O</code>) command to go with it. The command goes into the &#8220;TextMate&#8221; bundle.</p>
-
-<p>If you have a file open or selected in the project drawer, its containing directory is opened in Finder with the file selected (the OS X term is &#8220;revealed&#8221;). With a directory, it&#8217;s just plain opened in Finder. With an unsaved file, your home directory is opened.</p>
-
-<p>Both commands intentionally have the same shortcut, so TextMate presents you with a disambiguation menu. &#8220;Open Terminal&#8221; can be triggered with <code class="kb">⌃⇧O</code>, then <code class="kb">1</code> or <code class="kb">T</code>, then <code class="kb">↩</code> and &#8220;Open Finder&#8221; with <code class="kb">⌃⇧O</code>, then <code class="kb">2</code> or <code class="kb">F</code>, then <code class="kb">↩</code>.</p>
-
-<p>The command is available as <a href="http://gist.github.com/129167">a Gist</a>. <a href="http://gist.github.com/gists/129167/download">Download it</a>, unpack it and double-click <code>Open Finder.tmCommand</code> to install.</p>
-
-<p>I think I&#8217;ve written a command for this before, but I couldn&#8217;t find it, so I made a new one. If you have my old command, it would be interesting to see.</p>
 ]]></content>
     </entry>
   

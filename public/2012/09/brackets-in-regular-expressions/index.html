@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>De Morgan's laws in programming - The Pug Automatic</title>
+  <title>Brackets in regular expressions - The Pug Automatic</title>
   <meta name="author" content="Henrik Nyh">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming/">
+  <link rel="canonical" href="http://henrik.nyh.se/2012/09/brackets-in-regular-expressions/">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="The Pug Automatic" type="application/atom+xml">
@@ -66,7 +66,7 @@
   <header>
     <h1 class="entry-title">
 
-<a href="/2012/09/de-morgans-laws-in-programming/">De Morgan's laws in programming</a>
+<a href="/2012/09/brackets-in-regular-expressions/">Brackets in regular expressions</a>
 
 </h1>
 
@@ -85,13 +85,13 @@
 
 
 
-Written <time datetime="2012-09-19T22:00:00+02:00" pubdate data-updated="true">September 19, 2012 at 22:00 CEST</time>.
+Written <time datetime="2012-09-23T21:00:00+02:00" pubdate data-updated="true">September 23, 2012 at 21:00 CEST</time>.
         
 
 <span class="categories">
   Tagged
   
-    <a class='category' href='/tag/general-programming/'>General programming</a>, <a class='category' href='/tag/logic/'>Logic</a>, <a class='category' href='/tag/ruby/'>Ruby</a>.
+    <a class='category' href='/tag/regular-expressions/'>Regular expressions</a>.
   
 </span>
 
@@ -101,76 +101,40 @@ Written <time datetime="2012-09-19T22:00:00+02:00" pubdate data-updated="true">S
   </header>
 
 
-<div class="entry-content"><p>I learned about <a href="http://en.wikipedia.org/wiki/De_Morgan's_laws">De Morgan&#8217;s laws</a> back in logic class.</p>
+<div class="entry-content"><p>For some reason, people often seem to confuse <code>()</code> and <code>[]</code> in regular expressions.</p>
 
-<p>There&#8217;s two of them, and they&#8217;re very straightforward. All they say is that for any A and B, this is true:</p>
+<p>Say you want to match only the strings &#8220;bar&#8221; and &#8220;car&#8221;.</p>
 
-<figure class='code'><figcaption><span>de_morgans_laws.rb</span></figcaption><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">!</span><span class="p">(</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="o">!</span><span class="n">a</span> <span class="o">||</span> <span class="o">!</span><span class="n">b</span><span class="p">)</span>
-</span><span class='line'><span class="o">!</span><span class="p">(</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="o">!</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">b</span><span class="p">)</span>
+<p>I sometimes see this mistake:</p>
+
+<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/[b|c]ar/</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Or in logical representation:</p>
+<p>It will indeed match &#8220;bar&#8221; and &#8220;car&#8221; as intended. But it will also match &#8220;|ar&#8221;.</p>
+
+<p>Round parentheses do grouping (and capture groups, and some other things). Within the group, you can use <code>|</code> for alternation. So this would work as expected:</p>
 
 <figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='plain'><span class='line'>¬(A ∧ B) ⇔ (¬A) ∨ (¬B)
-</span><span class='line'>¬(A ∨ B) ⇔ (¬A) ∧ (¬B)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I&#8217;ve found them pretty useful in programming.</p>
-
-<p>Granted, they are fairly trivial and no more than you could figure out yourself with some thinking.</p>
-
-<p>But having a name for these transformations means that you&#8217;re more likely to recognize when they can be applied, and quicker and more confident about applying them. No need to ponder the truth tables – De Morgan already did.</p>
-
-<p>So if you see this:</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="o">!</span><span class="n">funny?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cute?</span>
-</span><span class='line'>  <span class="n">destroy</span>
-</span><span class='line'><span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/(b|c)ar/</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You know straight off that this is equivalent:</p>
+<p>But square brackets are <em>not</em> the same as round brackets. Square brackets are syntax sugar for character-level alternation.</p>
+
+<p><code>[abcd]</code> is syntax sugar that effectively expands to <code>(a|b|c|d)</code>.</p>
+
+<p>So if you do <code>[b|c]</code>, that&#8217;s syntax sugar for <code>(b|\||c)</code>. Probably not what you want.</p>
+
+<p>Instead do this:</p>
 
 <figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">funny?</span> <span class="o">||</span> <span class="n">cute?</span>
-</span><span class='line'>  <span class="n">destroy</span>
-</span><span class='line'><span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/[bc]ar/</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>And if you see this:</p>
 
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="o">!</span><span class="n">big?</span> <span class="o">||</span> <span class="o">!</span><span class="n">heavy?</span>
-</span><span class='line'>  <span class="n">send_as_letter</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You won&#8217;t hesitate to change it to:</p>
-
-<figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="n">big?</span> <span class="o">&amp;&amp;</span> <span class="n">heavy?</span>
-</span><span class='line'>  <span class="n">send_as_letter</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I&#8217;m very curious to hear about other transformation rules of logic or mathematics or similar that you&#8217;ve found generally useful in programming, and that might not be widely known.</p>
 </div>
 
 
@@ -192,15 +156,10 @@ Written <time datetime="2012-09-19T22:00:00+02:00" pubdate data-updated="true">S
     
     <p class="meta">
       
-        <p>
-          <strong>Newer:</strong>
-          <a href="/2012/09/brackets-in-regular-expressions/">Brackets in regular expressions</a>
-        </p>
-      
       
         <p>
           <strong>Older:</strong>
-          <a href="/2012/08/helpers/">Don't include all helpers</a>
+          <a href="/2012/09/de-morgans-laws-in-programming/">De Morgan's laws in programming</a>
         </p>
       
     </p>
@@ -300,8 +259,8 @@ Written <time datetime="2012-09-19T22:00:00+02:00" pubdate data-updated="true">S
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming/';
-        var disqus_url = 'http://henrik.nyh.se/2012/09/de-morgans-laws-in-programming/';
+        var disqus_identifier = 'http://henrik.nyh.se/2012/09/brackets-in-regular-expressions/';
+        var disqus_url = 'http://henrik.nyh.se/2012/09/brackets-in-regular-expressions/';
         var disqus_script = 'embed.js';
       
     (function () {
