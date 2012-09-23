@@ -3,7 +3,7 @@
   <title><![CDATA[The Pug Automatic]]></title>
   <link href="http://henrik.nyh.se/atom.xml" rel="self"/>
   <link href="http://henrik.nyh.se/"/>
-  <updated>2012-09-23T21:04:32+02:00</updated>
+  <updated>2012-09-23T21:08:56+02:00</updated>
   <id>http://henrik.nyh.se/</id>
   <author>
     <name><![CDATA[Henrik Nyh]]></name>
@@ -36,7 +36,7 @@
 
 <p>It will indeed match &#8220;bar&#8221; and &#8220;car&#8221; as intended. But it will also match &#8220;|ar&#8221;.</p>
 
-<p>Round parentheses do grouping (and capture groups, and some other things). Within the group, you can use <code>|</code> for alternation. So this would work as expected:</p>
+<p>Round brackets do grouping (and capture groups, and some other things). Within the group, you can use <code>|</code> for alternation. So this would work as expected:</p>
 
 <figure class='code'><div class='highlight'><table><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">/(b|c)ar/</span>
@@ -45,7 +45,7 @@
 
 <p>But square brackets are <em>not</em> the same as round brackets. Square brackets are syntax sugar for character-level alternation.</p>
 
-<p><code>[abcd]</code> is syntax sugar that effectively expands to <code>(a|b|c|d)</code>.</p>
+<p><code>[abcd]</code> effectively expands to <code>(a|b|c|d)</code>.</p>
 
 <p>So if you do <code>[b|c]</code>, that&#8217;s syntax sugar for <code>(b|\||c)</code>. Probably not what you want.</p>
 

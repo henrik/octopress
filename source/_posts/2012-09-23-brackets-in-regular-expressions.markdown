@@ -19,7 +19,7 @@ I sometimes see this mistake:
 
 It will indeed match "bar" and "car" as intended. But it will also match "|ar".
 
-Round parentheses do grouping (and capture groups, and some other things). Within the group, you can use `|` for alternation. So this would work as expected:
+Round brackets do grouping (and capture groups, and some other things). Within the group, you can use `|` for alternation. So this would work as expected:
 
 ``` ruby
 /(b|c)ar/
@@ -27,7 +27,7 @@ Round parentheses do grouping (and capture groups, and some other things). Withi
 
 But square brackets are *not* the same as round brackets. Square brackets are syntax sugar for character-level alternation.
 
-`[abcd]` is syntax sugar that effectively expands to `(a|b|c|d)`.
+`[abcd]` effectively expands to `(a|b|c|d)`.
 
 So if you do `[b|c]`, that's syntax sugar for `(b|\||c)`. Probably not what you want.
 
