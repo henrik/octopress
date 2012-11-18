@@ -24,8 +24,8 @@ I like reading, running, the gym, travel, cooking, baking, photography and pugs,
 
 ## This blog
 
-This blog is powered by [Octopress](http://octopress.org), with a customized theme.
+This blog is powered by [Octopress](http://octopress.org), with a customized theme. I assert my copyright over the customizations and ask that you make your own.
 
-Unless otherwise noted, all code I publish is under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
+Unless otherwise noted, all code I publish is under the [MIT License](http://en.wikipedia.org/wiki/MIT_License) and graphics (but not the blog art itself) under the [CC BY License](http://creativecommons.org/licenses/by/3.0/).
 
 As for the name, I simply like pugs and automation.
