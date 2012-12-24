@@ -141,7 +141,7 @@ Those are admittedly not very strong arguments against modules. But since extrac
 
 I've found extracting classes this way to be very low cost and high yield. It's very little extra code and takes very little extra time. It's very little extra indirection and not hard to follow.
 
-As with any other technique, it's not always the answer. It is probably not worth it for a few lines of code that rarely change.
+As with any other technique, it's not always the answer. It might not be worth it for a method that's just a few lines of code. The more code, the more obviously it's a responsibility worth separating.
 
 For further reading, see the [single responsibility principle (SRP)](http://en.wikipedia.org/wiki/Single_responsibility_principle) and the [Extract Class refactoring](http://en.wikipedia.org/wiki/Extract_class).
 
