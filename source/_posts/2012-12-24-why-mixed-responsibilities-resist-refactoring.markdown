@@ -145,6 +145,6 @@ As with any other technique, it's not always the answer. It might not be worth i
 
 The important thing is to be aware that mixed responsibilities resist refactoring, so you consider extraction in situations like the above.
 
-For further reading, see the [single responsibility principle (SRP)](http://en.wikipedia.org/wiki/Single_responsibility_principle) and the [Extract Class refactoring](http://en.wikipedia.org/wiki/Extract_class).
+For further reading, see: [single responsibility principle (SRP)](http://en.wikipedia.org/wiki/Single_responsibility_principle), [the Extract Class refactoring](http://en.wikipedia.org/wiki/Extract_class), [the Replace Method with Method Object refactoring](http://sourcemaking.com/refactoring/replace-method-with-method-object).
 
 This post was inspired by discussion on the [Ruby Rogues Parley mailing list](http://rubyrogues.com/). I can really recommend it if you like discussing higher-level subjects like object design, testing strategies and music for hackers.
