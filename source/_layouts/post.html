@@ -5,7 +5,9 @@ single: true
 
 <div>
 {% include post/variables.html %}
-<article class="hentry {% if linklog %}linklog{% endif %}" role="article">
+<!-- itemscope and itemtype is for Wordnik. -->
+<article class="hentry {% if linklog %}linklog{% endif %}" role="article" itemscope="" itemtype="http://nik.io/v1/schema/Article">
+  <span itemprop="permalink" content="{{permalink}}"></span>
   {% include article.html %}
   <footer>
     <p class="meta">
