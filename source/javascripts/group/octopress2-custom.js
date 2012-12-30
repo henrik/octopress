@@ -11,6 +11,8 @@ $(function() {
   if (isTouchDevice) return;
 
   var $container = $("#blog-archives");
+  if (!$container.length) return;
+
   var $headers = $container.find("h2");
   var originalPosition = $headers.css("position");
   var originalTop = $headers.css("top");
