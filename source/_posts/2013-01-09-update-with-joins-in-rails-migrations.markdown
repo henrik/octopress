@@ -17,7 +17,7 @@ Note that this is for Postgres. The syntax likely differs for other database eng
 
 It took me a while to figure out the syntax the first time I did it, though, so here it is for reference.
 
-In this contrived example, an order belongs to an item which belongs to a company, and you want to assign every order's `company_code` from its item's company's `code`.
+In this contrived example, an order belongs to an item which belongs to a company, and you want to set every order's `company_code` from its item's company's `code`.
 
 ``` ruby
 class MyMigration < ActiveRecord::Migration
