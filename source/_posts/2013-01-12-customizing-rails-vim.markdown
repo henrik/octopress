@@ -14,7 +14,7 @@ I read through `:help rails.txt` to see if Rails.vim included anything useful th
 The biggest discovery was how customizable it is.
 
 
-## Customize `:A` alternate file mappings
+## Customize alternate file mappings
 
 Rails.vim lets you jump between "alternate files" with `:A`. Typically, that's something like `app/models/item.rb` ↔ `spec/models/item_spec.rb`.
 
