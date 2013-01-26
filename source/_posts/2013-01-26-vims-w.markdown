@@ -1,0 +1,24 @@
+---
+layout: post
+title: "Vim's :w"
+date: 2013-01-26 20:40
+comments: true
+categories:
+  - Vim
+---
+
+I keep discovering neat things you can do in Vim.
+
+Every Vim user knows you can save the current buffer with `:w`.
+
+But you can also pass a filename: `:w ~/my.backup`. Then the contents of the current buffer are written to that file. It happens in the background, so to speak – the filename of the current buffer doesn't change, unlike `:saveas`.
+
+If you make a visual selection first, only those lines are written to the specified file.
+
+I've used this for two things:
+
+To copy and paste between two Vim sessions. I do `:w /tmp/x` in one Vim, and `:r /tmp/x` (or `:read /tmp/x`) in the other.
+
+And just now, I realized I could use it to break one file into two. I had some secret authentication info alongside some experimental code. I wanted to start version controlling that code, so I needed to extract the secrets. I visually selected those lines, did `:w ~/.secret.rb` and then replaced the lines with `require "~/.secret.rb"`. Reminds me of the useful [`:Rextract` in Rails.vim](https://github.com/tpope/vim-rails#readme), but built in.
+
+Something else I discovered in `:help :w`, but haven't put to use yet, is `:w >> /some/file` to append.
