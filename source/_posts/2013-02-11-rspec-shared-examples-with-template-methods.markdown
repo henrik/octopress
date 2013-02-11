@@ -10,11 +10,11 @@ categories:
 
 It's pretty common to have multiple tests that are nearly the same.
 
-In one app, we support bidding on both online and hammer auctions (auctions with people physically present). They're separate controllers but with a lot of shared code and behavior.
+In one app, we support bidding on both online and hammer auctions (live auctions with online pre-bidding). They're in distinct controllers but with a lot of shared code and behavior.
 
 We want to test both, but we'd rather not write two almost identical tests if we can help it.
 
-So we've been using RSpec shared examples, with the [template method pattern](http://en.wikipedia.org/wiki/Template_method_pattern) to account for the differences, and we like it.
+So we've been using RSpec shared examples, with the [template method pattern](http://en.wikipedia.org/wiki/Template_method_pattern) to account for the differences.
 
 Here's a simplified example:
 
