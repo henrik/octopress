@@ -23,12 +23,12 @@ require "spec_helper"
 require "support/shared_examples/bidding"
 
 describe "Bidding online" do
-  include_examples :bidding
+  include_examples :bidding do
+    let(:auction) { FactoryGirl.create(:online_auction) }
 
-  let(:auction) { FactoryGirl.create(:online_auction) }
-
-  def auction_path
-    online_auction_path(auction)
+    def auction_path
+      online_auction_path(auction)
+    end
   end
 end
 ```
@@ -38,12 +38,12 @@ require "spec_helper"
 require "support/shared_examples/bidding"
 
 describe "Bidding at hammer auction" do
-  include_examples :bidding
+  include_examples :bidding do
+    let(:auction) { FactoryGirl.create(:hammer_auction) }
 
-  let(:auction) { FactoryGirl.create(:hammer_auction) }
-
-  def auction_path
-    hammer_auction_path(auction)
+    def auction_path
+      hammer_auction_path(auction)
+    end
   end
 end
 ```
