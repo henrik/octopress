@@ -11,7 +11,7 @@ categories:
   - Ajax
 ---
 
-The [Capybara](https://github.com/jnicklas/capybara) testing library has [built-in functionality for waiting on asynchronous (Ajax) JavaScript](https://github.com/jnicklas/capybara#asynchronous-javascript-ajax-and-friends).
+The [Capybara](https://github.com/jnicklas/capybara) testing library has [built-in functionality for waiting on asynchronous JavaScript (Ajax)](https://github.com/jnicklas/capybara#asynchronous-javascript-ajax-and-friends).
 
 For example, this works:
 
