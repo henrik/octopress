@@ -13,7 +13,7 @@ categories:
 
 The [Capybara](https://github.com/jnicklas/capybara) testing library has [built-in functionality for waiting on asynchronous JavaScript (Ajax)](https://github.com/jnicklas/capybara#asynchronous-javascript-ajax-and-friends).
 
-For example, this works:
+For example, this works even if the content is added by Ajax:
 
 ``` ruby
 click_link("Add to favorites")
@@ -53,7 +53,7 @@ def wait_for_ajax_completion
 end
 ```
 
-``` ruby spec/request/favoriting_spec.rb
+``` ruby spec/requests/favoriting_spec.rb
 Favorite.count.should == 0
 click_link("Add to favorites")
 page.should have_content("Added to favorites")
