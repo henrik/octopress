@@ -26,7 +26,7 @@ class Subscription
 end
 ```
 
-You might use [`merge`](http://apidock.com/rails/ActiveRecord/SpawnMethods/merge) and do something like:
+You might use Active Record's [`merge`](http://apidock.com/rails/ActiveRecord/SpawnMethods/merge) and do something like:
 
 ``` ruby
 class User < ActiveRecord::Base
