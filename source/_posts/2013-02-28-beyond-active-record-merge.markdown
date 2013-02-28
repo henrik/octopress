@@ -12,7 +12,7 @@ If you want maintainable, loosely coupled classes, you must mind what they know 
 
 For example, you don't want one Active Record model to know a lot about the schema of another.
 
-## `merge`
+## Using `merge`
 
 Instead of this:
 
