@@ -16,24 +16,28 @@ For example, you don't want one Active Record model to know a lot about the sche
 
 Instead of this:
 
-``` ruby
+``` ruby app/models/user.rb
 class User < ActiveRecord::Base
   has_one :subscription
   scope :with_active_subscription, joins(:subscription).where("subscriptions.active" => true)
 end
+```
 
+``` ruby app/models/subscription.rb
 class Subscription
 end
 ```
 
 You might use Active Record's [`merge`](http://apidock.com/rails/ActiveRecord/SpawnMethods/merge) and do something like:
 
-``` ruby
+``` ruby app/models/user.rb
 class User < ActiveRecord::Base
   has_one :subscription
   scope :with_active_subscription, joins(:subscription).merge(Subscription.active)
 end
+```
 
+``` ruby app/models/subscription.rb
 class Subscription
   scope :active, where(active: true)
 end
@@ -64,7 +68,7 @@ You could put the join SQL in `Invoice`, but then it would know a lot about the 
 
 Instead, you can simply have `Event` own that SQL:
 
-``` ruby
+``` ruby app/models/event.rb
 class Event < ActiveRecord::Base
   belongs_to :record, polymorphic: true
 
@@ -85,7 +89,9 @@ class Event < ActiveRecord::Base
       where("events.id IS NULL")
   end
 end
+```
 
+``` ruby app/models/invoice.rb
 class Invoice
   POSTED_EVENT = "posted"
 
