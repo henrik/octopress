@@ -50,7 +50,7 @@ We're still coupled, of course, but to a higher and thus more stable abstraction
 
 For more complex SQL, `merge` won't cut it.
 
-Today, I extracted columns like `invoices.posted_at` and `contract.emailed_at` to a separate `events` table.
+Today, I extracted columns like `invoices.posted_at` and `contracts.emailed_at` to a separate `events` table.
 
 Now there are `Event` records which belong to a record (invoice or contract) and have an event name and a timestamp.
 
