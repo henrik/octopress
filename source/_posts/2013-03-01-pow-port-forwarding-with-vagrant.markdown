@@ -11,7 +11,7 @@ categories:
 
 We're experimenting with [Vagrant](http://www.vagrantup.com/) virtual machines for development.
 
-To access the guest machine's web server, the host machine will typically [forward](http://docs.vagrantup.com/v1/docs/config/vm/forward_port.html) a different port to port 80 on each virtual machine.
+To access each virtual machine's web server, the host machine will typically [forward](http://docs.vagrantup.com/v1/docs/config/vm/forward_port.html) a different port to port 80 on each of them.
 
 So on your host machine, you may use `http://localhost:8001` for app1 and `http://localhost:8002` for app2.
 
