@@ -11,7 +11,7 @@ categories:
 
 We're experimenting with [Vagrant](http://www.vagrantup.com/) virtual machines for development.
 
-To use your host machine browser against a virtual machine web server, Vagrant must [forward](http://docs.vagrantup.com/v1/docs/config/vm/forward_port.html) some local port to the server's port.
+To use your host machine browser against a virtual machine web server, Vagrant must [forward](http://docs.vagrantup.com/v1/docs/config/vm/forward_port.html) some host machine port to the server's port.
 
 So on your host machine, you may use `http://localhost:8001` for app1 and `http://localhost:8002` for app2.
 
