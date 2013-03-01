@@ -43,7 +43,7 @@ class Subscription
 end
 ```
 
-We're still coupled, of course, but to a higher and thus more stable abstraction.
+We're still coupled, of course, but to a higher and more stable abstraction.
 
 
 ## Beyond `merge`
@@ -108,4 +108,4 @@ class Invoice
 end
 ```
 
-Now all `Event` needs to know is that its record has an id and a class; fairly stable assumptions.
+Now all `Event` needs to know is that its record has a table name, a primary key and a class name, as any Active Record model will. These are fairly stable assumptions.
