@@ -26,7 +26,7 @@ I like about ZNC that it works well with very little fuss, and that it's fairly 
 
 I compiled from source according to the <a href="http://en.znc.in/wiki/Installation#Source_Tarball">wiki instructions</a>. You need the <a href="http://developer.apple.com/technology/xcode.html">OS X developer tools</a> or equivalent for this.
 
-After downloading the tar file from <a href="http://sourceforge.net/project/showfiles.php?group_id=115828">this page</a>, unpacking it and changing into that directory, I did
+After downloading the tar file from <a href="http://wiki.znc.in/ZNC">this page</a>, unpacking it and changing into that directory, I did
 
 ``` bash
 ./configure --prefix=/usr/local
@@ -55,13 +55,13 @@ If you add channels for ZNC to join automatically, don't forget the initial "#";
 
 It's very easy to make sure ZNC keeps running, e.g. if you reboot your server or ZNC crashes (it hasn't for me, so far). The wiki <a href="http://en.znc.in/wiki/FAQ#How_can_I_restart_ZNC_automatically_.28in_case_of_a_machine_reboot.2C_crash.2C_etc..29.3F">describes</a> that you can just set up a cron job; if ZNC is already running with a given config, starting it again will have no effect.
 
-I went with <a href="http://en.wikipedia.org/wiki/Launchd">launchd</a> instead of cron. <a href="http://gist.github.com/65346">This .plist</a> will launch ZNC when OS X starts, as well as every 5 minutes (and after waking from sleep, if 5 minutes passed during that time). launchd has facilities for keeping an application always running, but that has some complications (pidfile management); starting every 5 minutes is good enough for me.
+I went with <a href="http://en.wikipedia.org/wiki/Launchd">launchd</a> instead of cron. <a href="https://gist.github.com/henrik/65346/raw/52d07bd7566720fa965d7bd359b0ca27e0e30f01/name.henriknyh.znc.plist">This .plist</a> will launch ZNC when OS X starts, as well as every 5 minutes (and after waking from sleep, if 5 minutes passed during that time). launchd has facilities for keeping an application always running, but that has some complications (pidfile management); starting every 5 minutes is good enough for me.
 
 You can load my launchd task with these commands:
 
 ``` bash
 cd ~/Library/LaunchAgents
-curl http://gist.github.com/raw/65346/52d07bd7566720fa965d7bd359b0ca27e0e30f01/name.henriknyh.znc.plist > name.henriknyh.znc.plist
+curl https://gist.github.com/henrik/65346/raw/52d07bd7566720fa965d7bd359b0ca27e0e30f01/name.henriknyh.znc.plist > name.henriknyh.znc.plist
 launchctl load name.henriknyh.znc.plist
 ```
 
