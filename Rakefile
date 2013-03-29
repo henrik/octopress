@@ -7,7 +7,7 @@ require 'rake/minify'
 # Be sure your public key is listed in your server's ~/.ssh/authorized_keys file
 ssh_user       = "poly"
 ssh_port       = "22"
-document_root  = "/srv/www/henrik.nyh.se/public_html/octopress/"
+document_root  = "/srv/www/thepugautomatic.com/public_html/octopress/"
 rsync_delete   = true
 deploy_default = "rsync"
 
