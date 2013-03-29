@@ -9,7 +9,7 @@ title: "About me"
   </a>
 </div>
 
-I’m Henrik Nyh. I was born in 1983 and I live in Stockholm, Sweden with [Johanna](http://johannaost.com).
+I’m [Henrik Nyh](http://henrik.nyh.se). I was born in 1983 and I live in Stockholm, Sweden with [Johanna](http://johannaost.com).
 
 You can reach me at [@henrik](http://twitter.com/henrik) or <henrik@nyh.se>.
 
