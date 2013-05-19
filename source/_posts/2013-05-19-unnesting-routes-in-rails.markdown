@@ -43,9 +43,7 @@ Of course, you only list the actions you use. If you have many routes, [you want
 
 ``` ruby config/routes.rb
 resources :sellers, only: [ :index, :show ] do
-  resources :contracts,
-    only: [ :index, :new, :create, :show, :edit, :update, :destroy ],
-    shallow: true
+  resources :contracts, only: [ :index, :show, … ], shallow: true
 end
 ```
 
