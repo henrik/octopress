@@ -13,7 +13,7 @@ After all, you need the seller id to know what subset of contracts to list.
 
 If contracts then have items, you may find yourself with paths like `/sellers/1/contracts/2/items/3/edit`.
 
-That's a fingerful, and you need to provide all those ids every time you generate a path: `edit_seller_contract_item_path(seller, contract, item)`
+That's a mouthful, and you need to provide all those ids every time you generate a path: `edit_seller_contract_item_path(seller, contract, item)`
 
 Instead, let's rethink it.
 
