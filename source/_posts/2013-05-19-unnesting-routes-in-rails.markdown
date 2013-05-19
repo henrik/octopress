@@ -39,6 +39,17 @@ end
 
 Of course, you only list the actions you use. If you have many routes, [you want to do this anyway](http://guides.rubyonrails.org/routing.html#restricting-the-routes-created), for speed.
 
+[You can even specify `shallow: true`](http://edgeguides.rubyonrails.org/routing.html#shallow-nesting) and Rails will do this for you:
+
+``` ruby config/routes.rb
+resources :sellers, only: [ :index, :show ] do
+  resources :contracts,
+    only: [ :index, :new, :create, :show, :edit, :update, :destroy ],
+    shallow: true
+end
+```
+
+
 Rails is clever enough that all the contract routes will go to one and the same controller with no extra effort:
 
 ``` ruby app/controllers/contracts_controller.rb
