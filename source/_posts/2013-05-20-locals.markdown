@@ -65,4 +65,6 @@ It's not a lot more to type. We've done it for months now and not found it onero
 
 Also: your views will confidently explode if they try to use a local variable and you didn't pass it in; with instance variables, you'd get a nil. Though if you must, even with locals you can get a nil fallback by using `local_assigns[:item]` instead of `item`.
 
+If you need to check for the presence of a key, `defined?(item)` [will not work](http://api.rubyonrails.org/classes/ActionView/Base.html#label-Passing+local+variables+to+sub+templates) but `local_assigns.has_key?(:item)` will.
+
 Note that the local assignments of an action view are automatically available in its layout as well. This is perhaps a little on the implicit side, but much less so than instance variables. The locals will *not* be automatically available in partials, neither inside your action view nor inside the layout.
