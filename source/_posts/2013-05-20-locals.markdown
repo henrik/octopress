@@ -11,13 +11,11 @@ The common style in Rails is to pass data from the controller to the view with i
 
 ``` ruby app/controllers/my_controller.rb
 def show
-  @count = Item.count
   @item = Item.find(params[:id])
 end
 ```
 
 ``` erb app/views/my_controller/show.html.erb
-  <p>Count: <%= @count %></p>
   <p>Item: <%= @item.title %><p>
 ```
 
@@ -38,7 +36,6 @@ Lately, our team has been passing them explicitly to regular action views as wel
 ``` ruby app/controllers/my_controller.rb
 def show
   render locals: {
-    count: Item.count,
     item:  Item.find(params[:id])
   }
 end
@@ -56,8 +53,7 @@ end
 
 ``` ruby app/controllers/my_controller.rb
 def show
-  locals count: Item.count,
-    item: Item.find(params[:id])
+  locals item: Item.find(params[:id])
 end
 ```
 
