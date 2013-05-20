@@ -16,7 +16,7 @@ end
 ```
 
 ``` erb app/views/my_controller/show.html.erb
-  <p>Item: <%= @item.title %><p>
+  <p>Item: <%= @item.title %></p>
 ```
 
 These instance variables are available in layouts and partials as well, but it's common to instead pass variables to partials explicitly as locals instead:
