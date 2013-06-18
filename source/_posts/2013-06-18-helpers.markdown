@@ -16,7 +16,7 @@ If you need to concatenate them, you *could* use `+`:
 module MyHelper
   def widget
     content_tag(:p, class: "widget") do
-      [ link_to("Hello", hello_path) + " " + link_to("Bye", goodbye_path)
+      link_to("Hello", hello_path) + " " + link_to("Bye", goodbye_path)
     end
   end
 end
