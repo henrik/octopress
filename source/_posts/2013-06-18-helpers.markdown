@@ -72,7 +72,7 @@ You might expect this to produce the output once, but it will appear *twice*:
 
 Why? Inside block helpers, `concat` appends only to that element's content; outside block helpers, it appends straight to *the page itself*, and is then appended to the page *again* as `<%= widget %>` writes out the helper's return value.
 
-You can get around this with the [`capture`](http://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html) helper. That's what `content_tag` uses internally: `capture`, true to its name, captures the content so it isn't appended straight to the page. Instead, it's built up as a string in memory, for your custom helper to return (or have its way with):
+You can get around this with the [`capture`](http://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html) helper. That's what `content_tag` uses internally: `capture`, true to its name, captures the content so it isn't appended straight to the page. Instead, it's built up as a separate string, for your custom helper to return (or have its way with):
 
 ``` ruby
 module MyHelper
