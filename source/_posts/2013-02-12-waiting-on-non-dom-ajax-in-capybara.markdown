@@ -49,7 +49,8 @@ $ ->
 
 ``` ruby spec/support/helpers.rb
 def wait_for_ajax_completion
-  page.should have_selector("body.ajax-completed")
+  # page.document so it keeps working inside "within" blocks.
+  page.document.should have_selector("body.ajax-completed")
 end
 ```
 
