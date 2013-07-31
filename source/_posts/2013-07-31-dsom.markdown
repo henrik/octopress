@@ -1,0 +1,176 @@
+---
+layout: post
+title: "Dynamic super-overridable methods in Ruby"
+date: 2013-07-31 11:55
+comments: true
+categories:
+  - Ruby
+  - metaprogramming
+---
+
+When you want to override methods defined by a library, `super` is more convenient than `alias_method`:
+
+``` ruby
+class Post < SomeORM
+  attributes :title, :body
+
+  def title
+    super || "No title"
+  end
+end
+```
+
+But as these things are commonly implemented, you need to use `alias_method` (or Rails' `alias_method_chain`) instead, which is less convenient:
+
+``` ruby
+class Post
+  attributes :title, :body
+
+  alias_method :old_title, :title
+
+  def title
+    old_title || "No title"
+  end
+end
+```
+
+I would encourage library writers to make their dynamically defined methods `super`-overridable whenever possible; this post explains how.
+
+
+## The problem
+
+The common implementation uses `define_method` straight on your own class:
+
+``` ruby
+class SomeORM
+  def self.attributes(*names)
+    names.each do |name|
+      define_method(name) do
+        # Stuff
+      end
+    end
+  end
+end
+```
+
+The library puts the method right in your class; right in `Post`. So if you define your own method by the same name in `Post`, you completely replace that old method, with no way to reach it. Thus you need `alias_method`.
+
+
+## The solution
+
+But if the library could instead put the method further up the inheritance chain, we could define our own method and just call `super`.
+
+So what's further up the inheritance chain? The `SomeORM` superclass of course, and its chain of superclasses. But we can't define methods there, or those methods would be available to every `SomeORM` subclass, not just `Post`.
+
+What else is further up the inheritance chain? Modules.
+
+Say we have this Ruby class:
+
+``` ruby
+class Post < SomeORM
+  include SomeModule
+end
+```
+
+The (slightly simplified) inheritance chain would then be `[Post, SomeModule, SomeORM, Object]`. Included modules go between the class itself and its parent class, and `super` will look in those modules before it gets to the parent class.
+
+So we simply create a module, define methods on that, and include it:
+
+``` ruby
+class SomeORM
+  def self.attributes(*names)
+    mod = Module.new
+    include mod
+
+    names.each do |name|
+      mod.class_eval do
+        define_method(name) do
+          # Stuff
+        end
+      end
+    end
+  end
+end
+```
+
+That's all it takes.
+
+
+## Polishing the inheritance chain
+
+What does the inheritance chain look like now? Something along the lines of `[Post, #<Module:0x007fa0fea7fcf0>, SomeORM, Object]`.
+
+We defined an anonymous module, which works fine but could be confusing in a later debugging session.
+
+So let's name it:
+
+``` ruby
+class SomeORM
+  def self.attributes(*names)
+    mod = Module.new
+    include mod
+    SomeORM.const_set("DynamicAttributes#{mod.object_id}", mod)
+
+    names.each do |name|
+      mod.class_eval do
+        define_method(name) do
+          # Stuff
+        end
+      end
+    end
+  end
+end
+```
+
+Now the inheritance chain will be something like `[Post, SomeORM::DynamicAttributes70196264247040, SomeORM, Object]`.
+
+Why include the unsightly `object_id`? Because we may call `attributes` more than once, and we can't use the same name for two separate modules.
+
+
+## Reusing modules
+
+The current implementation will create a separate module for each `attributes` declaration. If you define ten attributes each on their own line, you'll add ten modules to the inheritance chain.
+
+While this works, it makes for a messier inheritance chain.
+
+If we stick the module in a class-level instance variable, we can reuse it:
+
+``` ruby
+class SomeORM
+  def self.attributes(*names)
+    unless @mod
+      @mod = Module.new
+      include @mod
+      SomeORM.const_set("DynamicAttributes#{@mod.object_id}", @mod)
+    end
+
+    names.each do |name|
+      @mod.class_eval do
+        define_method(name) do
+          # Stuff
+        end
+      end
+    end
+  end
+end
+```
+
+Problem solved.
+
+
+## A note about inheritance
+
+Now, class-level data and inheritance is a little tricky. You'll do well to write test cases in your library for how you expect your dynamic methods to inherit.
+
+If you use class-level instance variables like I did above, you'll get one module per class in the hierarchy. If we defined ten attributes on `Post` and another five on its subclass `VideoPost`, they would share one module for the ten first methods and `VideoPost` would have a second module for its five additional attributes.
+
+You very likely do not want to use class variables (`@@mod`). If you did, `Post` and `VideoPost` would share one and the same module for all fifteen attributes, and so `Post` would get attributes that you defined only on its subclass.
+
+
+## Examples in the wild
+
+I've implemented this in [Traco](https://github.com/barsoom/traco/blob/master/lib/traco/translates.rb) and [Minimapper](https://github.com/joakimk/minimapper/commit/e3ebe9d3148a26c51d81ddc03a3cab567a65ba46).
+
+I did this with Traco [last December](https://twitter.com/henrik/status/275278555166945281) inspired by points brought up in [Ruby Rogues episode 80](http://rubyrogues.com/080-rr-practical-metaprogramming-with-steven-harms/), in turn based on the talk ["The Polite Programmer's Guide to Ruby Etiquette"](http://www.confreaks.com/videos/374-rubyconf2010-the-polite-programmer-s-guide-to-ruby-etiquette) by Jim Weirich et al. (which I haven't watched).
+
+I'd love to hear about other libraries that get this right, alternative solutions, or problems with this approach.
