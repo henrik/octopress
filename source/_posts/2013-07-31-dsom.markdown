@@ -102,14 +102,23 @@ What does the inheritance chain look like now? Something along the lines of `[Po
 
 We defined an anonymous module, which works fine but could be confusing in a later debugging session.
 
-So let's name it:
+Also, the current implementation will create a separate module for each `attributes` declaration. If you define ten attributes each on their own line, you'll add ten modules to the inheritance chain.
+
+While this works, it makes for a messier inheritance chain.
+
+We can solve both these issues in one fell stroke:
 
 ``` ruby
 class SomeORM
+  MODULE_NAME = :DynamicAttributes
+
   def self.attributes(*names)
-    mod = Module.new
-    include mod
-    SomeORM.const_set("DynamicAttributes#{mod.object_id}", mod)
+    if const_defined?(MODULE_NAME, search_ancestors = false)
+      mod = const_get(MODULE_NAME)
+    else
+      mod = const_set(MODULE_NAME, Module.new)
+      include mod
+    end
 
     names.each do |name|
       mod.module_eval do
@@ -122,49 +131,23 @@ class SomeORM
 end
 ```
 
-Now the inheritance chain will be something like `[Post, SomeORM::DynamicAttributes70196264247040, SomeORM, Object]`.
+(I provided [a somewhat different solution](https://github.com/henrik/octopress/blob/321f5b6fee282e8b6c99a828a5dc661d010b583b/source/_posts/2013-07-31-dsom.markdown) for these points earlier; this improved solution is [due to Avdi Grimm](https://gist.github.com/avdi/6123055).)
 
-Why include the unsightly `object_id`? Because we may call `attributes` more than once, and we can't use the same name for two separate modules.
+The added code does a few things. It names the constant `Post::DynamicAttributes`, so now the inheritance chain will be something like `[Post, Post::DynamicAttributes, SomeORM, Object]`.
 
+It checks if `Post::DynamicAttributes` already exists. If it does, it's reused. This means we only add a single module to the inheritance chain even if `Post` declares ten attributes each on their own line.
 
-## Reusing modules
-
-The current implementation will create a separate module for each `attributes` declaration. If you define ten attributes each on their own line, you'll add ten modules to the inheritance chain.
-
-While this works, it makes for a messier inheritance chain.
-
-If we stick the module in a class-level instance variable, we can reuse it:
+The second argument in `const_defined?(MODULE_NAME, search_ancestors = false)` is important, by the way. Say we introduce a `VideoPost` that inherits from `Post`:
 
 ``` ruby
-class SomeORM
-  def self.attributes(*names)
-    unless @mod
-      @mod = Module.new
-      include @mod
-      SomeORM.const_set("DynamicAttributes#{@mod.object_id}", @mod)
-    end
-
-    names.each do |name|
-      @mod.module_eval do
-        define_method(name) do
-          # Stuff
-        end
-      end
-    end
-  end
+class VideoPost < Post
+  attribute :timestamp
 end
 ```
 
-Problem solved.
+Since we passed `false` as the second argument of `const_defined?`, we will not reuse `Post::DynamicAttributes` from the superclass, but will instead get a new `VideoPost::DynamicAttributes` module. This ensures attributes inherit correctly.
 
-
-## A note about inheritance
-
-Now, class-level data and inheritance is a little tricky. You'll do well to write test cases in your library for how you expect your dynamic methods to inherit.
-
-If you use class-level instance variables like I did above, you'll get one module per class in the hierarchy. If we defined ten attributes on `Post` and another five on its subclass `VideoPost`, they would share one module for the ten first methods and `VideoPost` would have a second module for its five additional attributes.
-
-You very likely do not want to use class variables (`@@mod`). If you did, `Post` and `VideoPost` would share one and the same module for all fifteen attributes, and so `Post` would get attributes that you defined only on its subclass.
+You could of course write just `const_defined?(MODULE_NAME, false)` without the `search_ancestors` local variable. I feel it makes a cryptic argument more obvious, but it *does* trigger an "unused variable" warning if you run Ruby with the `-w` flag.
 
 
 ## Examples in the wild
