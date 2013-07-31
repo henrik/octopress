@@ -83,7 +83,7 @@ class SomeORM
     include mod
 
     names.each do |name|
-      mod.class_eval do
+      mod.module_eval do
         define_method(name) do
           # Stuff
         end
@@ -112,7 +112,7 @@ class SomeORM
     SomeORM.const_set("DynamicAttributes#{mod.object_id}", mod)
 
     names.each do |name|
-      mod.class_eval do
+      mod.module_eval do
         define_method(name) do
           # Stuff
         end
@@ -145,7 +145,7 @@ class SomeORM
     end
 
     names.each do |name|
-      @mod.class_eval do
+      @mod.module_eval do
         define_method(name) do
           # Stuff
         end
