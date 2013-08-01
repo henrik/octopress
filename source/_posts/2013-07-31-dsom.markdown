@@ -113,7 +113,7 @@ class SomeORM
   MODULE_NAME = :DynamicAttributes
 
   def self.attributes(*names)
-    if const_defined?(MODULE_NAME, search_ancestors = false)
+    if const_defined?(MODULE_NAME, _search_ancestors = false)
       mod = const_get(MODULE_NAME)
     else
       mod = const_set(MODULE_NAME, Module.new)
@@ -137,7 +137,7 @@ The added code does a few things. It names the constant `Post::DynamicAttributes
 
 It checks if `Post::DynamicAttributes` already exists. If it does, it's reused. This means we only add a single module to the inheritance chain even if `Post` declares ten attributes each on their own line.
 
-The second argument in `const_defined?(MODULE_NAME, search_ancestors = false)` is important, by the way. Say we introduce a `VideoPost` that inherits from `Post`:
+The second argument in `const_defined?(MODULE_NAME, _search_ancestors = false)` is important, by the way. Say we introduce a `VideoPost` that inherits from `Post`:
 
 ``` ruby
 class VideoPost < Post
@@ -147,7 +147,7 @@ end
 
 Since we passed `false` as the second argument of `const_defined?`, we will not reuse `Post::DynamicAttributes` from the superclass, but will instead get a new `VideoPost::DynamicAttributes` module. This ensures attributes inherit correctly.
 
-You could of course write just `const_defined?(MODULE_NAME, false)` without the `search_ancestors` local variable. I feel it makes a cryptic argument more obvious, but it *does* trigger an "unused variable" warning if you run Ruby with the `-w` flag.
+You could of course write just `const_defined?(MODULE_NAME, false)` without the `_search_ancestors` local variable. I feel it makes a cryptic argument more obvious, but it *does* trigger an "unused variable" warning in Ruby &lt;2.0 with the `-w` flag.
 
 
 ## Examples in the wild
