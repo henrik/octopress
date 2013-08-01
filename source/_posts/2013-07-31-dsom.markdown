@@ -131,7 +131,7 @@ class SomeORM
 end
 ```
 
-(I provided [a somewhat different solution](https://github.com/henrik/octopress/blob/321f5b6fee282e8b6c99a828a5dc661d010b583b/source/_posts/2013-07-31-dsom.markdown) for these points earlier; this improved solution is [due to Avdi Grimm](https://gist.github.com/avdi/6123055).)
+(I provided [a somewhat different solution](https://github.com/henrik/octopress/blob/321f5b6fee282e8b6c99a828a5dc661d010b583b/source/_posts/2013-07-31-dsom.markdown) earlier; this improved solution is [due to Avdi Grimm](https://gist.github.com/avdi/6123055).)
 
 The added code does a few things. It names the constant `Post::DynamicAttributes`, so now the inheritance chain will be something like `[Post, Post::DynamicAttributes, SomeORM, Object]`.
 
@@ -154,6 +154,6 @@ You could of course write just `const_defined?(MODULE_NAME, false)` without the 
 
 I've implemented this in [Traco](https://github.com/barsoom/traco/blob/master/lib/traco/translates.rb) and [Minimapper](https://github.com/joakimk/minimapper/commit/e3ebe9d3148a26c51d81ddc03a3cab567a65ba46).
 
-I did this with Traco [last December](https://twitter.com/henrik/status/275278555166945281) inspired by points brought up in [Ruby Rogues episode 80](http://rubyrogues.com/080-rr-practical-metaprogramming-with-steven-harms/), in turn based on the talk ["The Polite Programmer's Guide to Ruby Etiquette"](http://www.confreaks.com/videos/374-rubyconf2010-the-polite-programmer-s-guide-to-ruby-etiquette) by Jim Weirich et al. (which I haven't watched).
+Implementing it in Traco [last December](https://twitter.com/henrik/status/275278555166945281) was inspired by points brought up in [Ruby Rogues episode 80](http://rubyrogues.com/080-rr-practical-metaprogramming-with-steven-harms/), in turn based on the talk ["The Polite Programmer's Guide to Ruby Etiquette"](http://www.confreaks.com/videos/374-rubyconf2010-the-polite-programmer-s-guide-to-ruby-etiquette) by Jim Weirich et al. (which I haven't watched).
 
 I'd love to hear about other libraries that get this right, alternative solutions, or problems with this approach.
