@@ -129,6 +129,9 @@ module OctopressLiquidFilters
     input.titlecase
   end
 
+  def fix_code_blocks_for_feed(input)
+    input.gsub(%r{<td class='gutter'>.+?</td>}m, "")
+  end
 end
 Liquid::Template.register_filter OctopressLiquidFilters
 
