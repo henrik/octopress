@@ -43,6 +43,7 @@ Your `Greeter` instances will have public `person` and `person=` methods.
 ``` ruby
 joe = Person.new
 bob = Person.new
+
 greeter = Greeter.new(joe)
 greeter.person = bob
 greeter.person  # => bob
@@ -61,12 +62,10 @@ They're excellent when data containment is all you need:
 
 ``` ruby
 Item = Struct.new(:title, :price, :url)
-
-def parse
-  …
-  item = Item.new(link.title, price.content, link.href)
-  …
-end
+# …parsing some input…
+items << Item.new(link.title, price.content, link.href)
+# …
+items.each { |item| puts item.title }
 ```
 
 But when you're modelling a domain concept and expect to have domain behavior, inheriting from a data container is weird.
