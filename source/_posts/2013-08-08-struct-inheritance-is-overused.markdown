@@ -75,6 +75,25 @@ But when you're modelling a domain concept and expect to have domain behavior, i
 Do you think of your class as a specialized data container? If not, don't inherit from `Struct`.
 
 
+## Structs don't *want* to be subclassed
+
+Even if you insist on using `Struct`, subclassing may not be the way. [The docs](http://www.ruby-doc.org/core-2.0/Struct.html#method-c-new) don't recommend it, as it creates an unused anonymous class.
+
+Instead, you're meant to assign a constant:
+
+``` ruby
+Greeter = Struct.new(:person) do
+  def greet
+    puts "Hello, #{person.name}!"
+  end
+end
+```
+
+This doesn't mitigate any of the problems I listed, though, so I still wouldn't use a `Struct` except for data containment.
+
+I've also seen claims that subclassing can cause superclass mismatch errors with Rails class reloading, but I've been unable to replicate that.
+
+
 ## Alternatives
 
 The obvious alternative is to just type it out:
