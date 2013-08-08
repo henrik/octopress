@@ -41,6 +41,8 @@ This may be exactly what you want, but if not, don't inherit from `Struct`.
 Your `Greeter` instances will have public `person` and `person=` methods.
 
 ``` ruby
+joe = Person.new
+bob = Person.new
 greeter = Greeter.new(joe)
 greeter.person = bob
 greeter.person  # => bob
