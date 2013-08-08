@@ -18,13 +18,13 @@ Negative assertions are (hopefully) meaningful when you write them, but after th
 So what can you do about it?
 
 
-## Balance with a DRY opposite.
+## Balance with a DRY opposite
 
 You can make negative assertions a lot more reliable by also making the opposite assertion (when the thing *should* happen) and making sure to share the common reference:
 
 ``` ruby
 describe "Home page" do
-  it "has a widget sometimes" do
+  it "sometimes has a widget" do
     page.should have_widget
   end
 
@@ -55,13 +55,13 @@ end
 The commonalities could be shared by way of a method, like we just did (`def have_widget`), or it could be an [RSpec `let` statement](https://www.relishapp.com/rspec/rspec-core/v/2-11/docs/helper-methods/let-and-let), or a constant.
 
 
-## Adjacent helper methods.
+## Adjacent helper methods
 
 Sometimes, making the common code DRY makes the test hard to read. Adjacent helper methods may be good enough:
 
 ``` ruby
 describe "Invoicing" do
-  it "invoices sometimes" do
+  it "sometimes invoices" do
     invoice = create_invoice
     expect_to_notify_about_invoice(invoice)
     Invoicing.do_it
