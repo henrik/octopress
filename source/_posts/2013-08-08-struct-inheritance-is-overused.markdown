@@ -89,9 +89,9 @@ Greeter = Struct.new(:person) do
 end
 ```
 
-This doesn't mitigate any of the problems I listed, though, so I still wouldn't use a `Struct` except for data containment.
+This doesn't mitigate any of the problems I listed, though, so everything above still applies.
 
-I've also seen claims that subclassing can cause superclass mismatch errors with Rails class reloading, but I've been unable to replicate that.
+I've also seen claims that subclassing `Struct` can cause superclass mismatch errors with Rails class reloading, but I've been unable to replicate that.
 
 
 ## Alternatives
