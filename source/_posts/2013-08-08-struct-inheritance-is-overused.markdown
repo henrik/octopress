@@ -75,6 +75,29 @@ But when you're modelling a domain concept and expect to have domain behavior, i
 Do you think of your class as a specialized data container? If not, don't inherit from `Struct`.
 
 
+## Structs are equal if their attributes are equal
+
+Thanks to Tom Ward and Myron Marston for pointing this out in the comments.
+
+Two `Struct`s are considered equal if they have the same attribute values:
+
+``` ruby
+class Person < Struct.new(:name)
+end
+
+john1 = Person.new("John Smith")
+john2 = Person.new("John Smith")
+jake  = Person.new("Jake Lloyd")
+
+[john1, john2, jake].uniq.length  # => 2
+{ john1 => 7, john2 => 8, jake => 9 }.length  # => 2
+john1 == john2  # => true
+john1 == jake  # => false
+```
+
+This might be what you want, but if it's not, don't inherit from `Struct`, as it might bite you in the behind.
+
+
 ## Structs don't *want* to be subclassed
 
 Even if you insist on using `Struct`, subclassing may not be the way. [The docs](http://www.ruby-doc.org/core-2.0/Struct.html#method-c-new) don't recommend it, as it creates an unused anonymous class.
