@@ -143,4 +143,4 @@ end
 
 You don't inherit anything, all arguments are required, and there are no public accessors unless you explicitly declare them.
 
-To be clear, I think there are valid cases for inheriting from `Struct.new`. I think many people do it in other cases as well, though, because they're not aware of the implications.
+That's just one alternative. Whether or not you like it, the implications of using `Struct` remain, so take them into account.
