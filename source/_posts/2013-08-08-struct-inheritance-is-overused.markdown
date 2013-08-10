@@ -166,6 +166,6 @@ end
 
 You don't inherit anything, all arguments are required, and there are no public accessors unless you explicitly declare them.
 
-Another option is the [Values lib](https://github.com/tcrayford/Values), which is similar to `Struct` but requires all arguments, provides public readers but not writers. It provides similar object identity as `Struct`.
+Another option is the [Values lib](https://github.com/tcrayford/Values), which is similar to `Struct` but requires all arguments and provides public readers but not writers. It has similar object identity as `Struct`.
 
-These are just examples of alternatives. Whether or not you like them, the implications of using `Struct` remain, so take that into account.
+These are just some options. Whether or not you like them, the implications of using `Struct` remain, so take that into account.
