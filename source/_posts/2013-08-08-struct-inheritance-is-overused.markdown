@@ -82,8 +82,7 @@ Thanks to Tom Ward and Myron Marston for pointing this out in the comments.
 Two `Struct`s are considered equal if they have the same attribute values:
 
 ``` ruby
-class Person < Struct.new(:name)
-end
+Person = Struct.new(:name)
 
 john1 = Person.new("John Smith")
 john2 = Person.new("John Smith")
