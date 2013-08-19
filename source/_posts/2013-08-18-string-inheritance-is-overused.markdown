@@ -42,7 +42,9 @@ By subclassing `String` you suggest that `DNA` is a specialized string.
 
 It will get [a ton of methods](http://ruby-doc.org/core-2.0/String.html) in its API, such as `#upcase!`, `#match`, `#valid_encoding?` and `#each_line`. Do those make sense for your class?
 
-Presumably you want to inherit *some* method or you wouldn't have bothered. If it's the initializer you want, just write your own or use [some library to reduce boilerplate](http://github.com/barsoom/attr_extras). If it's some other method, delegate those to a string instead – composition instead of inheritance. It will make the API of your class clearer.
+With the `DNA` class above, it's impossible to tell what subset of methods you intended to inherit and think make sense for this class. Only the initializer? Also `#to_s`? You should only inherit a class when all its methods make sense for the subclass.
+
+If it's the initializer you want, just write your own or use [some library to reduce boilerplate](http://github.com/barsoom/attr_extras). If it's some other method, delegate those to a string instead – composition instead of inheritance. It will make the API of your class clearer.
 
 
 ## Strings are equal if their values are equal
