@@ -76,7 +76,7 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user: henrik
+twitter_user:
 twitter_tweet_count: 0
 twitter_show_replies: false
 twitter_follow_button: true
