@@ -26,7 +26,33 @@ class Auction < ActiveRecord::Base
 end
 ```
 
-If you type `NEW_STATE = "new"` into `irb`, you'll see `=> "new"`. That means the assignment expression returns `"new"` as its value.
+Or perhaps:
+
+``` ruby
+class Auction
+  class State
+    ALL = [
+      NEW = "new",
+      # …
+    ]
+  end
+end
+```
+
+Another use case might be listing DNA nucleotides:
+
+``` ruby
+class DNA
+  NUCLEOTIDES = [
+    GUANINE  = "G",
+    ADENINE  = "A",
+    THYMINE  = "T",
+    CYTOSINE = "C"
+  ]
+end
+```
+
+If you type `GUANINE = "G"` into `irb`, you'll see `=> "G"`. That means the assignment expression returns `"G"` as its value.
 
 We simply take that value and stick it in an array assigned to another constant.
 
