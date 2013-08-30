@@ -56,7 +56,7 @@ If you type `GUANINE = "G"` into `irb`, you'll see `=> "G"`. That means the assi
 
 We simply take that value and stick it in an array assigned to another constant.
 
-In Ruby, [everything is an expression](http://phrogz.net/programmingruby/tut_expressions.html) and every expression returns a value, including things like assignments, conditionals and class definitions.
+In Ruby, [almost everything is an expression](http://phrogz.net/programmingruby/tut_expressions.html) and every expression returns a value, including things like assignments, conditionals and class definitions.
 
 That same principle is why this works without explicit returns:
 
@@ -69,3 +69,5 @@ def my_method
   end
 end
 ```
+
+The value of a string is itself, the value of a conditional is the value of its realized branch, and calling a method will implicitly return the last value of its body.
