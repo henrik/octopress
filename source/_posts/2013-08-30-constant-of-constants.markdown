@@ -1,0 +1,45 @@
+---
+layout: post
+title: "Constant of constants"
+date: 2013-08-30 07:23
+comments: true
+categories:
+  - Ruby
+---
+
+This is a convenient Ruby trick I often use for things like states:
+
+``` ruby
+class Auction < ActiveRecord::Base
+  STATES = [
+    NEW_STATE = "new",
+    PUBLISHED_STATE = "published",
+    SOLD_STATE = "sold",
+    UNSOLD_STATE = "unsold"
+  ]
+
+  validates :state, inclusion: { in: STATES }
+
+  def publish
+    self.state = PUBLISHED_STATE
+  end
+end
+```
+
+If you type `NEW_STATE = "new"` into `irb`, you'll see `=> "new"`. That means the assignment expression returns `"new"` as its value.
+
+We simply take that value and stick it in an array assigned to another constant.
+
+In Ruby, [everything is an expression](http://phrogz.net/programmingruby/tut_expressions.html) and every expression returns a value, including things like assignments, conditionals and class definitions.
+
+That same principle is why this works without explicit returns:
+
+``` ruby
+def my_method
+  if condition
+    "One return value"
+  else
+    "Another return value"
+  end
+end
+```
