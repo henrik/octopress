@@ -9,7 +9,7 @@ categories:
 
 This is another post extracted from discussions I've had on [exercism](http://exercism.io).
 
-It's quite common to see [memoizations](http://en.wikipedia.org/wiki/Memoization) like this:
+It's quite common to see [memoization](http://en.wikipedia.org/wiki/Memoization) like this:
 
 ``` ruby
 class Word
@@ -23,7 +23,7 @@ class Word
 
   def do_something
     10.times do |i|
-      whatevever(letters)
+      whatever(letters)
     end
   end
 end
@@ -48,7 +48,7 @@ def letters
 end
 ```
 
-But you didn't think about that, because caching is hard. And easily clutters up your class, obscuring the actual logic.
+But you probably didn't think about that, because caching is hard. If you did think about it, you might find it clutters up your class, obscuring the actual logic.
 
 Of course, caching can be very useful and the right thing to do. If your code has a performance issue, it may be better, all things considered, to trade away some simplicity for speed – guided by benchmarks. But if you don't suspect a performance issue, don't bother.
 
