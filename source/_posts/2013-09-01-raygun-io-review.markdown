@@ -10,7 +10,7 @@ categories:
 
 ## Disclaimer
 
-I'll start this off with a disclaimer: [Raygun](http://raygun.io), an error reporting service, asked me if I would review them on my blog in return for a free account. They made it very clear that they wanted honest feedback, not to buy a positive review, so that's what this is.
+I'll start this off with a disclaimer: [Raygun](http://raygun.io), an error reporting service, asked me if I would review them on my blog in return for a free account. They made it very clear that they wanted honest feedback, not to buy a positive review.
 
 
 ## Why you should use an error reporting service
@@ -21,32 +21,26 @@ Swallowing exceptions is quite irresponsible if your app is important. Exception
 
 Mailing exceptions with [some free plugin](https://github.com/rails/exception_notification) is better than nothing, but you won't get things like intelligent grouping and notification, exception states and comments shared within a team, statistics, or chat notifications.
 
-I do wish these services offered a cheap ($5 or so) "all my tiny projects" plan. I would love error reporting on my dozen tiny, low-traffic for-fun apps, but I don't want to pay the $39+ a month (it does get cheaper with fewer sites). But the infrastructure to accept a ton of incoming exceptions and to store them is not cheap, and even if you throttle limited accounts, you'll have to look at the incoming data to reject it. So that might not happen.
-
 
 ## Raygun
 
 I've been using [Honeybadger](https://www.honeybadger.io) for almost a year, so that will be my baseline. I switched to Honeybadger from [Airbrake](htts://airbrake.io) because their UI got frustratingly slow and they didn't seem to address it.
 
-First and of the least significance, I love the name. Short, memorable and evocative of old sci-fi. I often forget what Honeybadger is called, and naming it for [a meme](http://en.wikipedia.org/wiki/The_Crazy_Nastyass_Honey_Badger) is a bit silly. "Airbrake" is lamentably homophonous.
-
-Setup is easy.
+First and of the least significance, I like the name. Short, memorable and evocative of old sci-fi. I always forget what Honeybadger is called.
 
 
 ### Responsiveness to feedback
 
-Responsiveness to feedback is very important to me in a service. I have a critical mind and tend to notice a lot of bugs and have a lot of opinions on interfaces.
+Responsiveness to feedback is pretty important to me in a service. I tend to notice a lot of bugs and have a lot of opinions on interfaces.
 
 Raygun have been great about this. Submitting feedback right in their dashboard is super easy via [Intercom.io](https://www.intercom.io/), and they reply quickly [on Twitter](http://twitter.com/raygunio). They seem to appreciate the feedback and act on it.
-
-Though I will mention negative things below, I'm sure they'll rush to address them.
 
 
 ### Stack agnostic
 
 Raygun is stack agnostic for better or worse. It supports Ruby on Rails and Ruby in general, Java, .NET and a bunch more, including submission by a REST API for anything they missed.
 
-By comparison, Honeybadger is geared toward Ruby/Rails specifically, and it shows. Honeybadger backtraces intelligently filter out lines outside your app, and intelligently strip the Rails root out of the file paths. It can even link to the line of code in context on GitHub.
+By comparison, Honeybadger is geared toward Ruby/Rails specifically, and it shows. Backtraces in Honeybadger intelligently filter out lines outside your app, and intelligently strip the Rails root out of the file paths. It can even link to the line of code in context on GitHub.
 
 As a mostly Ruby and Rails developer, I do appreciate those things, but if you deploy on other stacks, Raygun could be the better choice.
 
@@ -70,7 +64,7 @@ The difference isn't explained clearly in the UI, so I found it confusing at fir
 
 "Active" is for new exceptions. "Resolved" and "Ignored" work the same way technically, but having two buckets with separate meanings is valuable. You can "resolve" an error when you believe it's fixed for good; you can "ignore" an error when it's not important to address right now.
 
-"Permanently ignored" is for errors triggered by bots, that you'll never fix. Honeybadger has the same feature, and I'm of two minds about it. I prefer to rescue those things in my app, not in my error reporting service of the day, but pragmatically it can take hours to code and test that, so just ignoring it may be a better return on investment.
+"Permanently ignored" is for e.g. errors triggered by bots, that you'll never fix. Honeybadger has the same feature, and I'm of two minds about it. I prefer to rescue those things in my app, not in my error reporting service of the day, but pragmatically it can take hours to code and test a fix, so just ignoring it may be a better return on investment.
 
 
 ### UI
@@ -85,7 +79,7 @@ For example, Honeybadger lets you resolve errors with one click from the error l
 
 Honeybadger also has some details I prefer over Raygun's UI: putting the exception class next to the exception message, giving a full linked URL to the offending page, showing the user agent and bot status graphically.
 
-On Raygun, the "Latest Error Reports" list is just too far down the page. Honeybadger has it about 300 ggpx down the page; Raygun has it about 900 px down the page. That would be offscreen on a small monitor.
+On Raygun, the "Latest Error Reports" list is just too far down the page. Honeybadger has it about 300 px down the page; Raygun has it about 900 px down the page. That would be offscreen on a small monitor.
 
 
 ### Graphs and activity log
