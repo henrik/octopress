@@ -42,18 +42,18 @@ Raygun is stack agnostic for better or worse. It supports Ruby on Rails and Ruby
 
 By comparison, Honeybadger is geared toward Ruby/Rails specifically, and it shows. Backtraces in Honeybadger intelligently filter out lines outside your app, and intelligently strip the Rails root out of the file paths. It can even link to the line of code in context on GitHub.
 
-As a mostly Ruby and Rails developer, I do appreciate those things, but if you deploy on other stacks, Raygun could be the better choice.
+As a mostly Ruby and Rails developer, I do appreciate those things, but if you deploy on other stacks, Raygun would be the better choice.
 
 
 ### Intelligent notifications and grouping
 
-Raygun can notify by e-mail and to e.g. HipChat, Campfire, Trello and GitHub out of the box. There's no read API yet for things like your custom dashboard, but webhooks may be in the works.
+Raygun can notify by e-mail and to e.g. HipChat, Campfire, Trello and GitHub out of the box. There's no read API yet for things like your custom dashboard, but [webhooks may be in the works](https://twitter.com/raygunio/status/374087983307059200).
 
-[Raygun claims](http://raygun.io/features) to do some pretty smart grouping and notification throttling:
+[Raygun claims](http://raygun.io/features) to do smart notification throttling:
 
 > Raygun doesn't send you emails for every error. It intelligently keeps you posted on changes based on first sightings, recurrence, rate increases and threshold changes.
 
-I haven't used it enough to speak to that, but I did notice it correctly (in my view) grouped two occurrences together that Honeybadger saw as separate.
+I haven't used it enough to speak to that, but I did notice Raygun correctly (in my view) grouped two occurrences together that Honeybadger saw as separate, so I have some faith in the smarts.
 
 
 ### Managing exception state
@@ -62,7 +62,7 @@ Raygun exceptions can be active, resolved, ignored or permanently ignored.
 
 The difference isn't explained clearly in the UI, so I found it confusing at first, but I think it's pretty clever now that I get it.
 
-"Active" is for new exceptions. "Resolved" and "Ignored" work the same way technically, but having two buckets with separate meanings is valuable. You can "resolve" an error when you believe it's fixed for good; you can "ignore" an error when it's not important to address right now.
+"Active" is for new exceptions. "Resolved" and "Ignored" do the same thing – making the exception non-active – but having two buckets with separate meanings is valuable. You can "resolve" an error when you believe it's fixed for good; you can "ignore" an error when it's not important to address right now.
 
 "Permanently ignored" is for e.g. errors triggered by bots, that you'll never fix. Honeybadger has the same feature, and I'm of two minds about it. I prefer to rescue those things in my app, not in my error reporting service of the day, but pragmatically it can take hours to code and test a fix, so just ignoring it may be a better return on investment.
 
