@@ -17,10 +17,10 @@ Values:
 class Order
   class Status
     KEYS = [
-      NEW       = :new,
-      INVOICED  = :invoiced,
-      PAID      = :paid,
-      SHIPPED   = :shipped
+      NEW       = "new",
+      INVOICED  = "invoiced",
+      PAID      = "paid",
+      SHIPPED   = "shipped"
     ]
 
     def self.keys
@@ -60,7 +60,7 @@ And you can validate like this:
 
 ``` ruby app/models/order.rb
 class Order < ActiveRecord::Base
-  validates :status, inclusion: { in: Status.keys.map(&:to_s) }
+  validates :status, inclusion: { in: Status.keys }
 end
 ```
 
