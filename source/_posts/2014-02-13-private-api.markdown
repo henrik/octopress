@@ -73,8 +73,10 @@ Instead, you can move the module's internals into a separate module or class tha
 
 ``` ruby
 module Greeter
-  def greet(name)
-    "HELLO, #{Name.normalize(name)}!"
+  module Mixin
+    def greet(name)
+      "HELLO, #{Name.normalize(name)}!"
+    end
   end
 
   module Name
@@ -83,13 +85,21 @@ module Greeter
     end
   end
 end
+
+class Person
+  include Greeter::Mixin
+
+  # …
+end
 ```
+
+Since the helper class is outside the mixin, collisions are highly unlikely.
 
 This is for example [how my Traco gem does it](https://github.com/barsoom/traco/commit/04681eb47e45a06cfa807adda7df658369ad2397).
 
 Introducing additional objects also makes it easier to refactor the code further.
 
-You may think that this only replaces the risk of method collision with the risk of constant collisions, but that actually takes concerted effort – you need something like `"HELLO, #{self.class::Name.normalize(name)}!"` to force a collision.
+Note that if the helper object is defined inside the mixin itself, there *is* [a collision risk](https://gist.github.com/sandal/8978473) as [Gregory Brown](https://practicingruby.com/) pointed out in a comment.
 
 
 ## Intentionally mixing in privates
