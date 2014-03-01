@@ -48,7 +48,7 @@ If you want to grep for where a certain presenter ("decorator") method is called
 
 If you look at a view or partial and want to know what object you're actually dealing with, that's not clear.
 
-Draper jumps through hoops so that Rails and its ecosystem will accept a non-model in forms, links, pagination etc. This is complexity that can break with new gems and new versions of Rails. I can't speak to the current state of things, but this abstraction had a number of leaks back when we used it.
+Draper [jumps through hoops](https://github.com/drapergem/draper/blob/master/lib/draper/decorator.rb) so that Rails and its ecosystem will accept a non-model in forms, links, pagination etc. This is complexity that can break with new gems and new versions of Rails. I can't speak to the current state of things, but this abstraction had a number of leaks back when we used it.
 
 For you to be able to use helpers and routes with Draper, there's some [fairly dark magic](https://github.com/drapergem/draper/blob/master/lib/draper/view_context.rb) going on. That's also complexity that might break with new versions of Rails, and no fun debugging if there are issues.
 
