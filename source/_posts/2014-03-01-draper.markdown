@@ -50,7 +50,7 @@ If you look at a view or partial and want to know what object you're actually de
 
 Draper [jumps through hoops](https://github.com/drapergem/draper/blob/master/lib/draper/decorator.rb) so that Rails and its ecosystem will accept a non-model in forms, links, pagination etc. This is complexity that can break with new gems and new versions of Rails. I can't speak to the current state of things, but this abstraction had a number of leaks back when we used it.
 
-For you to be able to use helpers and routes with Draper, there's some [fairly dark magic](https://github.com/drapergem/draper/blob/master/lib/draper/view_context.rb) going on. That's also complexity that might break with new versions of Rails, and no fun debugging if there are issues.
+For you to be able to use helpers and routes with Draper, there's some [fairly dark magic](https://github.com/drapergem/draper/blob/master/lib/draper/view_context.rb) going on. That's also complexity that might break with new versions of Rails, and no fun debugging if there are issues. This magic made it difficult for us to test in isolation, but perhaps that has improved since.
 
 On a side note, I really disagree with the "decorator" naming choice. [The decorator pattern](http://en.wikipedia.org/wiki/Decorator_pattern) is applicable to any component in a MVC system: you can decorate models, controllers, mailers and pretty much anything else. Using `app/decorators` for this is a bit like using `app/mixins` for mailer mixins. It's a poor name for a class of component.
 
@@ -95,14 +95,14 @@ This is not much more code than a Draper decorator.
 
 With our [attr_extras](https://github.com/barsoom/attr_extras) library you could get rid of the initializer and reader boilerplate and just do `pattr_initialize :article`. And you can of course add whatever convenience methods you like, by inheritance or otherwise.
 
-The model is available as `article`, not `model` or `object`.
+The model is available to the presenter as `article` rather than by a generic name like `model` or `object`.
 
 You no longer have that complex, black magic dependency.
 
 Forms and plugins just use regular ActiveRecord objects.
 
-It's obvious where the view context comes from. If you use it a lot, feel free to pass it into the initializer instead (e.g. `ArticlePresenter.new(@article, view_context)` in the controller).
-
 When you use a presenter, that's made perfectly clear. If it makes sense to do some limited delegation, that's just a `delegate :title, to: :article` away.
+
+It's obvious where the view context comes from. If you use it a lot, feel free to pass it into the initializer instead (e.g. `ArticlePresenter.new(@article, view_context)` in the controller).
 
 I can't see why anyone would prefer Draper to this, but I'm looking forward to discussion in the comments.
