@@ -1,0 +1,104 @@
+---
+layout: post
+title: "What I dislike about Draper"
+date: 2014-03-01 13:00
+comments: true
+categories:
+  - Ruby on Rails
+  - presenters
+---
+
+My team used [Draper](https://github.com/drapergem/draper) a few years back ago and its design inspired us to make poor decisions that we've come to regret.
+
+If you want presenters in Rails (or "view models", or "decorators" as Draper calls them), just use a plain old Ruby object. Pass in the view context when you need it. Don't decorate. Don't delegate all the things.
+
+
+## The problem with Draper
+
+Draper encourages you to do things like
+
+``` ruby app/decorators/article_decorator.rb
+class ArticleDecorator < Draper::Decorator
+  delegate_all
+
+  def published_at
+    h.content_tag(:time, object.published_at.strftime("%A, %B %e"))
+  end
+end
+```
+
+``` ruby app/controllers/articles_controller.rb
+class ArticlesController < ApplicationController
+  def show
+    @article = Article.first.decorate
+  end
+end
+```
+
+``` erb app/views/articles/show.html.erb
+<h1><%= @article.title %></h1>
+<p><%= @article.published_at %></p>
+```
+
+I think this is problematic.
+
+Using the name `@article` for what is actually an `ArticleDecorator` instance muddies the object responsibilities.
+
+If you want to grep for where a certain presenter ("decorator") method is called, that's a bit difficult.
+
+If you look at a view or partial and want to know what object you're actually dealing with, that's not clear.
+
+Draper jumps through hoops so that Rails and its ecosystem will accept a non-model in forms, links, pagination etc. This is complexity that can break with new gems and new versions of Rails. I can't speak to the current state of things, but this abstraction had a number of leaks back when we used it.
+
+For you to be able to use helpers and routes with Draper, there's some [fairly dark magic](https://github.com/drapergem/draper/blob/master/lib/draper/view_context.rb) going on. That's also complexity that might break with new versions of Rails, and no fun debugging if there are issues.
+
+On a side note, I really disagree with the "decorator" naming choice. [The decorator pattern](http://en.wikipedia.org/wiki/Decorator_pattern) is applicable to any component in a MVC system: you can decorate models, controllers, mailers and pretty much anything else. Using `app/decorators` for this is a bit like using `app/mixins` for mailer mixins. It's a poor name for a class of component.
+
+
+## PORO presenters
+
+What should you do instead? Just use plain old Ruby objects.
+
+``` ruby app/presenters/article_presenter.rb
+class ArticlePresenter
+  def initialize(article)
+    @article = article
+  end
+
+  def published_at(view)
+    view.content_tag(:time, article.published_at.strftime("%A, %B %e"))
+  end
+
+  private
+
+  attr_reader :article
+end
+```
+
+``` ruby app/controllers/articles_controller.rb
+class ArticlesController < ApplicationController
+  def show
+    @article = Article.first
+    @article_presenter = ArticlePresenter.new(@article)
+  end
+end
+```
+
+``` erb app/views/articles/show.html.erb
+<h1><%= @article.title %></h1>
+<p><%= @article_presenter.published_at(self) %></p>
+```
+
+This is not much more code than a Draper decorator.
+
+With our [attr_extras](https://github.com/barsoom/attr_extras) library you could get rid of the initializer and reader boilerplate and just do `pattr_initialize :article`. And you can of course add whatever convenience methods you like, by inheritance or otherwise.
+
+You no longer have that complex, black magic dependency.
+
+Forms and plugins just use regular ActiveRecord objects.
+
+It's obvious where the view context comes from. If you use it a lot, feel free to pass it into the initializer instead (e.g. `ArticlePresenter.new(@article, view_context)` in the controller).
+
+When you use a presenter, that's made perfectly clear. If it makes sense to do some limited delegation, that's just a `delegate :title, to: :article` away.
+
+I can't see why anyone would prefer Draper to this, but I'm looking forward to discussion in the comments.
