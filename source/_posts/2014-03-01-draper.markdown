@@ -54,6 +54,8 @@ For you to be able to use helpers and routes with Draper, there's some [fairly d
 
 On a side note, I really disagree with the "decorator" naming choice. [The decorator pattern](http://en.wikipedia.org/wiki/Decorator_pattern) is applicable to any component in a MVC system: you can decorate models, controllers, mailers and pretty much anything else. Using `app/decorators` for this is a bit like using `app/mixins` for mailer mixins. It's a poor name for a class of component.
 
+Draper also makes some poor choices in the small: accessing the decorated model as `model` or `object` instead of `article` hurts readability.
+
 
 ## PORO presenters
 
@@ -92,6 +94,8 @@ end
 This is not much more code than a Draper decorator.
 
 With our [attr_extras](https://github.com/barsoom/attr_extras) library you could get rid of the initializer and reader boilerplate and just do `pattr_initialize :article`. And you can of course add whatever convenience methods you like, by inheritance or otherwise.
+
+The model is available as `article`, not `model` or `object`.
 
 You no longer have that complex, black magic dependency.
 
