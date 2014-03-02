@@ -44,9 +44,7 @@ How do you get around this?
 
 You could stop using `SimpleDelegator`.
 
-An explicit `require` won't work well – I think what happens is that the Rails development reloading magic undefines the constant when the file is changed.
-
-An explicit [`require_dependency`](http://stackoverflow.com/a/5214667/6962) does appear to work:
+An explicit `require` won't work well – I think what happens is that the Rails development reloading magic undefines the constant when the file is changed. An explicit [`require_dependency`](http://stackoverflow.com/a/5214667/6962) does appear to work:
 
 ``` ruby
 class MyThing < SimpleDelegator
