@@ -54,20 +54,29 @@ class MyThing < SimpleDelegator
 end
 ```
 
-Or you could override the `const_missing` you get from `SimpleDelegator` to do what Rails does:
+Or you could override the `const_missing` you get from `SimpleDelegator` to do both what it used to do, and what Rails does:
 
 ``` ruby
-class MyThing < SimpleDelegator
-   def self.const_missing(const_name)
-     # Fix Rails autoloading by doing what Rails does instead of what SimpleDelegator does.
-     ::ActiveSupport::Dependencies.load_missing_constant(self, const_name)
-   end
+class RailsySimpleDelegator < SimpleDelegator
+  # Fix Rails autoloading.
+  def self.const_missing(const_name)
+    if ::Object.const_defined?(const_name)
+      # Load stdlib classes even though SimpleDelegator inherits from BasicObject.
+      ::Object.const_get(const_name)
+    else
+      # Rails autoloading.
+      ::ActiveSupport::Dependencies.load_missing_constant(self, const_name)
+    end
+  end
+end
+
+class MyThing < RailsySimpleDelegator
 end
 ```
 
 But keep in mind that this may vary with Rails versions and may break on Rails updates.
 
-I also don't fully understand why `SimpleDelegator` redefines `const_missing`, so perhaps overriding it has consequences I'm not aware of.
+The `::Object.const_get(const_name)` thing is explained [in the `BasicObject` docs](http://www.ruby-doc.org/core-2.1.1/BasicObject.html).
 
 This is a tricky problem. Perhaps the best solution would be for Rails itself to monkeypatch `SimpleDelegator`. That fixes the autoloading gotcha but may cause other gotchas – I once had a long debugging session when I refused to believe that Rails would monkeypatch the standard lib `ERB` (but it does, for `html_safe`).
 
