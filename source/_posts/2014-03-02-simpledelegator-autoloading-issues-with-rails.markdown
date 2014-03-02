@@ -54,21 +54,4 @@ class MyThing < SimpleDelegator
 end
 ```
 
-Or you could override the `const_missing` you get from `SimpleDelegator` to do what Rails does:
-
-``` ruby
-class MyThing < SimpleDelegator
-   def self.const_missing(const_name)
-     # Fix Rails autoloading by doing what Rails does instead of what SimpleDelegator does.
-     Dependencies.load_missing_constant(self, const_name)
-   end
-end
-```
-
-But keep in mind that this may vary with Rails versions and may break on Rails updates.
-
-I also don't fully understand why `SimpleDelegator` redefines `const_missing`, so perhaps overriding it has consequences I'm not aware of.
-
-This is a tricky problem. Perhaps the best solution would be for Rails itself to monkeypatch `SimpleDelegator`. That fixes the autoloading gotcha but may cause other gotchas – I once had a long debugging session when I refused to believe that Rails would monkeypatch the standard lib `ERB` (but it does, for `html_safe`).
-
 This blog post is mainly intended to describe the problem – I'm afraid I don't know of a great solution. If you have any insight, please share in a comment.
