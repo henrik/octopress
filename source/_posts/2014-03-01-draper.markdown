@@ -5,7 +5,7 @@ date: 2014-03-01 13:00
 comments: true
 categories:
   - Ruby on Rails
-  - presenters
+  - Presenters
 ---
 
 My team used [Draper](https://github.com/drapergem/draper) a few years back ago and its design inspired us to make poor decisions that we've come to regret.

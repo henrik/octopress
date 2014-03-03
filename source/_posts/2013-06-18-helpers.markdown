@@ -5,7 +5,7 @@ date: 2013-06-18 19:48
 comments: true
 categories:
   - Ruby on Rails
-  - helpers
+  - Helpers
 ---
 
 You can use the built-in Rails helpers, such as `content_tag` or `link_to`, in your own helpers.
