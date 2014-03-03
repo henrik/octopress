@@ -59,7 +59,7 @@ class RailsySimpleDelegator < SimpleDelegator
   # Fix Rails autoloading.
   def self.const_missing(const_name)
     if ::Object.const_defined?(const_name)
-      # Load stdlib classes even though SimpleDelegator inherits from BasicObject.
+      # Load top-level constants even though SimpleDelegator inherits from BasicObject.
       ::Object.const_get(const_name)
     else
       # Rails autoloading.
