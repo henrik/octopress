@@ -30,7 +30,7 @@ Or you could just hit `c%`.
 
 How does this work?
 
-The `%` motion finds the next parenthesis on this line and then jumps to its matching parenthesis.
+The `%` motion finds the next parenthesis on the current line and then jumps to its matching parenthesis.
 
     link_to("text", my_path(singularize("one"), pluralize(double("two"))))
                     ^      A                                            B
