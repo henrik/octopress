@@ -37,4 +37,8 @@ The `%` motion finds the next parenthesis on the current line and then jumps to 
 
 So the `%` motion finds `A`, then jumps to its matching parenthesis `B`. Everything between `^` and `B` (inclusive) will be changed.
 
-That's not quite all `%` does. It also handles `[]` square brackets, `{}` curly braces and some other things. It can be used as a standalone motion or with other operators than `c`. See `:help %` and `:help matchit` for more.
+That's not quite all `%` does. It also handles `[]` square brackets, `{}` curly braces and some other things. It can be used as a standalone motion or with other operators than `c`.
+
+For example, you could use `d%` to change `expect(remove_my_argument(123))` into `expect(remove_my_argument)`.
+
+See `:help %` and `:help matchit` for more.
