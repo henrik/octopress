@@ -41,4 +41,6 @@ That's not quite all `%` does. It also handles `[]` square brackets, `{}` curly 
 
 For example, you could use `d%` to change `expect(remove_my_argument(123))` into `expect(remove_my_argument)`.
 
+Or if you're at the beginning of the line `hash.merge(one: name(1), two: name(2)).invert` and want to add a key just before the ending parenthesis, just hit `%` to go there.
+
 See `:help %` and `:help matchit` for more.
