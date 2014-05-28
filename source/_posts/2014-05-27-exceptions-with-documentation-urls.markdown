@@ -27,8 +27,8 @@ end
 
 That wiki page documents what the exception is about and what to do about it.
 
-This saves time: when the error happens, the next step is a click away. You don't have to chase down that vaguelly recalled piece of documentation.
+This saves time: when the error happens, the next step is a click away. You don't have to chase down that vaguely recalled piece of documentation.
 
 And for new developers that have never seen this exception nor the docs, it's pretty clear where they can go to read up.
 
-Admittedly, it's better if errors can be fixed automatically, or at least have one-liner fixes that can be inlined in the exception message. But for those few cases where a page of documentation is the best solution, be sure to provide a URL.
+Admittedly, it's better if errors can be recovered from automatically. But for those few cases where a page of documentation is the best solution, be sure to provide a URL in the exception message.
