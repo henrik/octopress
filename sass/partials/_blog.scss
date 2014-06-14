@@ -120,6 +120,14 @@ article {
     @extend .basic-alignment;
     @include shadow-box;
   }
+
+  img.no-box {
+    @include border-radius(0);
+    @include box-shadow(none);
+    font-size: content-box;
+    border: 0;
+  }
+
   video, .flash-video { margin: 0 auto 1.5em; }
   video { display: block; width: 100%; }
   .flash-video {
