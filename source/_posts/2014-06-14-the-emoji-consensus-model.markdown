@@ -19,7 +19,7 @@ Since we already make styleguide decisions by consensus, I thought it would be s
 
 <img src="https://assets-cdn.github.com/images/icons/emoji/point_right.png" class="no-box" style="width:20px;height:20px" alt=":point_right:" title=":point_right:"> Let's discuss further. We don't have all the facts yet.
 
-<img src="https://assets-cdn.github.com/images/icons/emoji/thumbsdown.png" class="no-box" style="width:20px;height:20px" alt=":thumbsdown:" title=":thumbsdown"> Veto! I feel that I have all the facts needed to say no.
+<img src="https://assets-cdn.github.com/images/icons/emoji/thumbsdown.png" class="no-box" style="width:20px;height:20px" alt=":thumbsdown:" title=":thumbsdown:"> Veto! I feel that I have all the facts needed to say no.
 
 <img src="https://assets-cdn.github.com/images/icons/emoji/punch.png" class="no-box" style="width:20px;height:20px" alt=":punch:" title=":punch:"> I stand aside. I neither support nor oppose this.
 
