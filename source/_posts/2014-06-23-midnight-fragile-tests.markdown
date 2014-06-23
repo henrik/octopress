@@ -8,7 +8,7 @@ categories:
   - Review in review
 ---
 
-This is a post in [my series](/tag/review-in-review) on things I've remarked on in [Barsoom](http://barsoom.se) code review.
+This is a post in [my series](/tag/review-in-review) on things I've remarked on in code review.
 
 Do you see a problem with this test?
 

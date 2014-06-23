@@ -8,7 +8,7 @@ categories:
   - Review in review
 ---
 
-I thought I'd start [a series](/tag/review-in-review) of short blog posts on things I remark on during code review at [Barsoom](http://barsoom.se) that could be of wider interest.
+I thought I'd start [a series](/tag/review-in-review) of short blog posts on things I remark on during code review that could be of wider interest.
 
 Do you see anything to improve in this extract from a feature spec, assuming we're fine with doing assertions against the DB?
 
