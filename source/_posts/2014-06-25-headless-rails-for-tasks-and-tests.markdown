@@ -29,7 +29,7 @@ expect(response).to be_success
 
 In both cases you're interacting with an [ActionDispatch::Integration::Session](http://api.rubyonrails.org/classes/ActionDispatch/Integration/Session.html).
 
-Here are two more uses for it that maybe you *didn't* know.
+Here are two more uses for it that maybe you hadn't thought of.
 
 
 ## Rake tasks
