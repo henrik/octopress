@@ -34,7 +34,7 @@ Here are two more uses for it that maybe you *didn't* know.
 
 ## Rake tasks
 
-If you have an app that receives non-GET webhooks, it's a bit of a bother to `curl` those if you want to trigger them in development.
+If you have an app that receives non-GET webhooks, it's a bit of a bother to `curl` those when you want to trigger them in development.
 
 Instead, you can do it from a Rake task:
 
