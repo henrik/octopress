@@ -69,6 +69,8 @@ Post-merge review isn't without its downsides.
 
   This can be annoying, but it's not a dealbreaker.
 
+  We try to mitigate this by always getting a second opinion on non-obvious table or column names.
+
 * New hires may be insecure about pushing straight to master.
 
   Pair programming could help that to some extent. You can also do pre-merge code review temporarily for some person or feature.
