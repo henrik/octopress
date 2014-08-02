@@ -13,14 +13,14 @@ I wanted to add a [Font Awesome icon](http://fortawesome.github.io/Font-Awesome/
 
 This is a private project that will only be used with WebKit browsers (e.g. Chrome or Mobile Safari), so **I have not considered cross-browser compatibility or fallbacks**.
 
-You *can* position an element on top of the file field and pass clicks through as described e.g. [on QuirksMode.org](http://www.quirksmode.org/dom/inputfile.html), but it requires JavaScript for some things and gets complicated.
+You can position an element on top of the file field and pass clicks through as described e.g. [on QuirksMode.org](http://www.quirksmode.org/dom/inputfile.html), but it requires JavaScript for some things and gets complicated.
 
 Keeping in mind that I only cared about WebKit browsers, I simply did this:
 
 ``` css
-input[type="file"]::-webkit-file-upload-button {
+input[type=file]::-webkit-file-upload-button {
   padding: 6px 10px;  /* Make it pretty. */
-  /* … Omitted other prettification like background color. */
+  /* …other prettification like background color… */
 
   /* Make room for icon. */
   padding-left: 35px;
