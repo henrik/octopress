@@ -65,8 +65,8 @@ A "signup" (or "sign-up") is the act of signing up. It's also used in phrases li
 
 Language is determined by use and ever in flux – there's no right or wrong as such, but the above is what I believe most dictionaries and nitpickers would propose.
 
-Not making these distinctions looks just as bad as any other typo to those of us who are sensitive to the difference, and it is unnecessarily misleading – I would expect a `setupController` method to return the controller for setting things up, not to perform the action of setting it up.
+Not making these distinctions looks just as bad as any other typo to those of us who are sensitive to the difference, and it is unnecessarily misleading – I would expect a `setupController` method to return the controller for setting things up, not to perform the action of setting up a controller.
 
-I've seen a lot of people get it "wrong", in my team's code review as well as in major public projects [like Ember.js](https://github.com/emberjs/ember.js/issues/5099).
+I've seen a lot of people get it "wrong" – in my team's code review as well as in major public projects [like Ember.js](https://github.com/emberjs/ember.js/issues/5099).
 
 By making these distinctions, those who notice will be happier, and those who don't won't care either way.
