@@ -49,7 +49,7 @@ You could also call `wget` on the server, of course, and skip the upload step. I
 
 In the Nginx configuration for the site, I had to do some special things:
 
-```
+``` nginx
 server {
   # …
 
