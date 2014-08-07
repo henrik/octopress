@@ -38,7 +38,7 @@ In a sentence: "I will **log out** on the **logout** page."
 
 "Log out" is what you do.
 
-A "logout" (or "log-out") is the act of logging out. It's also used in phrases like "a logout page".
+A "logout" (or "log-out") is a thing: the act of logging out. It's also used in phrases like "a logout page".
 
 
 ## "set up" vs. "setup"
@@ -47,7 +47,7 @@ In a sentence: "I will **set up** my account on the **setup** page."
 
 "Set up" is what you do.
 
-A "setup" is the act of setting something up. It's also used in phrases like "a setup page".
+A "setup" is a thing: the act of setting something up. It's also used in phrases like "a setup page".
 
 I believe "set-up" with a hyphen is not commonly used in an IT sense. ([Corroboration.](http://www.future-perfect.co.uk/grammar-tip/is-it-setup-set-up-or-set-up/))
 
@@ -58,7 +58,7 @@ In a sentence: "I will **sign up** on the **signup** page."
 
 "Sign up" is what you do.
 
-A "signup" (or "sign-up") is the act of signing up. It's also used in phrases like "a signup page".
+A "signup" (or "sign-up") is a thing: the act of signing up. It's also used in phrases like "a signup page".
 
 
 ## Why should you care?
