@@ -85,7 +85,7 @@ config.consider_all_requests_local = false
 
 instead of `true`.
 
-Just make sure you don't keep that value, since you'll get less helpful errors in development, and you'll also disable the `/rails/info/properties` page with debug info.
+Just don't keep that value, since you'll get less helpful errors in development, and you'll also disable the `/rails/info/properties` page with debug info.
 
 
 ## Tests
