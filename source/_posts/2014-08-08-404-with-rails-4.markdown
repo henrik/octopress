@@ -60,6 +60,7 @@ end
 ``` ruby app/controllers/errors_controller.rb
 class ErrorsController < ApplicationController
   def error404
+    render status: :not_found
   end
 end
 ```
@@ -108,6 +109,7 @@ describe "404 page" do
   it "is customized" do
     visit "/no-such-page"
 
+    expect(page.status_code).to eq 404
     expect(page).to have_content("Sorry!")
   end
 end
