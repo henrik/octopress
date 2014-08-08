@@ -90,25 +90,15 @@ Just don't keep that value, since you'll get less helpful errors in development,
 
 ## Tests
 
-Thanks to commenter "DS" for figuring out how to get this working:
+I haven't been able to figure out a way to do production-style error handling in a single test, so I settled for this:
 
 ``` ruby spec/features/errors_spec.rb
 require "rails_helper"
 
 describe "404 page" do
-  before do
-    Rails.configuration.action_dispatch.show_exceptions = true
-    Rails.configuration.consider_all_requests_local = false
-  end
-
-  after do
-    Rails.configuration.action_dispatch.show_exceptions = false
-    Rails.configuration.consider_all_requests_local = true
-  end
-
   it "is customized" do
-    visit "/no-such-page"
-
+    # Haven't been able to get the "show instead of exceptions" thing working in tests, but this at least makes sure the page can render correctly.
+    visit "/404"
     expect(page.status_code).to eq 404
     expect(page).to have_content("Sorry!")
   end
