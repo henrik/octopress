@@ -1,0 +1,114 @@
+---
+layout: post
+title: "Custom 404 error page with Rails 4"
+date: 2014-08-08 17:50
+comments: true
+categories:
+  - Ruby on Rails
+---
+
+This is what I did to get a custom 404 error page on Rails 4, without replacing the default 500 and 422 error pages.
+
+There are other solutions where you just use the router as the exceptions app, but then you have to handle those other errors as well.
+
+It's very much based on [this Gist by Turadg Aleahmad](https://gist.github.com/turadg/5570181), but with some cleanup and fixes.
+
+
+## Code changes
+
+Remove the default `public/404.html` to avoid any collisions.
+
+Modify these files like so:
+
+``` ruby config/application.rb
+# …
+
+module NameOfMyApp
+  class Application < Rails::Application
+    # …
+
+    require Rails.root.join("lib/custom_public_exceptions")
+    config.exceptions_app = CustomPublicExceptions.new(Rails.public_path)
+  end
+end
+```
+
+``` ruby config/routes.rb
+Rails.application.routes.draw do
+  match "/404" => "errors#error404", via: [ :get, :post, :patch, :delete ]
+
+  # …
+end
+```
+
+Add these files:
+
+``` ruby lib/custom_public_exceptions.rb
+class CustomPublicExceptions < ActionDispatch::PublicExceptions
+  def call(env)
+    status = env["PATH_INFO"][1..-1]
+
+    if status == "404"
+      Rails.application.routes.call(env)
+    else
+      super
+    end
+  end
+end
+```
+
+``` ruby app/controllers/errors_controller.rb
+class ErrorsController < ApplicationController
+  def error404
+  end
+end
+```
+
+``` erb app/views/errors/error404.erb
+<p>Sorry! No such page!</p>
+```
+
+
+## Verify in development
+
+To see the page in development, just visit `/404`.
+
+If you see the default Rails 404 page, you probably forgot to remove `public/404.html`.
+
+If you want to make sure it actually works, change `config/environments/development.rb` to say
+
+``` ruby
+# Do not commit!
+config.consider_all_requests_local = false
+```
+
+instead of `true`.
+
+Just make sure you don't keep that value, since you'll get less helpful errors in development, and you'll also disable the `/rails/info/properties` page with debug info.
+
+
+## Tests
+
+Thanks to commenter "DS" for figuring out how to get this working:
+
+``` ruby spec/features/errors_spec.rb
+require "rails_helper"
+
+describe "404 page" do
+  before do
+    Rails.configuration.action_dispatch.show_exceptions = true
+    Rails.configuration.consider_all_requests_local = false
+  end
+
+  after do
+    Rails.configuration.action_dispatch.show_exceptions = false
+    Rails.configuration.consider_all_requests_local = true
+  end
+
+  it "is customized" do
+    visit "/no-such-page"
+
+    expect(page).to have_content("Sorry!")
+  end
+end
+```
