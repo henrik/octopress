@@ -40,6 +40,4 @@ When you get rid of your `::`s, consider that you're not constrained by the meth
 
 As with all code smells, this doesn't mean `::` is always bad. It's not; it's an essential part of Ruby. But it often indicates an API that could be improved.
 
-(I believe this smell is an instance of [Inappropriate Intimacy](http://sourcemaking.com/refactoring/inappropriate-intimacy), combated with [Hide Delegate](http://sourcemaking.com/refactoring/hide-delegate).)
-
 Give your code base a colonic; treat `::` as a code smell and see if you can't get clearer code without it.
