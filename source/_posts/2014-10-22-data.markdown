@@ -1,0 +1,40 @@
+---
+layout: post
+title: "Ruby DATA for quick-and-dirty jobs"
+date: 2014-10-22 21:20
+comments: true
+categories:
+  - Ruby
+  - Vim
+---
+
+Say you have a text file and need to extract all its email addresses, comma-separated.
+
+I'm more comfortable solving a problem like that in Ruby than in pure Vim – especially if it gets more complicated, perhaps with sorting and grouping.
+
+When it's a quick-and-dirty one-off thing that I don't need to save, I often write that Ruby in the data file itself, instead of bothering to create separate files. It's a convenient trick.
+
+For example, if I had the file
+
+```
+foo one@example.com bar two@example.com
+…more text here…
+```
+
+and wanted to extract comma-separated emails, I would just add something like
+
+``` ruby
+puts DATA.read.scan(/\S+@\S+/).join(",")
+
+__END__
+foo one@example.com bar two@example.com
+…more text here…
+```
+
+You could then make Vim run the script with `:w ! ruby`.
+
+If you want the output in a file, do `:w ! ruby > emails.csv`.
+
+Or if you want the output to go into a buffer, try my [vim-ruby-runner](https://github.com/henrik/vim-ruby-runner).
+
+If you didn't know, anything following `__END__` in a Ruby file becomes a kind of virtual file that `DATA.read` reads from.
