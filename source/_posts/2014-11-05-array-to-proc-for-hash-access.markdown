@@ -15,8 +15,6 @@ In Ruby, these are equivalent:
 [ 1, 2, 3 ].map(&:to_s)
 ```
 
-That's due to some cleverness involving [`Symbol#to_proc`](http://ruby-doc.org/core-2.1.4/Symbol.html#method-i-to_proc).
-
 At work today, we discussed having something similar for hash access. I came up with this:
 
 ``` ruby
