@@ -42,9 +42,9 @@ It could be even smaller if it didn't support multiple keys, but it does – and
 
 There's no default `Array#to_proc`, so this doesn't collide with anything built into the language.
 
-For a tiny hack, it's pretty cool.
-
 I'm not the first one to blog about an `Array#to_proc` ([1][a], [2][b], [3][c]) but I haven't seen it used for hash access.
+
+For a tiny hack, it's pretty cool.
 
 [a]: http://www.sanityinc.com/articles/adding-array-to-proc-to-ruby/
 [b]: https://rails.lighthouseapp.com/projects/8994/tickets/1253-arrayto_proc
