@@ -21,7 +21,7 @@ At work today, we discussed having something similar for hash access. I came up 
 [ { name: "A" }, { name: "B" } ].map(&[:name])  # => [ "A", "B" ]
 ```
 
-I'm very happy with that syntax; it's very clear what it does.
+I'm very happy with that syntax; it's quite clear what it does.
 
 The implementation is minimal:
 
