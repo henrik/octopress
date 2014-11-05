@@ -39,7 +39,7 @@ It could be even smaller if it didn't support multiple keys, but it does – and
 
 ``` ruby
 [ { name: "A", "age" => 41 }, { name: "B", "age" => 42 } ].map(&[:name, "age"])
-# => [ [ "A", "one" ], [ "B", "uno" ] ]
+# => [ [ "A", 41 ], [ "B", 42 ] ]
 ```
 
 There's no default `Array#to_proc`, so this doesn't collide with anything built into the language.
