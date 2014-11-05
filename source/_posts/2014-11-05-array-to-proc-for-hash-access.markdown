@@ -8,12 +8,14 @@ categories:
   - Metaprogramming
 ---
 
-Ruby has a nice shortcut built in, using [`Symbol#to_proc`](http://ruby-doc.org/core-2.1.4/Symbol.html#method-i-to_proc). These are equivalent:
+In Ruby, these are equivalent:
 
 ``` ruby
 [ 1, 2, 3 ].map { |number| number.to_s }
 [ 1, 2, 3 ].map(&:to_s)
 ```
+
+That's due to some cleverness involving [`Symbol#to_proc`](http://ruby-doc.org/core-2.1.4/Symbol.html#method-i-to_proc).
 
 At work today, we discussed having something similar for hash access. I came up with this:
 
