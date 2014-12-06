@@ -39,6 +39,8 @@ def my_method
 end
 ```
 
+so that the comment and the code it applies to form a group of their own.
+
 I would especially steer clear of
 
 ``` ruby
@@ -51,7 +53,7 @@ def my_method
 end
 ```
 
-In the above example, the Law of Proximity suggests that the comment applies to both `bar` and `foo`, but it's only intended to apply to `bar`.
+In this example, the Law of Proximity suggests that the comment applies to both `bar` and `foo`, but it's only intended to apply to `bar`.
 
 Similarly, a comment that applies to several paragraphs of code would suggest the wrong grouping if it's right next to the first paragraph:
 
