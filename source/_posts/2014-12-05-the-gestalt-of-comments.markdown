@@ -90,4 +90,4 @@ foo  # Info about foo.
 
 with two spaces, so the comment and code are more clearly separate.
 
-If your code has syntax highlighting, this horizontal separation is less important – per another law of Gestalt theory, the Law of Similarity, the different colors help us separate code from comment. Still, every bit helps.
+With syntax highlighting, this horizontal separation is less important – per another law of Gestalt theory, the Law of Similarity, the different colors help us separate code from comment. Still, every bit helps.
