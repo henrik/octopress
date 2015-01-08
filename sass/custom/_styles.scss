@@ -10,6 +10,10 @@ a code {
   @include link-colors($link-color, $hover: $link-color-hover, $focus: $link-color-hover, $visited: $link-color-visited, $active: $link-color-active);
 }
 
+li {
+  margin: 1em 0 1em 1.5em;
+}
+
 .toggle-sidebar {
   display: none;
 }
