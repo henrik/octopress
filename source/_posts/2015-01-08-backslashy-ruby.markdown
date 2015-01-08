@@ -68,6 +68,6 @@ It has one single downside that I can think of:
 
 * It's unconvential, so it is likely to confuse new developers on a project.
 
-I would argue that this is minor. If they know Ruby well enough to understand the oneliner, they can probably make sense of this as well (the initial headscratching is a one-time cost per developer). If not, feel free to send them to this post. You could link to it from your company styleguide.
+I would argue that this is minor. If they know Ruby well enough to understand the oneliner, they can probably make sense of this as well (the initial headscratching is a one-time cost per developer).
 
-And if you make sure to share this blog post with every Ruby developer you know, perhaps one day this syntax won't be considered unconventional at all.
+If not, feel free to send them to this post.
