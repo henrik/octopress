@@ -50,7 +50,7 @@ I know, it looks weird. But if you try it, I think you'll come to like it.
 It has several benefits compared to the oneliner:
 
 * It leaves the `def …` at the beginning of the line so the code is easier to scan.
-* It puts the "decorating" method call (e.g. the `private_class_method(…)` call, cf. [Python decorators](https://wiki.python.org/moin/PythonDecorators)) on its own line, making it stand out more clearly.
+* It puts the "decorating" method call (the `private_class_method` call, cf. [Python decorators](https://wiki.python.org/moin/PythonDecorators)) on its own line, making it stand out more clearly.
 * It puts the decorating method call on its own line, making line diffs less noisy.
 * It arguably scales better to multiple stacked decorating method calls, though I've only done that in [toy code](https://gist.github.com/henrik/8604570) so far:
 
@@ -70,4 +70,4 @@ It has one single downside that I can think of:
 
 I would argue that this is minor. If they know Ruby well enough to understand the oneliner, they can probably make sense of this as well (the initial headscratching is a one-time cost per developer). If not, feel free to send them to this post. You could link to it from your company styleguide.
 
-And if you make sure to share this blog post with every Ruby developer you know, perhaps one day this syntax won't be considered unconventional at all…
+And if you make sure to share this blog post with every Ruby developer you know, perhaps one day this syntax won't be considered unconventional at all.
