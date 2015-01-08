@@ -45,7 +45,7 @@ end
 
 The trailing backslash is just [the (rarely used) Ruby syntax](http://phrogz.net/ProgrammingRuby/language.html#sourcelayout) to say "this expression continues on the next line". You can think of it as escaping the line break so it has no effect.
 
-I know, it looks weird. But I think if you try it, you'll come to like it.
+I know, it looks weird. But if you try it, I think you'll come to like it.
 
 It has several benefits compared to the oneliner:
 
