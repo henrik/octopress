@@ -21,7 +21,7 @@ In that forum thread, I called it the "temporarily reverse the value of this boo
 
 Even if you do accidentally leave it in, someone's bound to spot it in review. You could even prevent committing it altogether by technical means ([1][1], [2][2]).
 
-Other name suggestions were "the mad hype operator" or "tri-not" ("the Yoda operator").
+Other name suggestions were "the mad hype operator" from [Mike McDonald](http://crazymykl.herokuapp.com/) or "tri-not" ("the Yoda operator") from [Christian Schlensker](http://cswebartisan.com/).
 
 By any name, it's pretty sweet.
 
