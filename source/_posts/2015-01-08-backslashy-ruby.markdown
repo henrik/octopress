@@ -31,6 +31,8 @@ private_class_method :foo
 
 By not repeating the method name, renames are easier and less bug-prone.
 
+I also like that this new style puts the method "metadata" next to its name, instead of after the entire method body.
+
 I've mostly used it for [Rails' `helper_method`](http://apidock.com/rails/AbstractController/Helpers/ClassMethods/helper_method) and once or twice for `private_class_method`.
 
 I use a special syntax, though, that I would like to present for your consideration:
