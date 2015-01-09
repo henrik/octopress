@@ -29,10 +29,6 @@ end
 private_class_method :foo
 ```
 
-By not repeating the method name, renames are easier and less bug-prone.
-
-I also like that this new style puts the method "metadata" next to its name, instead of after the entire method body.
-
 I've mostly used it for [Rails' `helper_method`](http://apidock.com/rails/AbstractController/Helpers/ClassMethods/helper_method) and once or twice for `private_class_method`.
 
 I use a special syntax, though, that I would like to present for your consideration:
@@ -51,12 +47,11 @@ The trailing backslash is just [the (rarely used) Ruby syntax](http://phrogz.net
 
 I know, it looks weird. But if you try it, I think you'll come to like it.
 
-It has several benefits compared to the oneliner:
+I see these benefits compared to the pre-2.1 style:
 
-* It leaves the `def …` at the beginning of the line so the code is easier to scan.
-* It puts the "decorating" method call (the `private_class_method` call, cf. [Python decorators](https://wiki.python.org/moin/PythonDecorators)) on its own line, making it stand out more clearly.
-* It puts the decorating method call on its own line, making line diffs less noisy.
-* It arguably scales better to multiple stacked decorating method calls, though I've only done that in [toy code](https://gist.github.com/henrik/8604570) so far:
+* By not repeating the method name, renames are easier and less bug-prone.
+* It puts the method "metadata" right before the method name, instead of after the entire method body, which I think reads clearer.
+* In the (admittedly rare) cases where you stack multiple "decorating" method calls (cf. [Python decorators](https://wiki.python.org/moin/PythonDecorators)), the above benefits are clearer still:
 
 ``` ruby
 memoize \
@@ -64,9 +59,24 @@ helper_method \
 def expensive_calculation
   # …
 end
+
+# vs.
+
+def expensive_calculation
+  # …
+end
+memoize :expensive_calculation
+helper_method :expensive_calculation
 ```
 
 (If you want to memoize with this very syntax, see [memoit](https://github.com/jnicklas/memoit) by Jonas Nicklas.)
+
+I see these benefits compared to the `helper_method def foo` oneliner style:
+
+* It leaves the `def …` at the beginning of the line so the code is easier to scan.
+* It puts the decorating method call on its own line, making it stand out more clearly.
+* It puts the decorating method call on its own line, making line diffs less noisy.
+* It scales better to multiple stacked decorating method calls.
 
 It has one single downside that I can think of:
 
