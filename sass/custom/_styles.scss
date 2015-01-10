@@ -14,6 +14,11 @@ li {
   margin: 1em 0 1em 1.5em;
 }
 
+// Remove box-shadow from code.
+figure.code {
+  @include box-shadow(transparent 0 0 0);
+}
+
 .toggle-sidebar {
   display: none;
 }
