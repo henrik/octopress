@@ -24,6 +24,16 @@ figure.code {
   border: none !important;
 }
 
+// Filenames above code examples.
+figure.code figcaption {
+  font-size: 14px;
+  background-color: #ededed;
+  border: none;
+  padding: 2px;
+  @include border-top-radius(0);
+  @include background-image(none);
+}
+
 .toggle-sidebar {
   display: none;
 }
