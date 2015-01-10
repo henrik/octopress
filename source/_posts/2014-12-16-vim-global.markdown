@@ -9,7 +9,7 @@ categories:
 
 Say you have this file open in Vim:
 
-``` javascript example.js
+``` javascript example.js linenos:false
 one();
 
 console.log("about to do two");

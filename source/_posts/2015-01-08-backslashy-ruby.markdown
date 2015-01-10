@@ -9,21 +9,21 @@ categories:
 
 Ruby 2.1 changed method definitions from returning `nil` to returning the method name:
 
-``` ruby
+``` ruby linenos:false
 def foo; end  # => :foo
 def self.foo; end  # => :foo
 ```
 
 This enables shorter and [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)er code like
 
-``` ruby
+``` ruby linenos:false
 private_class_method def self.foo
 end
 ```
 
 instead of
 
-``` ruby
+``` ruby linenos:false
 def self.foo
 end
 private_class_method :foo
@@ -33,7 +33,7 @@ I've mostly used it for [Rails' `helper_method`](http://apidock.com/rails/Abstra
 
 I use a special syntax, though, that I would like to present for your consideration:
 
-``` ruby
+``` ruby linenos:false
 private_class_method \
 def self.foo
 end
@@ -53,7 +53,7 @@ I see these benefits compared to the pre-2.1 style:
 * It puts the method "metadata" right before the method name, instead of after the entire method body, which I think reads clearer.
 * In the (admittedly rare) cases where you stack multiple "decorating" method calls (cf. [Python decorators](https://wiki.python.org/moin/PythonDecorators)), the above benefits are clearer still:
 
-``` ruby
+``` ruby linenos:false
 memoize \
 helper_method \
 def expensive_calculation

@@ -16,7 +16,7 @@ We all *unconsciously* apply the Law of Proximity when we read code, so I try to
 
 For example, instead of
 
-``` ruby
+``` ruby linenos:false
 def my_method
   return if foo
   # Info about bar.
@@ -28,7 +28,7 @@ end
 
 I would prefer
 
-``` ruby
+``` ruby linenos:false
 def my_method
   return if foo
 
@@ -43,7 +43,7 @@ so that the comment and the code it applies to form a group of their own.
 
 I would especially steer clear of
 
-``` ruby
+``` ruby linenos:false
 def my_method
   # Info about bar.
   return if bar
@@ -57,7 +57,7 @@ In this example, the Law of Proximity suggests that the comment applies to both 
 
 Similarly, a comment that applies to several paragraphs of code would suggest the wrong grouping if it's right next to the first paragraph:
 
-``` ruby
+``` ruby linenos:false
 # Info about foo and bar.
 foo(1)
 foo(2)
@@ -68,7 +68,7 @@ bar(2)
 
 Instead, I'd do
 
-``` ruby
+``` ruby linenos:false
 # Info about foo and bar.
 
 foo(1)
@@ -80,13 +80,13 @@ bar(2)
 
 There's also horizontal proximity. Instead of
 
-``` ruby
+``` ruby linenos:false
 foo # Info about foo.
 ```
 
 I prefer
 
-``` ruby
+``` ruby linenos:false
 foo  # Info about foo.
 ```
 
