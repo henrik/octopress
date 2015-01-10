@@ -12,6 +12,7 @@ I wanted to do a `UNION` query in Active Record, combining the results of two su
 This is how I did it in Rails 4.1.5 with Postgres:
 
 ``` ruby
+category = Category.find(123)
 items = category.items
 query1 = items.some_scope
 query2 = items.other_scope
