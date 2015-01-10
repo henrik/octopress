@@ -32,15 +32,16 @@ li {
   text-align: center;
 }
 
-.pug {
+.the-pug {
   a {
     text-decoration: none;
   }
+
   img {
     border: none;
     @include box-shadow(none);
-    width: 172px;
-    height: 192px;
+    width: 200px;
+    height: 222px;
   }
 }
 
