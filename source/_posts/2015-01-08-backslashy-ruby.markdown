@@ -75,8 +75,8 @@ I see these benefits compared to the `helper_method def foo` oneliner style:
 
 * It leaves the `def …` at the beginning of the line so the code is easier to scan.
 * It puts the decorating method call on its own line, making it stand out more clearly.
-* It puts the decorating method call on its own line, making line diffs less noisy.
-* It scales better to multiple stacked decorating method calls.
+* It makes line diffs less noisy.
+* All of the above is even more true if you have multiple stacked decorating method calls.
 
 It has one single downside that I can think of:
 
