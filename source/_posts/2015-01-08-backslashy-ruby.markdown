@@ -82,6 +82,6 @@ It has one single downside that I can think of:
 
 * It's unconvential, so it is likely to confuse new developers on a project.
 
-I would argue that this is minor. If they know Ruby well enough to understand the oneliner, they can probably make sense of this as well (the initial headscratching is a one-time cost per developer).
+I would argue that this is minor. If they know Ruby well enough to understand the oneliner, they can make sense of this as well. Any initial headscratching is a one-time cost per developer.
 
 If not, feel free to send them to this post.
