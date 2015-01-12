@@ -9,7 +9,7 @@ categories:
 
 As you probably know, you can use Ruby's splat operator (`*`) for any-length argument lists:
 
-``` ruby
+``` ruby linenos:false
 def make_into_array(*args)
   args
 end
@@ -21,7 +21,7 @@ It has another handy use, though, as a list flattener.
 
 You can use it for nicer array concatenation:
 
-``` ruby
+``` ruby linenos:false
 foos = [ 1, 2 ]
 
 # Not as nice
@@ -41,7 +41,7 @@ There's also `foos << "more"`, but that mutates the original array, so it's ofte
 
 You can also use it for method argument concatenation. For example with `attr_accessible` in Ruby on Rails:
 
-``` ruby
+``` ruby linenos:false
 COMMON_ACCESSIBLE = [ :name, :email ]
 attr_accessible *COMMON_ACCESSIBLE, as: :user
 

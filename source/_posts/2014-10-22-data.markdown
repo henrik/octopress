@@ -16,14 +16,14 @@ When it's a quick-and-dirty one-off thing that I don't need to save, I often wri
 
 For example, if I had the file
 
-```
+``` linenos:false
 foo one@example.com bar two@example.com
 …more text here…
 ```
 
 and wanted to extract comma-separated emails, I would just add something like
 
-``` ruby
+``` ruby linenos:false
 puts DATA.read.scan(/\S+@\S+/).join(",")
 
 __END__
