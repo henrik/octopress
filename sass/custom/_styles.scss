@@ -14,12 +14,18 @@ li {
   margin: 1em 0 1em 1.5em;
 }
 
-// Remove box-shadow from code examples.
-figure.code {
+// Nicer styling for four-space indented code/shell commands.
+pre {
+  @include box-shadow(transparent 0 0 0);
+  border: 0;
+}
+
+// Remove box-shadow from backtick code examples.
+figure.code, pre {
   @include box-shadow(transparent 0 0 0);
 }
 
-// Remove border from code examples.
+// Remove border from backtick code examples.
 .highlight {
   border: none !important;
 }
