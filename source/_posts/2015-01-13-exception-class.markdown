@@ -5,6 +5,7 @@ date: 2015-01-13 20:45
 comments: true
 categories:
   - Ruby
+  - Exceptions
 ---
 
 In Ruby, when should you define your own exception class and when shouldn't you bother?
