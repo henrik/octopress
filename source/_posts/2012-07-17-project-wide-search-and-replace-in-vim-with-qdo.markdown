@@ -1,5 +1,5 @@
 ---
-
+title: Project-wide search-and-replace in Vim with :Qdo
 date: 2012-07-17 16:30
 categories:  [Vim]
 layout: post
