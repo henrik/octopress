@@ -19,7 +19,7 @@ Since it `exec`s Vim (replaces the shell process), the window closes when you qu
 
 ## 1. Get an `.app`
 
-[Download TerminalVim.app](http://cl.ly/103D320K1E28), unzip it and stick the app in `/Applications`.
+[Download TerminalVim.app](http://cl.ly/0H3X3L1G2t05), unzip it and stick the app in `/Applications`.
 
 Or make your own:
 
@@ -32,7 +32,7 @@ Or make your own:
 ``` applescript linenos:false
 on run {input, parameters}
 	set myPath to POSIX path of input
-	set cmd to "vim " & myPath
+	set cmd to "vim " & quote & myPath & quote
 
 	tell application "iTerm"
 		activate
