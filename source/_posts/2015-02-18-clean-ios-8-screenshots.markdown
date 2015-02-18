@@ -9,7 +9,7 @@ categories:
 
 I wanted to take an iPhone screenshot with a clean status bar: full battery and full reception.
 
-There are apps for the purpose, but I wanted to see if there was something built in.
+There are apps for the purpose, but I first wanted to see if there was anything built in.
 
 It's been [documented](http://www.tekrevue.com/tip/record-iphone-screen-quicktime/) how to record a *video* with a cleaned-up status bar on iOS 8 hooked up to OS X Yosemite: you just record within QuickTime Player and it cleans it for you.
 
