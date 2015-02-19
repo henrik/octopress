@@ -6,6 +6,7 @@ comments: true
 categories:
   - Git
   - Code review
+  - Continuous Delivery
 ---
 
 [Our team](http://barsoom.se) has been doing only spontaneous code review for a good while – on commits in the master branch that happen to pique one's interest. This week, we started systematically reviewing all non-trivial features, as an experiment, but this is still *after* it's pushed to master and very likely after it has been deployed to production.
