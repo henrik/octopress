@@ -13,12 +13,12 @@ Except, that is, for our main site. It's our biggest project, with the most comp
 
 We worried that a quick commit in the evening or weekend might cause issues at a time when no one wanted to deal with them.
 
-But manually triggering deploys got old. People forgot, or didn't want to be the one pulling the trigger in case something went wrong. We tried [rageguys](https://twitter.com/henrik/status/428157996913688578) (one per 5 undeployed commits). We tried [suggesting a deployer based on commit counts](https://twitter.com/henrik/status/476982655393996800).
+But manually triggering deploys got old. People forgot, or didn't want to be the one pulling the trigger in case something went wrong. We tried [rageguys](https://twitter.com/henrik/status/428157996913688578) (one per 5 commits). We tried [suggesting a deployer based on commit counts](https://twitter.com/henrik/status/476982655393996800).
 
 
 ## The benefits of autodeploy
 
-We're strong believers in [continuous delivery](http://en.wikipedia.org/wiki/Continuous_delivery), and continuous deployment is part and parcel of that, to me. Changes should go into production quickly so we get feedback (including bugs and exceptions) as soon as we can. Without automation, deployment won't be as continuous as it can be.
+We're strong believers in [continuous delivery](http://en.wikipedia.org/wiki/Continuous_delivery), and continuous deployment is part and parcel of that. Changes should go into production quickly so we get feedback (including bugs and exceptions) as soon as we can. Without automation, deployment won't be as continuous as it can be.
 
 Automatic deploys *are* scary. When you juggle servers, things can go wrong. But [if it hurts, do it more often](http://martinfowler.com/bliki/FrequencyReducesDifficulty.html). You'll see the patterns, and you'll fix it.
 
@@ -50,5 +50,7 @@ The details of the deploy scripts and of setting up a CI chain are outside the s
 Our `is_autodeploy_allowed.rb` script allows autodeploys during weekdays from 8:30 (the earliest time someone is at the office) until lunch. Then from 13:00 until 18:00 (when most people leave).
 
 On Fridays, autodeploys stop at 16:30 per [this diagram](https://twitter.com/iamdevloper/status/450905958139834368).
+
+If CI doesn't autodeploy, it will instead output the correct manual deployment command in our chat room, for copy-and-pasting.
 
 If you've been scared of autodeploys, maybe a time restriction can ease your fears.
