@@ -13,7 +13,7 @@ Except, that is, for our main site. It's our biggest project, with the most comp
 
 We worried that a quick commit in the evening or weekend might cause issues at a time when no one wanted to deal with them.
 
-But manually triggering deploys got old. People forgot, or didn't want to be the one pulling the trigger in case something went wrong. We tried [rageguys](https://twitter.com/henrik/status/428157996913688578). We tried [suggesting a deployer based on commit counts](https://twitter.com/henrik/status/476982655393996800).
+But manually triggering deploys got old. People forgot, or didn't want to be the one pulling the trigger in case something went wrong. We tried [rageguys](https://twitter.com/henrik/status/428157996913688578) (one per 5 undeployed commits). We tried [suggesting a deployer based on commit counts](https://twitter.com/henrik/status/476982655393996800).
 
 
 ## The benefits of autodeploy
