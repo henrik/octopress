@@ -38,4 +38,6 @@ If we cover every column by listing them all, we will probably forget to update 
 
 If we cover every column by introspection, we'll probably write test code that mirrors the implementation, which depreciates the value of the test.
 
+And even if we cover every column, we don't cover every possible input. We need to draw the line somewhere.
+
 I think of the test *description* as a statement of unbridled intent: we want the code to strip spaces in every column. The test *implementation* is then a kind of pragmatic judgment sampling that often will not correspond completely to the description. An optimistic lie. And that's OK.
