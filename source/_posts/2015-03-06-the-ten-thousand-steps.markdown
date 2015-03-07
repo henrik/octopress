@@ -30,7 +30,7 @@ You get push notifications if someone's catching up to you, cheers and comments 
 
 ![Pedometer++ widget screenshot](https://s3.amazonaws.com/f.cl.ly/items/3k3p1x1m1B3x4642093c/IMG_4796.PNG)
 
-I like [Pedometer++](http://pedometerplusplus.com/) (free, pay to remove ads) mostly because it can show my step count as a Notification Center widget, accessible by sliding down from the top of the phone's screen, even if the phone is locked. The app (not the widget) also provides day-to-day step graphs, and a delightful confetti burst when you reach your daily goal.
+I like [Pedometer++](http://pedometerplusplus.com/) (free, pay to remove ads) mostly because it can show my step count as a Notification Center widget, accessible by sliding down from the top of the phone's screen, even if the phone is locked. The app (not the widget) also provides step graphs, and a delightful confetti burst when you reach your daily goal.
 
 You can see very clearly in the graph when I started counting steps:
 
