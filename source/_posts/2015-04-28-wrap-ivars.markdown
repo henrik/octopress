@@ -25,7 +25,7 @@ end
 Of late I've started wrapping these instance variables in thin methods:
 
 ``` erb layout.html.erb linenos:false
-<% unless hide_breadcrumbs? %>
+<% if show_breadcrumbs? %>
   <nav class="breadcrumbs">…</div>
 <% end %>
 ```
@@ -36,8 +36,8 @@ def hide_breadcrumbs
 end
 
 helper_method \
-def hide_breadcrumbs?
-  @hide_breadcrumbs
+def show_breadcrumbs?
+  !@hide_breadcrumbs
 end
 ```
 
@@ -56,6 +56,6 @@ If an instance variable is not set, it defaults to `nil`. So if I set one in a c
 
 When you wrap them in methods like this, the write and the read are adjacent in code, so they're easier to maintain.
 
-You also get the expressiveness, the encapsulation and the flexibility of using a method. For example, if you use this to set and get `<title>`s, you could have the getter also fall back to a default, or add a suffix.
+You also get the expressiveness, the encapsulation and the flexibility of using a method. For example, notice how I defined a `#show_breadcrumbs?` to avoid the double negative of `unless @hide_breadcrumbs`. Or if you use this for `<title>`s, you could implement a fallback if no title was set, or add a suffix to every title.
 
 Try it out!
