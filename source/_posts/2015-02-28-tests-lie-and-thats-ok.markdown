@@ -28,7 +28,7 @@ A code review comment said: Doesn't this test lie? It makes claims about *every*
 
 I've been thinking about this disparity for a while.
 
-A lot of tests – perhaps most tests – lie in this sense. A test claims `ìt "uppercases input"` but only actually verifies a few transformations out of the infinite input space.
+A lot of tests – perhaps most tests – lie in this sense. A test claims `it "uppercases input"` but only actually verifies a few transformations out of the infinite input space.
 
 If you uppercase infinite input, you simply can't cover every case. So you pick some interesting ones. Bugs are interesting cases you didn't think of beforehand.
 
