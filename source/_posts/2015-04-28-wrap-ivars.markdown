@@ -56,6 +56,6 @@ If an instance variable is not set, it defaults to `nil`. So if I set one in a c
 
 When you wrap them in methods like this, the write and the read are adjacent in code, so they're easier to maintain.
 
-You also get the expressiveness, the encapsulation and the flexibility of using a method. For example, notice how I defined a `#show_breadcrumbs?` to avoid the double negative of `unless @hide_breadcrumbs`. Or if you use this for `<title>`s, you could implement a fallback if no title was set, or add a suffix to every title.
+You also get the expressiveness, the encapsulation and the flexibility of using a method. For example, notice how I defined a `#show_breadcrumbs?` to avoid the double negative of `unless @hide_breadcrumbs`.
 
 Try it out!
