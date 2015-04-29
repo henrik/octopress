@@ -9,12 +9,6 @@ categories:
 
 If your layout template shows a breadcrumb but you want to hide it on some pages, this is a reasonable way to do it:
 
-``` erb layout.html.erb linenos:false
-<% unless @hide_breadcrumbs %>
-  <nav class="breadcrumbs">…</div>
-<% end %>
-```
-
 ``` ruby my_controller.rb linenos:false
 def show
   @hide_breadcrumbs = true
@@ -22,13 +16,13 @@ def show
 end
 ```
 
-Of late I've started wrapping these instance variables in thin methods:
-
 ``` erb layout.html.erb linenos:false
-<% if show_breadcrumbs? %>
+<% unless @hide_breadcrumbs %>
   <nav class="breadcrumbs">…</div>
 <% end %>
 ```
+
+Of late I've started wrapping these instance variables in thin methods:
 
 ``` ruby application_controller.rb linenos:false
 def hide_breadcrumbs
@@ -41,14 +35,20 @@ def show_breadcrumbs?
 end
 ```
 
-(If you want to learn more about `helper_method \`, see ["Backslashy Ruby"](/2015/01/backslashy-ruby/).)
-
 ``` ruby my_controller.rb linenos:false
 def show
   hide_breadcrumbs
   # …
 end
 ```
+
+``` erb layout.html.erb linenos:false
+<% if show_breadcrumbs? %>
+  <nav class="breadcrumbs">…</div>
+<% end %>
+```
+
+(If you want to learn more about `helper_method \`, see ["Backslashy Ruby"](/2015/01/backslashy-ruby/).)
 
 I like this pattern because I've found instance variables in views to be bug prone and a bit difficult to maintain. I [don't](/2013/05/locals/) use them when rendering action views, either.
 
