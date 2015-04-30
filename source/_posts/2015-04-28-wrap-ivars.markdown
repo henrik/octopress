@@ -18,7 +18,7 @@ end
 
 ``` erb layout.html.erb linenos:false
 <% unless @hide_breadcrumbs %>
-  <nav class="breadcrumbs">…</div>
+  <nav class="breadcrumbs">…</nav>
 <% end %>
 ```
 
@@ -44,7 +44,7 @@ end
 
 ``` erb layout.html.erb linenos:false
 <% if show_breadcrumbs? %>
-  <nav class="breadcrumbs">…</div>
+  <nav class="breadcrumbs">…</nav>
 <% end %>
 ```
 
