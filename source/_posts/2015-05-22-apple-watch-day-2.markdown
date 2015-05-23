@@ -54,7 +54,7 @@ She's also great for looking up random stuff. "When is Mother's Day?", "Where is
 
 When the alarm clock on your iPhone rings, you can turn it off from the watch. I've wanted this so much and didn't even realize the watch could do it until it happened, despite having read a lot of reviews.
 
-I often rise before the alarm, especially in the weekends. If I leave my phone by the bedside, the alarm may finally go off when I'm in the bathroom or at the kitchen table. This is annoying to me and my sleepyhead girlfriend both.
+I often rise before the alarm, especially in the weekends. If I leave my phone by the bedside, the alarm may ring when I'm in the bathroom or at the kitchen table. This is annoying to me and my sleepyhead girlfriend both.
 
 I've wanted this feature to the point that when I had a jailbroken iPhone for a while, I installed software so I could share the iPhone screen remotely from my computer or iPad to turn alarms off. Unsurprisingly, this wasn't nearly convenient enough that I stuck with it.
 
