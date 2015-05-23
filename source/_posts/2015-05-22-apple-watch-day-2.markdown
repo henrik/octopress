@@ -38,7 +38,7 @@ I had expected the screen to be a bit crappy, and that the pixels weren't as "cl
 
 When the circle-of-specifications appeared after pairing the watch, I was wowed at how it seemed to pop out of the screen.
 
-Perhaps due to the very black blacks, the picture on the screen actually looks to me almost like it's hovering a hair *above* the screen. Photos don't do it justice.
+Perhaps due to the very black blacks, the picture on the screen looks to me almost like it's hovering a hair *above* the screen. Photos don't do it justice.
 
 ### Siri
 
@@ -52,7 +52,7 @@ She's also great for looking up random stuff. "When is Mother's Day?", "Where is
 
 ![](https://dl.dropboxusercontent.com/u/546793/blog/apple_watch_alarm.jpg)
 
-When the alarm clock on your iPhone goes off, you can turn it off from the watch. I've wanted this so much and didn't even realize the watch could do it until it happened, despite having read a lot of reviews.
+When the alarm clock on your iPhone rings, you can turn it off from the watch. I've wanted this so much and didn't even realize the watch could do it until it happened, despite having read a lot of reviews.
 
 I often rise before the alarm, especially in the weekends. If I leave my phone by the bedside, the alarm may finally go off when I'm in the bathroom or at the kitchen table. This is annoying to me and my sleepyhead girlfriend both.
 
