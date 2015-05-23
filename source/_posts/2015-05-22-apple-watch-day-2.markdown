@@ -48,6 +48,14 @@ I do "remind me to X in 5 minutes", "remind me to Y at 11:30" several times a da
 
 She's also great for looking up random stuff. "When is Mother's Day?", "Where is Burundi?"
 
+### Turning off alarms
+
+When the alarm clock on your iPhone goes off, you can turn it off from the watch. I've wanted this so much and didn't even realize the watch could do it until it happened, despite having read a lot of reviews.
+
+I often rise before the alarm, especially in the weekends. If I leave my phone by the bedside, the alarm may finally go off when I'm in the bathroom or at the kitchen table. This is annoying to me and my sleepyhead girlfriend both.
+
+I've wanted this feature to the point that when I had a jailbroken iPhone for a while, I installed software so I could share the iPhone screen remotely from my computer or iPad to turn alarms off. Unsurprisingly, this wasn't nearly convenient enough that I stuck with it.
+
 ### Messaging on the go
 
 I stopped by the grocery store after work today and sent a message from my iPhone to my girlfriend, asking if we needed milk.
