@@ -20,9 +20,11 @@ I hear you can get these cheaper than $349, but having the current time a wrist-
 
 The Apple Watch is in some ways less beautiful to me than [the mechanical Raketa watch](https://dl.dropboxusercontent.com/u/546793/blog/raketa.jpg) I used to sometimes wear, but I like having a digital watch face. When I see an analog watch face, I convert it to digital in my head.
 
-Having the date on your wrist (this can also be had for less money) is also be convenient. When I bought milk, I checked the best-before date against today's date in literally 1 second.
+Having the date on your wrist (this can also be had for less money) is convenient. When I bought milk, I checked the best-before date against today's date in the wink of an eye.
 
-And seeing the temperature and the next calendar appointment at a glance is also pretty neat.
+When I went out for an evening walk, I glanced ever so briefly at the temperature to see if I needed a jacket.
+
+Seeing the next calendar appointment is also pretty neat.
 
 I mostly use the "Modular" watch face.
 
@@ -36,9 +38,7 @@ I had expected the screen to be a bit crappy, and that the pixels weren't as "cl
 
 When the circle-of-specifications appeared after pairing the watch, I was wowed at how it seemed to pop out of the screen.
 
-Perhaps due to the very black blacks, the picture on the screen actually looks to me almost like it's hovering a hair *above* the screen.
-
-Photos don't do it justice.
+Perhaps due to the very black blacks, the picture on the screen actually looks to me almost like it's hovering a hair *above* the screen. Photos don't do it justice.
 
 ### Siri
 
@@ -70,7 +70,7 @@ When I tried map directions two evenings ago, it worked well and was super cool.
 
 I set up the route on my phone, and the next time I raised my wrist, the directions were there. It's beautiful how it counts down the distance to the next turn and then taps you (with different taps for "left" and "right") a short while before it's time to turn.
 
-But then when I played with it again today in the neighbourhood of the office, the directions were all confused, and it didn't show the right instructions. I'm not sure if I did something wrong or what. I'll experiment more with it and perhaps I'll figure out what went wrong.
+But then when I played with it again today in the neighbourhood of the office, the directions were all confused, and it didn't show the right instructions. I'm not sure if I did something wrong or what. I'll experiment more with it and see if I can figure out what happened.
 
 ### Cool apps
 
@@ -89,7 +89,7 @@ Siri is pretty great, but she has some annoying knowledge gaps. You're inexplica
 
 I would love to look up English words in [WordBook](http://watchaware.com/watch-apps/289694924), but the dictation only accepts Swedish, which is my Siri language. I'm not sure if this is a shortcoming of the watch or of that app.
 
-Sometimes the quick-reply options in the Messages app are English, sometimes Swedish, and it doesn't always get it right. Once, dictation for a message expected English, though I haven't been able to reproduce it since.
+Sometimes the quick-reply options in the Messages app are English, sometimes Swedish, and it doesn't always get it right. Once, dictation for a message to a Swedish contact expected English, though I haven't been able to reproduce it since.
 
 I wish you could force touch from the reply view to get a language picker.
 
