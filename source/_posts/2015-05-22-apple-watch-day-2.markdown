@@ -50,6 +50,8 @@ She's also great for looking up random stuff. "When is Mother's Day?", "Where is
 
 ### Turning off alarms
 
+![](https://dl.dropboxusercontent.com/u/546793/blog/apple_watch_alarm.jpg)
+
 When the alarm clock on your iPhone goes off, you can turn it off from the watch. I've wanted this so much and didn't even realize the watch could do it until it happened, despite having read a lot of reviews.
 
 I often rise before the alarm, especially in the weekends. If I leave my phone by the bedside, the alarm may finally go off when I'm in the bathroom or at the kitchen table. This is annoying to me and my sleepyhead girlfriend both.
