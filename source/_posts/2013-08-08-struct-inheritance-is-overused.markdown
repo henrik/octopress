@@ -70,7 +70,7 @@ items.each { |item| puts item.title }
 
 But when you're modelling a domain concept and expect to have domain behavior, inheriting from a data container is weird.
 
-`Struct` has [a bunch of data container methods](http://www.ruby-doc.org/core-2.0/Struct.html) that your class will inherit: `length`, `members`, `each_pair`, `values`, `values_at` and more.
+`Struct` has [a bunch of data container methods](http://www.ruby-doc.org/core-2.2.2/Struct.html) that your class will inherit: `length`, `members`, `each_pair`, `values`, `values_at` and more.
 
 Do you think of your class as a specialized data container? If not, don't inherit from `Struct`.
 
@@ -99,7 +99,7 @@ This might be what you want, but if it's not, don't inherit from `Struct`, as it
 
 ## Structs don't *want* to be subclassed
 
-Even if you insist on using `Struct`, subclassing may not be the way. [The docs](http://www.ruby-doc.org/core-2.0/Struct.html#method-c-new) don't recommend it, as it creates an unused anonymous class.
+Even if you insist on using `Struct`, subclassing may not be the way. [The docs](http://www.ruby-doc.org/core-2.2.2/Struct.html#method-c-new) don't recommend it, as it creates an unused anonymous class.
 
 Instead, you're meant to assign a constant:
 
