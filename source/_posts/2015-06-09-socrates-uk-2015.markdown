@@ -1,0 +1,83 @@
+---
+layout: post
+title: "SoCraTes UK 2015"
+date: 2015-06-09 22:50
+comments: true
+categories:
+  - Conferences
+---
+
+I'm just back from four days at the [SoCraTes UK](http://socratesuk.org/) [unconference](http://en.wikipedia.org/wiki/Unconference) with friends-slash-coworkers [Tomas](https://twitter.com/tskogberg) and [Victor](https://twitter.com/ariassp), and I loved it.
+
+Several things made it great:
+
+
+## The place
+
+The venue was in the Cotswolds – the absolute picture of romantic, rural England with rolling green hills, quaint villages of honey-colored stone cottages, and sheep everywhere.
+
+I ran every evening (with [Tomas](https://twitter.com/tskogberg), [Ross](http://rosshuggett.com/) and [Jeroen](http://bn2vs.com/)), up a steep hill and then down through the fields, with the sun setting behind the villages in the valley. One time we ran to [St Nicholas' Church](http://www.britainexpress.com/counties/glouces/churches/saintbury.htm) in Saintbury village and explored the beautiful grounds.
+
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/SoCraTesUK?src=hash">#SoCraTesUK</a> evening run with <a href="https://twitter.com/rosshuggett">@rosshuggett</a> and <a href="https://twitter.com/tskogberg">@tskogberg</a>. Sunset, deer, beautiful old country church. <a href="http://t.co/J2b71Mljxc">pic.twitter.com/J2b71Mljxc</a></p>&mdash; Henrik Nyh (@henrik) <a href="https://twitter.com/henrik/status/606927660602818561">June 5, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<br>
+
+Each of the two days that we had [Open Space](http://en.wikipedia.org/wiki/Open_Space_Technology) sessions, I helped arrange an hour-long walk-and-talk session (with [Rachel](http://rachelcdavies.github.io/) as our guide), and the last day included a hike up to [Broadway Tower](http://en.wikipedia.org/wiki/Broadway_Tower,_Worcestershire).
+
+Magically, the weather was perfect the whole time.
+
+The only bad things I can say about the venue was that the wifi was iffy (and non-existent in my room), and my shower was low-pressure and slow to warm up. The wifi will hopefully be fixed for next year's conference, and I reported the shower.
+
+
+## The food
+
+The food was amazing. As a Swede, I consistently picked the most British-seeming options. Except for the desserts where I just had some of each. The crème brûlée was incredible.
+
+The time slots for breakfast, lunch and dinner were quite generous, and you could just walk in, eat and then walk out, since it was all included in the stay.
+
+An organizer described the food arrangement as taking care of the body so the conference-goers could focus on other things. I think that was very much achieved: you never had to think about where to go for food, or what it cost, or fret about the time.
+
+There were self-serve coffee bars here and there to use any time of day. After an evening run, I dropped by one for some juice. My late nights talking or hacking in the bar were fueled by tea and cocoa.
+
+
+## The people and the conversation
+
+I was surprised at how welcoming everyone was. This was the third year of the conference, and many attendees knew each other from before, but I never felt like an outsider.
+
+I've attended another unconference where there was a kind of core clique of regulars. No one was rude or even unfriendly, but it still felt a bit like looking through the window of someone else's party.
+
+I'm also coming to realize that I prefer the (un)conferences where everyone stays at the venue. [Nordic Ruby](http://www.nordicruby.org/) did that as well with great results – it was the best conference I had attended until this one.
+
+There were some great sessions. I learnt about [readerly and writerly text](http://www2.iath.virginia.edu/elab/hfl0250.html) (and code) from [Rob](https://twitter.com/roberttaylor426), [Nonviolent Communication](https://github.com/lscc/socrates-uk/wiki/Links-and-Resources#nonviolent-communication) from [David](http://davidheath.org/) (hope you had a great birthday party!), [Object Calisthenics](http://williamdurand.fr/2013/06/03/object-calisthenics/) from [Alastair](https://twitter.com/alastairs), music theory and [Occupy hand signals](http://en.wikipedia.org/wiki/Occupy_movement_hand_signals) from [Ryan](https://twitter.com/rnalexander). I was inspired by the session about retrospectives and the one on the 5-day work month. I got some excellent advice from [Ian](https://twitter.com/ijrussell) on influencing coworkers. I didn't attend the "baconsnake" session but I still fantasize about eating one.
+
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Best session name <a href="https://twitter.com/hashtag/socratesuk?src=hash">#socratesuk</a> <a href="http://t.co/aO13Kwy7Zg">pic.twitter.com/aO13Kwy7Zg</a></p>&mdash; andy mell (@afmell) <a href="https://twitter.com/afmell/status/607168120801923072">June 6, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<br>
+
+
+## The (dis)organization
+
+Those hour-long walk-and-talks? One ended up being more like two hours. And started an hour before everyone was meant to reflect on the day's sessions. And both the facilitators were on that hike.
+
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/SoCraTesUK?src=hash">#SoCraTesUK</a> Still hiking with both facilitators but on our way :) Whatever happens is the only thing that could have… <a href="http://t.co/P5HhA3UTgq">pic.twitter.com/P5HhA3UTgq</a></p>&mdash; Henrik Nyh (@henrik) <a href="https://twitter.com/henrik/status/607215112546603008">June 6, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<br>
+
+Being an unconference, shaped by the participants themselves, it simply adapted.
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/henrik">@henrik</a> <a href="https://twitter.com/rachelcdavies">@rachelcdavies</a> <a href="https://twitter.com/tooky">@tooky</a> no need to rush - we are entertaining ourselves with lightning talks :) <a href="https://twitter.com/hashtag/socratesuk?src=hash">#socratesuk</a></p>&mdash; Chris Hug (@c089) <a href="https://twitter.com/c089/status/607222329572270080">June 6, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Lmao if your facilitators lost track of time on their afternoon hike and your audience can&#39;t self organize new programme. <a href="https://twitter.com/hashtag/unconferences?src=hash">#unconferences</a> ftw</p>&mdash; Chris Hug (@c089) <a href="https://twitter.com/c089/status/607229137254772736">June 6, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<br>
+
+This well-functioning self-organization couldn't have happened without the hard work of the organizers and facilitators.
+
+I would love to learn more about all the unnoticed things they did to make everything just flow.
+
+[Rachel's](http://rachelcdavies.github.io/) introduction to the rules of Open Space was the best I've heard, with none of the cultish repetition of undigested rules I've always seen before. And just inviting everyone to spend a few minutes discussing what they were looking for in the conference seemed to really help inspire topics.
+
+The great (dis)organization and the friendliness of this conference went on until the very end. I loved how [Carlos](https://about.me/carlosfernandezgarcia) (not an organizer, I think) walked around and made sure everyone got a taxi in time for their train, and how [Sandro](https://twitter.com/sandromancuso) (an organizer and a mensch) made sure we had everything we needed.
+
+Hope to see you all again next year!
