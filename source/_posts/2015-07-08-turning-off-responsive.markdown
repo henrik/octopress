@@ -15,7 +15,7 @@ But then I realized we could add back a "desktop mode" with almost no code – s
 
 On mobile browsers (as detected by user agent), we show a desktop/mobile toggle link.
 
-The link just causes a "force_big_viewport_on_mobile" cookie to be set or unset.
+The link just causes a "desktop_mode" cookie to be set or unset.
 
 If the cookie is set, our pages say
 
@@ -37,4 +37,6 @@ If you want to see it in action, [visit Auctionet.com](https://auctionet.com/) i
 
 We only show the toggle links to mobile browsers, because desktop browsers don't respect `viewport` declarations, so it would have no effect there.
 
-Ideally, mobile browsers would be determined by feature (whether they respect `viewport`) and not by user agent, but [this seems difficult to achieve](http://stackoverflow.com/questions/5636774/best-method-to-determine-if-viewport-or-standard-browser).
+Ideally, browsers would be detected by feature (whether they respect `viewport`) and not by user agent, but [this seems difficult to achieve](http://stackoverflow.com/questions/5636774/best-method-to-determine-if-viewport-or-standard-browser).
+
+If a mobile browser has a viewport at 1000px or wider (e.g. a landscape iPad), the toggle won't be meaningful. I didn't bother with that case (the user is likely to ignore the toggle), but you can if you like.
