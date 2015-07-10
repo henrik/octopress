@@ -35,7 +35,7 @@ end
 This is how I decide:
 
 * If other parts of my code want to rescue this exception (e.g. to show a "parse error" message), I define a class. Because rescuing *all* exceptions is dangerous, and rescuing by class beats rescuing by message (easier, less fragile).
-* If I'm writing a library for other parties, I define a class. I can't rule out that others may want to rescue it.
+* If I'm writing a library for other parties, I usually define a class, if there's any chance that they may want to rescue that specific error type.
 * Otherwise – with exceptions in my own code that I don't expect to rescue – I just raise a string. E.g. if parsing *should* never fail but I want an exception logged if it does anyway. Raising a string is less code and it's easier to phrase clearly ([perhaps with documentation URLs](/2014/05/exceptions-with-documentation-urls/)) as a string than as a class name. Coming up with a good class name is harder.
 
 You could raise a custom class with a message string, of course, to get the clear phrasing, but that still means adding a class you don't need.
