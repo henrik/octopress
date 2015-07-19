@@ -31,7 +31,7 @@ I was a bit surprised to find myself missing the phone's camera, to take picture
 
 Since I gave up on Fitbit step tracking, I instead count calories (and minutes of exercise, and hours of standing) with the built-in activity tracking on the watch.
 
-Any such measure will be imperfect, but I do like how the calories map better to real activity than steps do. We've had some discussions around our step challenges at work about bike rides or inline skating counting as steps. Is it fair? Do you get too few? Too many? And one guy has an electric bike…
+Any such measure will be imperfect, but I do like how the calories map better to real activity than steps do. We've had some discussions around our step challenges at work about bike rides or inline skating counting as steps. Is it fair? Do you get too few? Too many? One guy has an electric bike.
 
 With the calorie counting, your results are a product of accelerometer movement (like step counts), *and* your heart rate. And possibly more factors like GPS position. So it's likely to be more accurate, and also to credit you for exercise that doesn't move your feet rapidly.
 
@@ -48,7 +48,7 @@ I've answered phone calls in the car, on my watch. It feels a lot safer than fin
 
 It's also convenient to make outgoing calls the same way.
 
-I've even sent one or two text messages from the watch while driving: you just do "Hey Siri, send message to Joe, buy some milk". Then "hey Siri, send" to confirm. If you dare, you can glance briefly at the screen first to see that it sends what you intend.
+I've even sent one or two text messages from the watch while driving: you just do "Hey Siri, send message to Joe, buy some milk". Then "hey Siri, send" to confirm. If you dare, you can glance briefly at the screen first to see that it sends what you intend. Because Siri on the watch will not speak, for some reason.
 
 
 ## Travelling: time zones
@@ -63,9 +63,9 @@ But the first thing I tried didn't work: On a regular watch, I would change its 
 
 Even if I had changed it before turning on airplane mode, that would have meant turning off the automatic time setting on the phone.
 
-I think the best thing here is to lose your old habits, and change a complication to show the time of whatever place the watch is not currently showing.
+I think the best thing here is to lose your old habits, and use a complication to show the time of whatever place the watch is not currently showing.
 
-Oh, and having an aisle seat helps with meeting your activity stand goals. A pretend visit to the bathroom can be enough…
+Oh, and having an aisle seat helps with meeting your stand goals. A pretend visit to the bathroom can be enough…
 
 
 ## Travelling: calendar
@@ -74,14 +74,14 @@ Oh, and having an aisle seat helps with meeting your activity stand goals. A pre
 
 It's incredibly convenient to see the next event on your calendar right on your watch face.
 
-I used this for planes and trains, but I also tried it a bit during the conference, to keep track of the next session.
+I used this for planes and trains, but I also tried it a bit during the conference, to keep track of the next session. It's a bit of a bother keeping the calendar up to date, though, with a flexible "unconference" format.
 
 
 ## Battery life is not a problem
 
 In [my previous post](/2015/05/apple-watch-day-2/), I was worried about battery life.
 
-That hasn't been an issue. I think maybe battery usage was higher in the first few days for whatever reason.
+That hasn't been an issue. I think maybe battery usage was higher in the first few days for some reason.
 
 I removed the battery status from my watch face after just a few days. Since then I've only run out of battery once, arriving home at 2 a.m. after an unusually long day.
 
@@ -90,11 +90,11 @@ I removed the battery status from my watch face after just a few days. Since the
 
 ![Screenshot: Nazca Lines](https://dl.dropboxusercontent.com/u/546793/blog/watch2/nazca.png)
 
-I've added *so* many reminders and calendar events from my wrist. I love it. You're at the breakfast table, phone on your desk, and you say "remind me in 15 minutes to bring the cake to work".
+I've added *so* many reminders and calendar events from my wrist. I love it. You're at the breakfast table, phone on your desk, and you say "remind me in 15 minutes to bring the cake to work". Or you're packing for a trip and you say "remind me tomorrow at 10 to pack the Apple Watch charger".
 
 It's so easy and works really well.
 
-What I'm still missing is an app to make audio notes. Maybe a good one will come with watchOS 2, when third-party apps get access to the microphone. I want the notes to be audio, not transcribed to text, because those notes are often about some English book title or movie that Swedish Siri would not get right.
+I still would like to be able to make audio notes-to-self.
 
 Looking up topics on Wikipedia is wonderful when it works. I had a super cool moment (in the nerd sense of "super cool") when I was on a trampoline with my baby brother, mentioned that something looked like those lines in South America, said I think they're called the Nazca Lines, told my watch "tell me about the [Nazca Lines](https://en.wikipedia.org/wiki/Nazca_Lines)", and it did. *All this while bouncing on a trampoline.*
 
@@ -116,7 +116,7 @@ Then again, Apple's own weather app is often frustratingly slow, maps can be iff
 
 ## Passcode lock
 
-It's happened more than once that I forget to enter the passcode after putting on the watch in the morning. Once, my phone's alarm went off in the other room and I couldn't turn it off from the watch, because it was still locked. After unlocking, I still didn't get the option to turn it off. Not a huge deal, of course, but an inconvenience.
+It's happened more than once that I forget to unlock it with the passcode after putting on the watch in the morning. Once, my phone's alarm went off in the other room and I couldn't turn it off from the watch, because it was still locked. After unlocking, I still didn't get the option to turn it off from the watch. Not a huge deal, of course, but an inconvenience.
 
 I wish Apple would make the watch tap you after a while of being locked, so you remember to unlock it.
 
@@ -130,7 +130,7 @@ We use [Airfoil](https://www.rogueamoeba.com/airfoil/) to make our Mac Mini medi
 ![Screenshot: music 1](https://dl.dropboxusercontent.com/u/546793/blog/watch2/music1.png)
 ![Screenshot: music 2](https://dl.dropboxusercontent.com/u/546793/blog/watch2/music2.png)
 
-A slight convenience Apple could add: it would be nice if turning the crown would control volume whenever audio is playing and the watch screen is off. I would use this a lot when running.
+A slight convenience Apple could add: It would be nice if turning the crown would control volume whenever audio is playing and the watch screen is off. I would use this a lot when running.
 
 
 ## In closing
