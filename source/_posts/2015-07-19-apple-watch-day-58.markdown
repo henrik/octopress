@@ -22,7 +22,7 @@ And if you forget where you placed the phone, you can always ping it (make it pl
 
 Another cool thing about the watch is that you always know if it's your own phone ringing. There have been a few "is that your phone or mine?" where I could immediately say it's theirs.
 
-The watch is not very useful when the phone is out of range, though. I spent an hour in a mall with the watch but without the phone while getting the phone screen replaced. I couldn't even access some notes in a third-party app. This will thankfully change with the upcoming watchOS 2. Pretty much all I could do was set a timer for an hour, so I would be reminded of when to pick up the phone again…
+The watch is not very useful when the phone is out of range, though. I spent an hour in a mall with the watch but without the phone while getting the phone display replaced. I couldn't even access some notes in a third-party app. This will thankfully change with the upcoming watchOS 2. Pretty much all I could do was set a timer for an hour, so I would be reminded of when to pick up the phone again…
 
 I was a bit surprised to find myself missing the phone's camera, to take pictures of interesting things in stores and such. I wouldn't mind a camera in future generations of the watch for that kind of thing.
 
