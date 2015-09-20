@@ -5,6 +5,7 @@ date: 2015-09-05 12:12
 comments: true
 categories:
   - Elixir
+  - ExUnit
   - Testing
 ---
 
@@ -43,7 +44,7 @@ defmodule MyTest do
 end
 ```
 
-`assert_raise` makes an assertion about runtime behavior, and won't catch that raise. Incidentally, `RuntimeError` is the unfortunate default name for exceptions – they can be raised at compile time, like we do here.
+`assert_raise` makes an assertion about runtime behavior, and won't catch that raise. Incidentally, `RuntimeError` is the unfortunate default type of exceptions – they can be raised at compile time, like we do here.
 
 Having run into this limitation twice now, I thought I'd figure out a way around it. This is what I've come up with.
 
