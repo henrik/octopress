@@ -38,7 +38,7 @@ end
 
 We could assert inside the callback… but if the callback never runs, the assertion won't run either.
 
-In a language like Ruby, you could do it by changing state outside the anonymous function:
+In a language like Ruby, you could do it by changing a variable outside the anonymous function:
 
 ``` ruby example_test.rb
 did_it_run = false
@@ -47,9 +47,9 @@ fun.()
 assert did_it_run
 ```
 
-But with Elixir's immutability, we would need to start a server process to do something similar – a bit of a bother.
+But with Elixir's variable scoping, we can't do that. We could start a separate server process and make it hang on to this state, but that would be a bit of a bother.
 
-There are other ways to communicate than shared state, though. Message passing to the rescue!
+There are other ways to communicate, though. Message passing to the rescue!
 
 ``` elixir example_test.exs
 test "callback runs" do
