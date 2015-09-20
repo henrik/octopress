@@ -15,7 +15,7 @@ Say you have this code:
 defmodule Example do
   def run(callback) do
     callback.(:hello, :world)
-    :some_return_value
+    do_more_stuff
   end
 end
 ```
