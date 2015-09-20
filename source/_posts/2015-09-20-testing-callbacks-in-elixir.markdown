@@ -67,4 +67,22 @@ We simply [`send`](http://elixir-lang.org/docs/v1.0/elixir/Kernel.html#send/2) a
 
 Then we [assert](http://elixir-lang.org/docs/v1.0/ex_unit/ExUnit.Assertions.html#assert_received/2) that we received it.
 
-Quite elegant!
+For multi-process use cases, you can name the test process:
+
+``` elixir example_test.exs
+defmodule TestCallerBacker do
+  def run(greeting, celestial_body) do
+    send :test, {:called_back, greeting, celestial_body}
+  end
+end
+
+test "callback runs" do
+  Process.register self, :test
+
+  Example.run_in_another_process(TestCallerBacker)
+
+  assert_received {:called_back, :hello, :world}
+end
+```
+
+[`assert_received`](http://elixir-lang.org/docs/v1.0/ex_unit/ExUnit.Assertions.html#assert_received/2) expects the message to have arrived already. If your code is asynchronous and the message may take a while to arrive, its companion function [`assert_receive`](http://elixir-lang.org/docs/v1.0/ex_unit/ExUnit.Assertions.html#assert_receive/3) lets you specify a timeout.
