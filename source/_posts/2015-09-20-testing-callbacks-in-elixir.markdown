@@ -47,7 +47,7 @@ fun.()
 assert did_it_run
 ```
 
-But with Elixir's variable scoping, we can't do that. We could start a separate server process and make it hang on to this state, but that would be a bit of a bother.
+In Elixir, an anonymous function can read but not change outside variables. We could start a separate server process and make it hang on to this state, but that would be a bit of a bother.
 
 There are other ways to communicate, though. Message passing to the rescue!
 
