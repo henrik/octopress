@@ -15,8 +15,7 @@ expect(pet).to be("Cat")
 
 That doesn't look like Elixir!
 
-ESpec's `expect` function actually returns a tuple containing the argument: something like `{Expect, pet}`. If we make that replacement, we get
-
+ESpec's `expect` function actually returns a tuple like `{Expect, pet}`, containing a module name and the argument. So we effectively have
 
 ``` elixir
 {Expect, pet}.to be("Cat")
@@ -28,10 +27,20 @@ This, in turn, is interpreted as an `Expect.to` function call, with the tuple it
 Expect.to(be("Cat"), {Expect, pet})
 ```
 
-Now that it's just a function call, the rest is nothing very special.
+This applies to any number of arguments. If we had done
+
+``` elixir
+{Expect, 1, 2, 3}.to(4, 5, 6)
+```
+
+then it would be interpreted as
+
+``` elixir
+Expect.to(4, 5, 6, {Expect, 1, 2, 3})
+```
 
 
-## Full example
+## Minimal `expect(…).to` implementation
 
 This is how you might implement a minimal version of the above:
 
