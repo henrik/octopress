@@ -39,10 +39,12 @@ then it would be interpreted as
 Expect.to(4, 5, 6, {Expect, 1, 2, 3})
 ```
 
+and so on.
+
 
 ## Minimal `expect(…).to` implementation
 
-This is how you might implement a minimal version of the above:
+This is how you might implement a minimal version of `expect(…).to`:
 
 ``` elixir
 defmodule Expect do
@@ -78,7 +80,7 @@ Output:
     Hooray, they're both 'Cat'!
     Nay! Expected 'Dog' but got 'Cat' :(
 
-If you want another example of how this might be used, see [this `ExMachina.with` sketch](https://gist.github.com/henrik/bff879a97f7df44a8830).
+If you want another example of how this might be used, see [my `ExMachina.with` sketch](https://gist.github.com/henrik/bff879a97f7df44a8830).
 
 
 ## What is this syntax?
