@@ -78,6 +78,8 @@ Output:
     Hooray, they're both 'Cat'!
     Nay! Expected 'Dog' but got 'Cat' :(
 
+If you want another example of how this might be used, see [this `ExMachina.with` sketch](https://gist.github.com/henrik/bff879a97f7df44a8830).
+
 
 ## What is this syntax?
 
