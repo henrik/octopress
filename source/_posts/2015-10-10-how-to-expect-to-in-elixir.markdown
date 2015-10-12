@@ -89,4 +89,4 @@ It's been surprisingly difficult to figure out what this is. It might be making 
 
 Whatever it is, it seems controversial ([1](http://stackoverflow.com/questions/31954796/why-erlang-tuple-module-is-controversial), [2](https://groups.google.com/forum/#!topic/elixir-lang-talk/6EJVEXTszIc)), in large part because it can encourage writing code in an object-oriented style, with "methods" on "instances".
 
-You be the judge of whether the syntax is worth it.
+This post aims to clarify what this syntax is and not to promote its use in general, or the use of `expect(…).to` in particular. You be the judge of whether the syntax is worth it.
