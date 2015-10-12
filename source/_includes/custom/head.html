@@ -1,3 +1,7 @@
+{% if page.category %}
+<link href="{{ site.root | strip_slash }}/tag/{{ page.category | category_for_url }}/atom.xml" rel="alternate" title="{{page.category}} on {{site.title}}" type="application/atom+xml">
+{% endif %}
+
 {% comment %}
 To customize the favicon, assign it to "/url/to/favicon.png"
 {% endcomment %}

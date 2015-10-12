@@ -150,7 +150,7 @@ module Jekyll
     def category_links(categories)
       dir = @context.registers[:site].config['category_dir']
       categories = categories.sort!.map do |item|
-        url = item.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase
+        url = category_for_url(item)
         url = "#{dir}/#{url}" unless dir.nil? or dir.empty?
         "<a class='category' href='/#{url}/'>#{item}</a>"
       end
@@ -163,6 +163,10 @@ module Jekyll
       else
         "#{categories[0...-1].join(', ')}, #{categories[-1]}"
       end
+    end
+
+    def category_for_url(name)
+      name.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase
     end
 
     # Outputs the post.date as formatted html, with hooks for CSS styling.
