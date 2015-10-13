@@ -46,7 +46,7 @@ and so on.
 
 ## How it all fits together
 
-To illustrate how that all fits together, this is how you might implement a minimal version of `expect(…).to`:
+This is how you might implement a minimal version of `expect(…).to`:
 
 ``` elixir
 defmodule Expect do
