@@ -87,8 +87,6 @@ If you want another example of how this might be used, see [my `ExMachina.with` 
 
 ## What is this syntax?
 
-<strike>It's been surprisingly difficult to figure out what this is. It might be making use of Erlang's [tuple modules](http://stackoverflow.com/questions/16960745/what-is-a-tuple-module-in-erlang). And/or it's related to [records](http://elixir-lang.org/docs/v1.1/elixir/Record.html). If you know, let me know.</strike>
-
 This is Erlang [tuple modules](http://stackoverflow.com/questions/16960745/what-is-a-tuple-module-in-erlang).
 
 They are [controversial](http://stackoverflow.com/questions/31954796/why-erlang-tuple-module-is-controversial) in Erlang and Elixir both, and José Valim [wants them gone in Elixir 2.0](https://github.com/elixir-lang/elixir/issues/3254). Problems include hard-to-read stacktraces, slower dispatch, and that they can encourage writing code in an object-oriented style, with "methods" on "instances".
