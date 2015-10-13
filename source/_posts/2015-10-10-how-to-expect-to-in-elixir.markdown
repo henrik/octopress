@@ -15,7 +15,9 @@ expect(pet).to be("Cat")
 
 That doesn't look like Elixir!
 
-ESpec's `expect` function actually returns a tuple like `{Expect, pet}`, containing a module name and the argument. So we effectively have
+It is in fact a controversial feature of Erlang, that may be removed in future versions of Elixir. So you probably shouldn't use it, but it can still be interesting to know how it works.
+
+ESpec's `expect` function returns a tuple like `{Expect, pet}`, containing a module name and the argument. So we effectively have
 
 ``` elixir
 {Expect, pet}.to be("Cat")
@@ -44,7 +46,7 @@ and so on.
 
 ## Minimal `expect(…).to` implementation
 
-This is how you might implement a minimal version of `expect(…).to`:
+To illustrate how that all fits together, this is how you might implement a minimal version of `expect(…).to`:
 
 ``` elixir
 defmodule Expect do
@@ -85,8 +87,8 @@ If you want another example of how this might be used, see [my `ExMachina.with` 
 
 ## What is this syntax?
 
-It's been surprisingly difficult to figure out what this is. It might be making use of Erlang's [tuple modules](http://stackoverflow.com/questions/16960745/what-is-a-tuple-module-in-erlang). And/or it's related to [records](http://elixir-lang.org/docs/v1.1/elixir/Record.html). If you know, let me know.
+<strike>It's been surprisingly difficult to figure out what this is. It might be making use of Erlang's [tuple modules](http://stackoverflow.com/questions/16960745/what-is-a-tuple-module-in-erlang). And/or it's related to [records](http://elixir-lang.org/docs/v1.1/elixir/Record.html). If you know, let me know.</strike>
 
-Whatever it is, it seems controversial ([1](http://stackoverflow.com/questions/31954796/why-erlang-tuple-module-is-controversial), [2](https://groups.google.com/forum/#!topic/elixir-lang-talk/6EJVEXTszIc)), in large part because it can encourage writing code in an object-oriented style, with "methods" on "instances".
+This is Erlang [tuple modules](http://stackoverflow.com/questions/16960745/what-is-a-tuple-module-in-erlang).
 
-This post aims to clarify what this syntax is and not to promote its use in general, or the use of `expect(…).to` in particular. You be the judge of whether the syntax is worth it.
+They are [controversial](http://stackoverflow.com/questions/31954796/why-erlang-tuple-module-is-controversial) in Erlang and Elixir both, and José Valim [wants them gone in Elixir 2.0](https://github.com/elixir-lang/elixir/issues/3254). Problems include hard-to-read stacktraces, slower dispatch, and that they can encourage writing code in an object-oriented style, with "methods" on "instances".
