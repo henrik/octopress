@@ -44,7 +44,7 @@ Expect.to(4, 5, 6, {Expect, 1, 2, 3})
 and so on.
 
 
-## Minimal `expect(…).to` implementation
+## How it all fits together
 
 To illustrate how that all fits together, this is how you might implement a minimal version of `expect(…).to`:
 
