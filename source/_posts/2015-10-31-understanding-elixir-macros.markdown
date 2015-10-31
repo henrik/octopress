@@ -14,7 +14,7 @@ It took me plenty of flailing about to get a clear [mental model](https://en.wik
 
 I thought I'd write up some of my insights, in case they help others get there sooner.
 
-This is not a "write your first macro" tutorial. The reader is expected to have made at least an attempt or two at writing macros, but may still feel that they're hard to grasp.
+This is not [a "write your first macro" tutorial](http://elixir-lang.org/getting-started/meta/macros.html). The reader is expected to have made at least an attempt or two at writing macros, but may still feel that they're hard to grasp.
 
 
 ## Compile-time vs. run-time
