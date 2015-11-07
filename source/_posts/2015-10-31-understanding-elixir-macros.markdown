@@ -153,13 +153,13 @@ If you want a more useful example, I implemented a [`regex_case` macro](https://
 
 It can be hard for a human brain to parse a complex AST accurately.
 
-I think much more clearly if I can visualize things, so I made [a small Phoenix app called QED](http://qed.nyh.name/) to show Elixir ASTs.
+I think much more clearly if I can visualize things, so I made [a small Phoenix app called QED](http://qed.elixir.pm/) to show Elixir ASTs.
 
 It looks something like this:
 
 ![QED screenshot](https://s3.amazonaws.com/f.cl.ly/items/1D1I0q453B1A23092z2a/Screenshot%202015-10-31%2016.42.01.png)
 
-[Try it out.](http://qed.nyh.name)
+[Try it out.](http://qed.elixir.pm)
 
 
 ## Questions?
