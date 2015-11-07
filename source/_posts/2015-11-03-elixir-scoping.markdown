@@ -39,8 +39,6 @@ MyOtherModule.method_that_did_not_extend  # => "Hello from method_that_did_not_e
 
 In Elixir, on the other hand, an `import` (or `require`, or `alias`) inside a function only applies *within that function*. It actually goes further than that: if it happens inside a logic branch (in e.g. an `if`, `cond` or `case`) it only applies *within that branch*.
 
-Ruby `import`/`extend` have "dynamic scope", where the order of execution affects what is available where; Elixir has "lexical scope", where only the structure of the source code determines availability.
-
 And it's from this simple fact that the elegance emerges.
 
 
