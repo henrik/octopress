@@ -169,3 +169,5 @@ end
 ## Out of scope
 
 That's it. Any other interesting implications of the Elixir scoping rules? Let me know in the comments or [on Twitter](https://twitter.com/henrik)!
+
+For some related reading, also see ["The Value of Explicitness" by Drew Olson](http://blog.drewolson.org/the-value-of-explicitness/).
