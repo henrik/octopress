@@ -44,7 +44,7 @@ When we relist, we go through every attribute. We include the ones we should, ig
 
 This is that rare thing, a perfect solution. We're guaranteed that we can't forget to declare how to handle a new attribute. If we do, we'll be told.
 
-If the relisting is covered by integrated tests at all, they will catch this.
+If the relisting is covered by integrated tests at all, they will trigger these exceptions as soon as you add a new attribute and forget to declare it.
 
 ### Example code
 
