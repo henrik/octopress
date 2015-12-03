@@ -43,7 +43,7 @@ end
 Example.foobar([do: IO.puts("true"), else: IO.puts("false")])
 ```
 
-The keyword list is evaluated before it's even passed to the function, like any keyword list would be. That includes the `IO.puts` function calls.
+The keyword list is evaluated before it's even passed to the function, like any keyword list would be. That includes evaluating the `IO.puts` function calls.
 
 Now that we have the full list of block keywords (from the Elixir source) we can go completely crazy:
 
