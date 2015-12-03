@@ -101,8 +101,8 @@ end
 Example.run
 
 # Outputs either of these:
-dog!
-cat!
+# dog!
+# cat!
 ```
 
-I haven't used this myself, other than in silly experiments. I can picture it being handy for some DSLs, though. If you use this for anything interesting, please do let me know in a comment!
+I haven't used this myself, other than in silly experiments. I can picture it being handy for some DSLs, though. If you apply this to anything interesting, please do let me know in a comment!
