@@ -60,8 +60,6 @@ IO.iodata_to_binary ["a", 256]
 #    :erlang.iolist_to_binary(["a", 256])
 ```
 
-If you only deal in binary strings, there's no practical difference, except possibly performance (see below).
-
 
 ## So what is it for?
 
