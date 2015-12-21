@@ -111,6 +111,8 @@ IO.puts [a,?b,c,d,e,10]
 IO.puts "#{a}b#{c}#{d}#{e}\n"
 ```
 
+(10 is the ASCII code for a newline.)
+
 I used this for [my plain Christmas tree](https://github.com/emson/elixirgolf/issues/3#issuecomment-162034222).
 
 I also used this for [my insane blinking Christmas tree](https://github.com/emson/elixirgolf/issues/3#issuecomment-162289777), where it was a particularly good fit together with `IO.ANSI`, `Stream.cycle` and `Enum.take`.
