@@ -54,7 +54,7 @@ IO.chardata_to_string(["a", 230]) <> <<0>>
 
 ## So what is it for?
 
-Char data lets you build up output strings by nesting lists, instead of constantly concatenating strings yourself. If you pass this value to code that accepts char data, you never have to concatenate it yourself.
+Char data lets you build up output strings by nesting lists, instead of constantly concatenating strings yourself. If you pass this value to a function that accepts char data, you never have to concatenate it yourself.
 
 You can use it in all sorts of situations. Here are some I've run into.
 
