@@ -37,7 +37,9 @@ IO.chardata_to_string ["a", [97, [["a"]]]]
 # => "aaa"
 ```
 
-Erlang (and thus Elixir) has a very similar concept, called IO lists (or IO data) – the difference is that those treat integers as raw bytes instead of as UTF-8 codepoints, so you might end up with binaries that are not UTF-8 strings:
+The char data type comes from Erlang, where it's [part of the `:unicode` module](http://www.erlang.org/doc/man/unicode.html#type-chardata).
+
+Erlang (and thus Elixir) has another quite similar concept called IO lists (or IO data). The difference is that those treat integers as raw bytes instead of as UTF-8 codepoints, so you might end up with binaries that are not UTF-8 strings:
 
 ``` elixir linenos:false
 IO.iodata_to_binary ["a", 230]
