@@ -39,7 +39,9 @@ IO.chardata_to_string ["a", [97, [["a"]]]]
 
 The char data type comes from Erlang, where it's [part of the `:unicode` module](http://www.erlang.org/doc/man/unicode.html#type-chardata).
 
-Erlang (and thus Elixir) has another quite similar concept called IO lists (or IO data). The difference is that those treat integers as raw bytes instead of as UTF-8 codepoints, so you might end up with binaries that are not UTF-8 strings:
+### IO data
+
+There is another quite similar concept called IO data (in Elixir) or IO lists (in Erlang). The difference is that these by default treat integers as Latin-1 bytes (allowing values 0–255) instead of as UTF-8 codepoints, so you might end up with binaries that are not UTF-8 strings:
 
 ``` elixir linenos:false
 IO.iodata_to_binary ["a", 230]
@@ -51,7 +53,14 @@ IO.chardata_to_string ["a", 230]
 # Note that the codepoint 230 became the bytes 195 and 166.
 IO.chardata_to_string(["a", 230]) <> <<0>>
 # => <<97, 195, 166, 0>>
+
+# IO data doesn't allow values above 255.
+IO.iodata_to_binary ["a", 256]
+# ** (ArgumentError) argument error
+#    :erlang.iolist_to_binary(["a", 256])
 ```
+
+If you only deal in binary strings, there's no practical difference, except possibly performance (see below).
 
 
 ## So what is it for?
