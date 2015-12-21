@@ -1,0 +1,111 @@
+---
+layout: post
+title: "The delightful char data"
+date: 2015-12-21 23:50
+comments: true
+categories:
+  - Elixir
+---
+
+Most [`IO` functions](http://elixir-lang.org/docs/master/elixir/IO.html) in Elixir accept "char data".
+
+I love char data. It's one of those small pieces of delight in Elixir – it makes me smile, and I miss it in other languages.
+
+I'll tell you what I love about it, but before we get to that…
+
+
+## What *is* char data?
+
+Char data is:
+
+* Strings, like `"a"`
+* Lists of codepoints, like `[97, 0x00E6]` (which can also be written as `[97, 230]`, `[?a, ?æ]` or `'aæ'`)
+* Lists of codepoints *and* strings like `[97, "a"]`
+* Lists of char data (recursively!), like `["a", [97, [["a"]]]]`
+
+You can pass char data to `IO.puts`, for example:
+
+``` elixir linenos:false
+IO.puts ["a", [97, [["a"]]]]
+# outputs: aaa
+```
+
+Or if you want to turn it into a straight string:
+
+``` elixir linenos:false
+IO.chardata_to_string ["a", [97, [["a"]]]]
+# => "aaa"
+```
+
+Erlang (and thus Elixir) has a very similar concept, called IO lists (or IO data) – the difference is that those treat integers as raw bytes instead of as UTF-8 codepoints, so you might end up with binaries that are not UTF-8 strings:
+
+``` elixir linenos:false
+IO.iodata_to_binary ["a", 230]
+# => <<97, 230>>
+
+IO.chardata_to_string ["a", 230]
+# => "aæ"
+
+# Note that the codepoint 230 became the bytes 195 and 166.
+IO.chardata_to_string(["a", 230]) <> <<0>>
+# => <<97, 195, 166, 0>>
+```
+
+
+## So what is it for?
+
+Char data lets you build up output strings by nesting lists, instead of constantly concatenating strings yourself. If you pass this value to code that accepts char data, you never have to concatenate it yourself.
+
+You can use it in all sorts of situations. Here are some I've run into.
+
+### IO.ANSI
+
+[The `IO.ANSI` module](http://elixir-lang.org/docs/master/elixir/IO.ANSI.html) provides ANSI codes to format text in a terminal. Colors and such.
+
+You can use it with char data like this:
+
+``` elixir linenos:false
+status = [IO.ANSI.green, "ON", IO.ANSI.reset]
+IO.puts ["The status is: ", status]
+```
+
+I use this quite extensively in the API (and implementation) of my [progress_bar](https://github.com/henrik/progress_bar) library.
+
+### Phoenix.HTML
+
+[`Phoenix.HTML`](http://hexdocs.pm/phoenix_html/Phoenix.HTML.html) provides HTML helpers for the Phoenix web framework.
+
+You want to pass user-provided input through its helpers to avoid security issues. And of course you can do that as char data:
+
+``` elixir linenos:false
+import Phoenix.HTML
+
+html_escape [
+  content_tag(:span, label, class: "my-label"),
+  " ",
+  value,
+]
+```
+
+I've used this [in my BEAM Toolbox project](https://github.com/henrik/toolbox/blob/57080bf0a390772554712786ee3cd6e31d8224b9/web/views/package_view.ex#L23-L27).
+
+Strictly speaking, `Phoenix.HTML` works with IO lists, not char data, at the time of writing – I'm [looking into why](https://github.com/phoenixframework/phoenix_html/issues/53).
+
+### Code golf
+
+While this is admittedly of limited use, char data is great if you're [golfing](http://elixirgolf.com) and want to keep the character count down.
+
+These are equivalent:
+
+``` elixir linenos:false
+IO.puts [a,?b,c,d,e,10]
+IO.puts "#{a}b#{c}#{d}#{e}\n"
+```
+
+I used this for [my plain Christmas tree](https://github.com/emson/elixirgolf/issues/3#issuecomment-162034222).
+
+I also used this for [my insane blinking Christmas tree](https://github.com/emson/elixirgolf/issues/3#issuecomment-162289777), where it was a particularly good fit together with `IO.ANSI`, `Stream.cycle` and `Enum.take`.
+
+### Performance?
+
+I've also gotten the impression (from [a `Phoenix.HTML` comment](https://github.com/phoenixframework/phoenix_html/blob/43970a71fe2268efc97e7d6c617e2a4f514d123f/lib/phoenix_html/safe.ex#L11-L12), ["A Ramble Through Erlang IO Lists"](http://prog21.dadgum.com/70.html) and [Learn You Some Erlang for Great Good!](http://learnyousomeerlang.com/buckets-of-sockets#io-lists)) that there are performance benefits to Erlang's IO lists (and thus, presumably, Elixir's char data) over concatenation, but I don't have a good grasp on the particulars. Please do enlighten me.
