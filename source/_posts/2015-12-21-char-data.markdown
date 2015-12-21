@@ -81,9 +81,9 @@ You want to pass user-provided input through its helpers to avoid security issue
 import Phoenix.HTML
 
 html_escape [
-  content_tag(:span, label, class: "my-label"),
+  content_tag(:span, label_text, class: "my-label"),
   " ",
-  value,
+  value_text,
 ]
 ```
 
