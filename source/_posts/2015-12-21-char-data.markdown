@@ -23,7 +23,7 @@ Char data is:
 * Lists of codepoints *and* strings like `[97, "a"]`
 * Lists of char data (recursively!), like `["a", [97, [["a"]]]]`
 
-You can pass char data to `IO.puts`, for example:
+You can for example pass char data to `IO.puts`:
 
 ``` elixir linenos:false
 IO.puts ["a", [97, [["a"]]]]
