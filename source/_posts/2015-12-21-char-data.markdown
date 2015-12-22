@@ -7,7 +7,7 @@ categories:
   - Elixir
 ---
 
-Many Elixir functions, including most [`IO` functions](http://elixir-lang.org/docs/master/elixir/IO.html), accept "char data".
+Many Elixir functions (including [most of `IO`](http://elixir-lang.org/docs/master/elixir/IO.html)) accept "char data".
 
 I love char data. It's one of those small pieces of delight in Elixir – it makes me smile, and I miss it in other languages.
 
