@@ -50,7 +50,7 @@ IO.iodata_to_binary ["a", 230]
 IO.chardata_to_string ["a", 230]
 # => "aæ"
 
-# Note that the codepoint 230 became the bytes 195 and 166.
+# The codepoint 230 becomes the bytes 195 and 166.
 IO.chardata_to_string(["a", 230]) <> <<0>>
 # => <<97, 195, 166, 0>>
 
@@ -58,6 +58,10 @@ IO.chardata_to_string(["a", 230]) <> <<0>>
 IO.iodata_to_binary ["a", 256]
 # ** (ArgumentError) argument error
 #    :erlang.iolist_to_binary(["a", 256])
+
+# Char data allows values above 255.
+IO.chardata_to_string ["a", 256]
+# => "aĀ"
 ```
 
 
