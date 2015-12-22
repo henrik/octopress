@@ -117,6 +117,14 @@ I used this for [my plain Christmas tree](https://github.com/emson/elixirgolf/is
 
 I also used this for [my insane blinking Christmas tree](https://github.com/emson/elixirgolf/issues/3#issuecomment-162289777), where it was a particularly good fit together with `IO.ANSI`, `Stream.cycle` and `Enum.take`.
 
-### Performance?
+### Performance
 
-I've gotten the impression (from [a `Phoenix.HTML` comment](https://github.com/phoenixframework/phoenix_html/blob/43970a71fe2268efc97e7d6c617e2a4f514d123f/lib/phoenix_html/safe.ex#L11-L12), ["A Ramble Through Erlang IO Lists"](http://prog21.dadgum.com/70.html) and [Learn You Some Erlang for Great Good!](http://learnyousomeerlang.com/buckets-of-sockets#io-lists)) that there are performance benefits to Erlang's IO lists (and thus, presumably, Elixir's char data) over concatenation, but I don't have a good grasp on the particulars. Please do enlighten me.
+Performance hasn't been *my* reason for using char data over string concatenation, but that is also a factor, supposedly.
+
+Benchmarking the performance is outside the scope of this blog post, but I'd love to hear about it if anyone wants to experiment.
+
+As I understand it, Erlang strings (single-quoted strings in Elixir, `'foo'`) are particularly expensive to concatenate because they are implemented as linked lists (slow traversal and lots of garbage collection); concatenating binaries (double-quoted strings in Elixir, `"foo"`) is cheaper but still not ideal. For more details, see [the "IO Lists" section of *Learn You Some Erlang for Great Good!*](http://learnyousomeerlang.com/buckets-of-sockets#io-lists).
+
+Also, [supposedly](http://jlouisramblings.blogspot.co.at/2009/01/common-erlang-misconceptions.html) the eventual concatenation of an IO list (or char data?) happens in C, for speed. Thank you to Vienna BEAMers for [tweeting me](https://twitter.com/viennabeamers/status/679200848958857216) this link and others.
+
+If you have more insight into the performance side of things, or more examples of the delight of char data (or IO data), please let me know in the comments or [on Twitter](https://twitter.com/henrik)!
