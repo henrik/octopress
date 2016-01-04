@@ -31,31 +31,24 @@ So, I created a new user named `static`:
 
 Enter some password (and store it away) when prompted. Just accept the defaults for the other fields.
 
-Then, I put the static files somewhere under that user's home directory, like `/home/static/sites/my-site`.
+Then, I put the static files somewhere under that user's home directory, like `/home/static/sites/my-site.com`.
 
 
 ## Configure Nginx
 
-Dokku adds some stuff to Nginx but doesn't mess with the regular way of adding sites, so we can still use that.
+Dokku adds some stuff to Nginx – we can too, without conflict.
 
-For our "my-site" example above, add a file at `/etc/nginx/sites-enabled/my-site` with these contents:
+Thanks to [a suggestion by Mikkel Malmberg](https://twitter.com/mikker/status/684106604107706369), we can set up a single piece of Nginx configuration that should cover most static sites.
 
-``` nginx /etc/nginx/sites-enabled/my-site linenos:false
+Create an `/etc/nginx/conf.d/static_sites.conf` file (incidentally, right next to Dokku's `dokku.conf`):
+
+``` nginx /etc/nginx/conf.d/static_sites.conf linenos:false
 server {
-  root /home/static/sites/my-site;
-  server_name my-site.com;
+  server_name ~^(?<domain>.+)$;
+  root /home/static/sites/$domain;
 
-  access_log /var/log/nginx/my-site-access.log;
-  error_log  /var/log/nginx/my-site-error.log;
-
-  listen 80;
-  index index.html;
-
-  location / {
-    # First attempt to serve request as file, then
-    # as directory, then fall back to displaying a 404.
-    try_files $uri $uri/ =404;
-  }
+  access_log /var/log/nginx/$domain-static-access.log;
+  error_log  /var/log/nginx/$domain-static-error.log;
 }
 ```
 
@@ -67,4 +60,6 @@ Then restart Nginx so it picks up this addition:
 
     sudo service nginx restart
 
-And that should be it.
+This configuration uses [regular expression server names](http://nginx.org/en/docs/http/server_names.html) to automatically map any hostname to `/home/static/sites/<hostname>`. So in the spirit of Dokku, adding new sites requires a minimum of setup. Just point the DNS to the server, add the static files to a directory named like the hostname, and you're done.
+
+If you need custom Nginx configuration for one site, just add a file to `/etc/nginx/sites-enabled` with that configuration, and restart Nginx like above. Nginx [is smart enough](http://nginx.org/en/docs/http/server_names.html#optimization) to prefer exact hostname matches when they exist, and fall back otherwise.
