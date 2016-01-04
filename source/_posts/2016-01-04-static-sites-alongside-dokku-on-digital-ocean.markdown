@@ -15,7 +15,7 @@ Dokku is basically a self-hosted [Heroku](https://www.docker.com/), letting you 
 
 I also have some static sites, though, like this blog.
 
-You [can get static sites on Dokku](https://www.florianheinemann.com/github/dokku/2014/11/17/Hosting-static-pages-on-Dokku.html), but it feels a bit bloated to me, adding some magic files and then building a container, when you could just deploy with an `rsync`. A simple static site takes some 15 seconds to deploy via Dokku, vs. 1 second via `rsync` or `scp`.
+You [can get static sites on Dokku](https://www.florianheinemann.com/github/dokku/2014/11/17/Hosting-static-pages-on-Dokku.html), but it feels a bit bloated to me, adding some magic files and then building a container, when you could just deploy by copying the files. A simple static site takes some 15 seconds to deploy via Dokku, vs. 1 second via `rsync` or `scp`.
 
 So instead, I hosted them alongside Dokku, using the same Nginx that fronts Dokku.
 
@@ -31,10 +31,10 @@ So, I created a new user named `static`:
 
 Enter some password (and store it away) when prompted. Just accept the defaults for the other fields.
 
-Then, I put the static files in e.g. `/home/static/sites/my-site`.
+Then, I put the static files somewhere under that user's home directory, like `/home/static/sites/my-site`.
 
 
-## Configure nginx
+## Configure Nginx
 
 Dokku adds some stuff to Nginx but doesn't mess with the regular way of adding sites, so we can still use that.
 
