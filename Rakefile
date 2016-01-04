@@ -5,9 +5,9 @@ require 'rake/minify'
 
 ## -- Rsync Deploy config -- ##
 # Be sure your public key is listed in your server's ~/.ssh/authorized_keys file
-ssh_user       = "harakiri"
+ssh_user       = "static"
 ssh_port       = "6666"
-document_root  = "apps/thepugautomatic.com"
+document_root  = "sites/thepugautomatic.com"
 rsync_delete   = true
 deploy_default = "rsync"
 
