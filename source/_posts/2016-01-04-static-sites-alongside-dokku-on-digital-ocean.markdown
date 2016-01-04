@@ -48,7 +48,9 @@ server {
   root /home/static/sites/$domain;
 
   access_log /var/log/nginx/$domain-static-access.log;
-  error_log  /var/log/nginx/$domain-static-error.log;
+
+  # error_log can't contain variables, so we'll have to share: http://serverfault.com/a/644898
+  error_log /var/log/nginx/static-error.log;
 }
 ```
 
