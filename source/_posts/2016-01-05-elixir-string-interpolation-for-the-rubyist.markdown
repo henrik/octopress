@@ -19,7 +19,7 @@ On the surface, Elixir string interpolation looks identical to what we know from
 # => "Hello world"
 ```
 
-But the similarities break down with some expressions:
+But the similarities soon break down:
 
 ``` ruby ruby.rb linenos:false
 "Hello #{[:a, :b]}"
@@ -49,7 +49,7 @@ In Ruby, string interpolation implicitly calls the `#to_s` method (with no argum
 "Hello " + :world.to_s
 ```
 
-The `#to_s` convention in Ruby is *very* inclusive. Almost everything in Ruby implements it. Either a class comes with its own implementation that provides a somewhat meaningful string representation (such as `Time#to_s` giving values like `"2016-01-05 18:20:41 +0100"`), or it inherits `Object#to_s` (with less meaningful values like `"#<Object:0x007feee284e648>"`).
+The `#to_s` convention in Ruby is *very* inclusive. Almost everything in Ruby implements it. Either a class comes with its own implementation that provides a somewhat meaningful string representation (such as `Time#to_s` giving values like `"2016-01-05 18:20:41 +0100"`), or it inherits `Object#to_s` with a less meaningful representation (like `"#<Object:0x007feee284e648>"`).
 
 Only `BasicObject` and its descendants may be missing a `#to_s`:
 
@@ -58,7 +58,7 @@ Only `BasicObject` and its descendants may be missing a `#to_s`:
 NoMethodError: undefined method `to_s' for #<BasicObject:0x007feee2049b00>
 ```
 
-There is some interesting nuance to Ruby's `#to_s`, `#to_str` and `Kernel#String`, and similar coercion methods for other types. If you're interested, you can read all about it in [Avdi Grimm's *Confident Ruby*](http://www.confidentruby.com/), or [research it online](http://stackoverflow.com/q/11182052/6962)
+There is some interesting nuance to Ruby's `#to_s`, `#to_str` and `Kernel#String`, and similar coercion methods for other types. If you're interested, you can read all about it in [Avdi Grimm's *Confident Ruby*](http://www.confidentruby.com/), or [research it online](http://stackoverflow.com/q/11182052/6962).
 
 
 ## Elixir
@@ -86,7 +86,7 @@ The simplest thing is to use `Kernel.inspect/1`:
 # => "Hello {:a, :b}"
 ```
 
-It behaves quite like `#inspect` in Ruby – even to the extent that any representation that can't be evaluated as-is starts with a `#` sign:
+It behaves quite like `#inspect` in Ruby – even to the extent that any representation that can't be evaluated as code starts with a `#` sign:
 
 ``` ruby ruby.rb linenos:false
 [:a, :b].inspect
@@ -104,13 +104,13 @@ inspect fn -> :x end
 # => "#Function<20.54118792/0 in :erl_eval.expr/5>"
 ```
 
-Unlike `String.Chars` (but a bit like Ruby), this protocol is [configured to allow any input](https://github.com/elixir-lang/elixir/blob/3b601660d4d4eb0c69f824fcebbbe93a3f2ba463/lib/elixir/lib/inspect.ex#L55-L56), and [makes an effort](https://github.com/elixir-lang/elixir/blob/3b601660d4d4eb0c69f824fcebbbe93a3f2ba463/lib/elixir/lib/inspect.ex#L512-L528) to handle anything you throw at it.
+Unlike `String.Chars` (but a bit like `#to_s` in Ruby), this protocol is [configured to allow any input](https://github.com/elixir-lang/elixir/blob/3b601660d4d4eb0c69f824fcebbbe93a3f2ba463/lib/elixir/lib/inspect.ex#L55-L56), and [makes an effort](https://github.com/elixir-lang/elixir/blob/3b601660d4d4eb0c69f824fcebbbe93a3f2ba463/lib/elixir/lib/inspect.ex#L512-L528) to handle anything you throw at it.
 
 ### Implementing the `String.Chars` protocol
 
 If we want to get fancy, we could implement the `String.Chars` protocol for one of our structs. This lets us use plain interpolation (without explicitly calling a function like `inspect`), and it also lets us control the string representation.
 
-We could do it like this:
+It's quite simple:
 
 ``` elixir elixir.exs linenos:false
 defmodule User do
