@@ -79,7 +79,7 @@ So how can I interpolate my tuple, or my struct?
 
 ### The `Inspect` protocol
 
-The simplest thing is to use `Kernel.inspect/1`:
+The simplest thing is to use [`Kernel.inspect/2`](http://elixir-lang.org/docs/stable/elixir/Kernel.html#inspect/2):
 
 ``` elixir elixir.exs linenos:false
 "Hello #{inspect {:a, :b}}"
