@@ -97,10 +97,10 @@ lambda {}.inspect
 ```
 
 ``` elixir elixir.exs linenos:false
-inspect {:a, :b}
+inspect({:a, :b})
 # => "{:a, :b}"
 
-inspect fn -> :x end
+inspect(fn -> :x end)
 # => "#Function<20.54118792/0 in :erl_eval.expr/5>"
 ```
 
