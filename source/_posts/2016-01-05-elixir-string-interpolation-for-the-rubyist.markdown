@@ -75,7 +75,7 @@ This is the philosophical difference. For anything that doesn't have an obviousl
 
 This is why we couldn't just interpolate the `ArgumentError` struct above, or any other struct, or indeed tuples.
 
-So how can I interpolate my tuple, or my struct?
+So how can I interpolate my tuple, my struct, or some lists?
 
 ### The `Inspect` protocol
 
