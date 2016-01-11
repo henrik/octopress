@@ -71,7 +71,7 @@ end
 defp do_run_command(["say", thing]), do: thing
 ```
 
-That's more like it. And we can keep dispatching to other functions, to unlock more pattern matching power:
+That's more like it. And we can keep dispatching to other functions, to unlock more pattern-matching power:
 
 ``` elixir linenos:false
 defp do_run_command(["say", number, thing]) do
