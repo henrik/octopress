@@ -80,7 +80,7 @@ defp do_run_command(["say", number, thing]) do
 end
 
 defp say(thing, count) when count < 100, do: String.duplicate(thing, count)
-defp say(thing, count) do: say(thing, 99) <> "…"
+defp say(thing, _count) do: say(thing, 99) <> " etc"
 ```
 
 It doesn't have to be lists, either. We can get regular expression matches as dictionaries, for example:
