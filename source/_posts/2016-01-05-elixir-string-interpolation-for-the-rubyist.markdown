@@ -73,9 +73,9 @@ So, quite intentionally, Elixir will not implicitly convert just anything to a s
 
 This is the philosophical difference. For anything that doesn't have an obviously meaningful string representation, Elixir wants you to be explicit.
 
-This is why we couldn't just interpolate the `ArgumentError` struct above, or any other struct, or indeed tuples.
+This is why we couldn't just interpolate the `ArgumentError` struct above, or any other struct, or indeed tuples or maps.
 
-So how can I interpolate my tuple, my struct, or some lists?
+So how can I interpolate my tuple, map, struct, or some lists?
 
 ### The `Inspect` protocol
 
