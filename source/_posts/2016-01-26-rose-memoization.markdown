@@ -31,7 +31,7 @@ end
 
 Clearly this needs a name.
 
-I've always thought of it as "rose memoization", because of the `@ ||=` pattern.
+I've always thought of it as "rose memoization", because of the `@ ||=` pattern. It looks like an ASCII rose.
 
 I was amazed not to find any (any!) Google results for that term, so now this post exists.
 
