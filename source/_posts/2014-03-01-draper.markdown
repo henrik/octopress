@@ -93,7 +93,19 @@ end
 
 This is not much more code than a Draper decorator.
 
-With our [attr_extras](https://github.com/barsoom/attr_extras) library you could get rid of the initializer and reader boilerplate and just do `pattr_initialize :article`. And you can of course add whatever convenience methods you like, by inheritance or otherwise.
+With our [attr_extras](https://github.com/barsoom/attr_extras) library you could get rid of the initializer and reader boilerplate:
+
+``` ruby app/presenters/article_presenter.rb
+class ArticlePresenter
+  pattr_initialize :article
+
+  def published_at(view)
+    view.content_tag(:time, article.published_at.strftime("%A, %B %e"))
+  end
+end
+```
+
+And you can of course add whatever convenience methods you like, by inheritance or otherwise.
 
 The model is available to the presenter as `article` rather than by a generic name like `model` or `object`.
 
