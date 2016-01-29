@@ -115,6 +115,6 @@ Forms and plugins just use regular ActiveRecord objects.
 
 When you use a presenter, that's made perfectly clear. If it makes sense to do some limited delegation, that's just a `delegate :title, to: :article` away.
 
-It's obvious where the view context comes from. If you use it a lot, feel free to pass it into the initializer instead (e.g. `ArticlePresenter.new(@article, view_context)` in the controller).
+It's obvious where the view context comes from. If you use it a lot, feel free to pass it into the initializer instead of each method (e.g. `ArticlePresenter.new(@article, view_context)` in the controller).
 
 I can't see why anyone would prefer Draper to this, but I'm looking forward to discussion in the comments.
