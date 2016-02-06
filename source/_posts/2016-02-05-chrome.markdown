@@ -22,6 +22,8 @@ I have things set up so I can switch to one or the other with a keyboard shortcu
 
 Each profile has its own separate history, cookies/sessions, bookmarks bar, extensions and so on, which is really quite handy: you can be logged into separate Google Apps accounts, have adblocker extensions when browsing privately but not professionally, put Trello boards and various work tools only in your "Work" bookmarks bar.
 
+And, of course, just clearly grouping home and work tabs separately is a win. You can minimize your "Work" window(s) when you go home for the day.
+
 To add a profile, see [Google's instructions](https://support.google.com/chrome/answer/2364824).
 
 ### Keyboard shortcuts
@@ -36,7 +38,7 @@ Because Chrome lists your profiles in a "People" menu (in the menu bar alongside
 
 In the "Keyboard" system preferences, go to "App Shortcuts" and add a shortcut for Google Chrome. The "Menu Title" should exactly match the name of your profile. The shortcut is whatever you like.
 
-I use <code class="kb">⇧⌘P</code> for my home ("**p**rivate") profile, and <code class="kb">⇧⌘B</code> for work ([**B**arsoom](http://barsoom.se)).
+I use <code class="kb">⇧⌘P</code> for my home ("**P**rivat" = private) profile, and <code class="kb">⇧⌘B</code> for work ("[**B**arsoom](http://barsoom.se)").
 
 
 ## Incognito mode
@@ -47,6 +49,11 @@ Incognito windows don't share cookies/sessions with other windows, so you will b
 
 If you find yourself thinking "I wonder what this looks like when you're not logged in", don't log out. Just open an incognito window. In that window, you will be logged out. In your regular window, you're still conveniently logged in.
 
-If you want to log into multiple accounts, same thing. Log in as user A in your regular window. Open an incognito window and log in user B. Now you can put the two windows side by side and try out your bidding, chat or whatever.
+If you want to log into multiple accounts, same thing. Log in as user A in your regular window. Open an incognito window and log in user B. Now you can put the two windows side by side and try out your bidding, chat or whatever with two users.
 
-By default, for privacy reasons, extensions are disabled in incognito mode. But if you want them, just go to "Window > Extensions" and check the "Allow in incognito" box next to an extension. I like having 1Password in incognito mode, for example.
+By default, for privacy reasons, extensions are disabled in incognito mode. But if you want them, just go to "Window > Extensions" and check the "Allow in incognito" box next to an extension.
+
+
+## The end
+
+Did I miss anything useful about Chrome profiles and incognito mode? Let me know!
