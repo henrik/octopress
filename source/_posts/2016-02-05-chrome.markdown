@@ -1,0 +1,54 @@
+---
+layout: post
+title: "Chrome profiles and incognito mode for web developers"
+date: 2016-02-06 00:55
+comments: true
+categories:
+  - Chrome
+---
+
+<img src="https://s3.amazonaws.com/f.cl.ly/items/3r2U3A363Q3b0p2V4343/Screenshot%202016-02-06%2000.02.41.png?v=586634b3" alt="" class="center no-box">
+
+Google Chrome [supports multiple user profiles](https://support.google.com/chrome/answer/2364824), and has an ["incognito mode"](https://support.google.com/chrome/answer/95464).
+
+While these two features aren't specifically intended to make a web developer's life easier, they do! This is how.
+
+
+## Separate home and work user profiles
+
+I use the same notebook computer both at home and at work, so I have one "Home" user profile and one "Work" profile in Chrome.
+
+I have things set up so I can switch to one or the other with a keyboard shortcut.
+
+Each profile has its own separate history, cookies/sessions, bookmarks bar, extensions and so on, which is really quite handy: you can be logged into separate Google Apps accounts, have adblocker extensions when browsing privately but not professionally, put Trello boards and various work tools only in your "Work" bookmarks bar.
+
+To add a profile, see [Google's instructions](https://support.google.com/chrome/answer/2364824).
+
+### Keyboard shortcuts
+
+To switch profiles, you can left-click the profile name on the top right of Chrome, then "Switch Person", then click the profile you want. Not very convenient.
+
+Or, you can right-click the profile name, then click the profile you want. Slightly better, but who wants to mouse around?
+
+Chrome [used to](https://twitter.com/henrik/status/634617185437118464) have a keyboard shortcut built in for quickly switching profiles, but they removed it.
+
+But because Chrome lists your profiles in a "People" menu (in the menu bar alongside "File", "Edit", "Bookmarks" etc), it's easy to map shortcuts yourself, at least on OS X.
+
+<img src="https://s3.amazonaws.com/f.cl.ly/items/0F133i0f35321O272x1d/Screenshot%202016-02-06%2000.26.04.png?v=22ef29c9" alt="" class="center no-box">
+
+In the "Keyboard" system preferences, go to "App Shortcuts" and add a shortcut for Google Chrome. The "Menu Title" should exactly match the name of your profile. The shortcut is whatever you like.
+
+I use <code class="kb">⇧⌘P</code> for my home ("**p**rivate") profile, and <code class="kb">⇧⌘B</code> for work ([**B**arsoom](http://barsoom.se)).
+
+
+## Incognito mode
+
+You can open an "incognito mode" Chrome window via "File > New Incognito Window" or the <code class="kb">⇧⌘N</code> shortcut.
+
+Incognito windows don't share cookies/sessions with other windows, so you will be logged out of everything. This is great for web development.
+
+If you find yourself thinking "I wonder what this looks like when you're not logged in", don't log out. Just open an incognito window. In that window, you will be logged out. In your regular window, you're still conveniently logged in.
+
+If you want to log into multiple accounts, same thing. Log in as user A in your regular window. Open an incognito window and log in user B. Now you can put the two windows side by side and try out your bidding, chat or whatever.
+
+By default, for privacy reasons, extensions are disabled in incognito mode. But if you want them, just go to "Window > Extensions" and check the "Allow in incognito" box next to an extension. I like having 1Password in incognito mode, for example.
