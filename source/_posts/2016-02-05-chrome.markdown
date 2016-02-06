@@ -30,9 +30,7 @@ To switch profiles, you can left-click the profile name on the top right of Chro
 
 Or, you can right-click the profile name, then click the profile you want. Slightly better, but who wants to mouse around?
 
-Chrome [used to](https://twitter.com/henrik/status/634617185437118464) have a keyboard shortcut built in for quickly switching profiles, but they removed it.
-
-But because Chrome lists your profiles in a "People" menu (in the menu bar alongside "File", "Edit", "Bookmarks" etc), it's easy to map shortcuts yourself, at least on OS X.
+Because Chrome lists your profiles in a "People" menu (in the menu bar alongside "File", "Edit", "Bookmarks" etc), it's easy to map shortcuts yourself, at least on OS X.
 
 <img src="https://s3.amazonaws.com/f.cl.ly/items/0F133i0f35321O272x1d/Screenshot%202016-02-06%2000.26.04.png?v=22ef29c9" alt="" class="center no-box">
 
