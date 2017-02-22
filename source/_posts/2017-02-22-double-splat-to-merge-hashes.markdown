@@ -39,7 +39,7 @@ def build_user(overrides = {})
 end
 
 user1 = build_user
-user2 = build_user role: "superadmin", age: 42
+user2 = build_user(role: "superadmin", age: 42)
 ```
 
 You can just do this:
@@ -54,5 +54,5 @@ def build_user(**overrides)
 end
 
 user1 = build_user
-user2 = build_user role: "superadmin", age: 42
+user2 = build_user(role: "superadmin", age: 42)
 ```
