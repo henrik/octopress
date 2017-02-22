@@ -37,6 +37,9 @@ def build_user(overrides = {})
     }.merge(overrides)
   )
 end
+
+user1 = build_user
+user2 = build_user role: "superadmin", age: 42
 ```
 
 You can just do this:
@@ -49,4 +52,7 @@ def build_user(**overrides)
     **overrides
   )
 end
+
+user1 = build_user
+user2 = build_user role: "superadmin", age: 42
 ```
