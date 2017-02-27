@@ -2,6 +2,7 @@
 layout: post
 title: "Rails STI and form_for"
 date: 2012-08-14 12:15
+comments: true
 categories:
 - Ruby on Rails
 - STI
