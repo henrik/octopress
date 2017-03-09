@@ -1,7 +1,7 @@
 ---
 title: Randomize your factories
 date: 2012-07-08 15:00
-categories:  [FactoryGirl, Factories, Testing, Ruby on Rails]
+categories:  [factory_girl, Factories, Testing, Ruby on Rails]
 layout: post
 comments: true
 ---
