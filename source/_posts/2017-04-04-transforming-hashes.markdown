@@ -9,7 +9,7 @@ categories:
 
 Want to transform a Ruby hash, changing every key or value? There are better options than [`inject`](http://ruby-doc.org/core-2.4.1/Enumerable.html#method-i-inject) or [`each_with_object`](http://ruby-doc.org/core-2.4.1/Enumerable.html#method-i-each_with_object).
 
-These are relatively low-level methods that expose details (like a reference to the hash itself) that you often don't need:
+Those are relatively low-level methods that expose details (like a reference to the hash itself) that you often don't need:
 
 ``` ruby inject.rb linenos:false
 { a: 1, b: 2 }.inject({}) { |h, (k, v)| h.merge(k => v * 2) }
