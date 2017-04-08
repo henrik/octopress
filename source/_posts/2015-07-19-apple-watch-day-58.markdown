@@ -12,7 +12,7 @@ I [blogged on day 2](/2015/05/apple-watch-day-2/) of owning the watch. Now I've 
 
 ## Leaving the phone behind
 
-![Screenshot: Pinging iPhone](https://dl.dropboxusercontent.com/u/546793/blog/watch2/ping.png)
+![Screenshot: Pinging iPhone](/images/content/watch2/ping.png)
 
 Since I've really enjoyed [counting steps with the Fitbit app](/2015/03/the-ten-thousand-steps/), and [it doesn't work with the watch](/2015/05/the-apple-watch-is-not-a-fitbit-wristband/), I used to keep the phone in my pocket at all times. But for the last few weeks, I've given up on that and tried instead leaving it on my desk, or the bedside table, or the treadmill.
 
@@ -53,7 +53,7 @@ I've even sent one or two text messages from the watch while driving: you just d
 
 ## Travelling: time zones
 
-![Screenshot: time zones](https://dl.dropboxusercontent.com/u/546793/blog/watch2/zone.png)
+![Screenshot: time zones](/images/content/watch2/zone.png)
 
 I got the watch right before heading to [the SoCraTes conference](/2015/06/socrates-uk-2015/) in England. (I live in Sweden.)
 
@@ -70,7 +70,7 @@ Oh, and having an aisle seat helps with meeting your stand goals. A pretend visi
 
 ## Travelling: calendar
 
-![Screenshot: calendar on watch face](https://dl.dropboxusercontent.com/u/546793/blog/watch2/calendar.png)
+![Screenshot: calendar on watch face](/images/content/watch2/calendar.png)
 
 It's incredibly convenient to see the next event on your calendar right on your watch face.
 
@@ -88,7 +88,7 @@ I removed the battery status from my watch face after just a few days. Since the
 
 ## Siri
 
-![Screenshot: Nazca Lines](https://dl.dropboxusercontent.com/u/546793/blog/watch2/nazca.png)
+![Screenshot: Nazca Lines](/images/content/watch2/nazca.png)
 
 I've added *so* many reminders and calendar events from my wrist. I love it. You're at the breakfast table, phone on your desk, and you say "remind me in 15 minutes to bring the cake to work". Or you're packing for a trip and you say "remind me tomorrow at 10 to pack the Apple Watch charger".
 
@@ -103,7 +103,7 @@ It can be worth experimenting a bit to find the shortest thing that Siri will un
 
 ## Most apps still suck
 
-![Screenshot: waiting for the weather report](https://dl.dropboxusercontent.com/u/546793/blog/watch2/weather.png)
+![Screenshot: waiting for the weather report](/images/content/watch2/weather.png)
 
 I barely use any third-party apps still. They're too slow.
 
@@ -127,8 +127,8 @@ The other day, I told Siri on my watch to "play Hakuna Matata", and it did. Then
 
 We use [Airfoil](https://www.rogueamoeba.com/airfoil/) to make our Mac Mini media server appear as an AirPlay device.
 
-![Screenshot: music 1](https://dl.dropboxusercontent.com/u/546793/blog/watch2/music1.png)
-![Screenshot: music 2](https://dl.dropboxusercontent.com/u/546793/blog/watch2/music2.png)
+![Screenshot: music 1](/images/content/watch2/music1.png)
+![Screenshot: music 2](/images/content/watch2/music2.png)
 
 A slight convenience Apple could add: It would be nice if turning the crown would control volume whenever audio is playing and the watch screen is off. I would use this a lot when running.
 

@@ -7,7 +7,7 @@ categories:
   - Apple Watch
 ---
 
-![](https://dl.dropboxusercontent.com/u/546793/blog/apple_watch.jpg)
+![](/images/content/apple_watch.jpg)
 
 I've had my Apple Watch for 2 days now. These are some random observations so far.
 
@@ -18,7 +18,7 @@ I've had my Apple Watch for 2 days now. These are some random observations so fa
 
 I hear you can get these cheaper than $349, but having the current time a wrist-raise away is very convenient. The wrist-raise detection (turning the display on only when needed, to save battery) has worked almost flawlessly for me – I have no complaints.
 
-The Apple Watch is in some ways less beautiful to me than [the mechanical Raketa watch](https://dl.dropboxusercontent.com/u/546793/blog/raketa.jpg) I used to sometimes wear, but I like having a digital watch face. When I see an analog watch face, I convert it to digital in my head.
+The Apple Watch is in some ways less beautiful to me than [the mechanical Raketa watch](/images/content/raketa.jpg) I used to sometimes wear, but I like having a digital watch face. When I see an analog watch face, I convert it to digital in my head.
 
 Having the date on your wrist (this can also be had for less money) is convenient. When I bought milk, I checked the best-before date against today's date in the wink of an eye.
 
@@ -32,7 +32,7 @@ Before I got my watch, I thought the Mickey Mouse watch face just looked silly. 
 
 ### The screen
 
-![](https://dl.dropboxusercontent.com/u/546793/blog/apple_watch_circle.jpg)
+![](/images/content/apple_watch_circle.jpg)
 
 I had expected the screen to be a bit crappy, and that the pixels weren't as "close to the glass" as on the iPhone, but the OLED screen looks unreal in the best way.
 
@@ -50,7 +50,7 @@ She's also great for looking up random stuff. "When is Mother's Day?", "Where is
 
 ### Turning off alarms
 
-![](https://dl.dropboxusercontent.com/u/546793/blog/apple_watch_alarm.jpg)
+![](/images/content/apple_watch_alarm.jpg)
 
 When the alarm clock on your iPhone rings, you can turn it off from the watch. I've wanted this so much and didn't even realize the watch could do it until it happened, despite having read a lot of reviews.
 

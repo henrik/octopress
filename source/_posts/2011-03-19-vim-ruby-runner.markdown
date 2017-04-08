@@ -12,7 +12,7 @@ There are ways to execute Ruby code from a Vim buffer, such as `:w ! ruby` or `:
 
 Hence, I've been tinkering with a better solution for a while in [my dotfiles](https://github.com/henrik/dotfiles). It finally felt mature enough to pack into a plugin, so I did:
 
-[![Screenshot](http://dl.dropbox.com/u/546793/blog/RubyRunner.png)](https://github.com/henrik/vim-ruby-runner)
+[![Screenshot](/images/content/RubyRunner.png)](https://github.com/henrik/vim-ruby-runner)
 
 Get it from GitHub: <https://github.com/henrik/vim-ruby-runner>
 

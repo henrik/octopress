@@ -79,7 +79,7 @@ I use project-wide search all the time. It's not just for search-and-replace, of
 
 ## The quickfix window
 
-![Screenshot](https://dl.dropbox.com/u/546793/blog/git-grep-quickfix.png)
+![Screenshot](/images/content/git-grep-quickfix.png)
 
 The search results end up in [the quickfix window](http://vimdoc.sourceforge.net/htmldoc/quickfix.html), a split window in Vim that you can move through like any Vim buffer. Hitting `⏎` will show the result from the current line.
 

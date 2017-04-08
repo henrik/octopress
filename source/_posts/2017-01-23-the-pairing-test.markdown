@@ -15,11 +15,11 @@ Take a piece of code that someone is likely to want to understand as a whole. It
 
 Picture a list of the class or method names running down the left-hand side, and a randomly sorted list of explanations of what they do running down the right-hand side.
 
-![Left: ItemBuilder; BuildItem; Item. Right: Models an item; Persists an item to database, given some attributes; Builds an item in memory, given some attributes.](https://dl.dropboxusercontent.com/u/546793/blog/pairing-test-1.png)
+![Left: ItemBuilder; BuildItem; Item. Right: Models an item; Persists an item to database, given some attributes; Builds an item in memory, given some attributes.](/images/content/pairing-test-1.png)
 
 Now, imagine that you asked someone who did not write this code to draw lines to pair up the names with the explanations. Could they confidently do it?
 
-![Item paired to "Models an item"; ItemBuilder and BuildItem not paired up with anything.](https://dl.dropboxusercontent.com/u/546793/blog/pairing-test-2.png)
+![Item paired to "Models an item"; ItemBuilder and BuildItem not paired up with anything.](/images/content/pairing-test-2.png)
 
 If not, your naming probably stands to be improved.
 

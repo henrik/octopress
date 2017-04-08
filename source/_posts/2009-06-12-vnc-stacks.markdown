@@ -6,7 +6,7 @@ layout: post
 comments: true
 ---
 
-![VNC stack screenshot](https://dl.dropbox.com/u/546793/blog/2009-06-vnc-stack.png)
+![VNC stack screenshot](/images/content/2009-06-vnc-stack.png)
 
 OS X Leopard comes with a VNC client, `/System/Library/CoreServices/Screen Sharing.app`.
 

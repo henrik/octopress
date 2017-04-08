@@ -6,7 +6,7 @@ layout: post
 comments: true
 ---
 
-![Screenshot](http://dl.dropbox.com/u/546793/blog/MacVim.png)
+![Screenshot](/images/content/MacVim.png)
 
 I switched from Windows to OS X four years ago mostly because of [TextMate](http://macromates.com).
 
@@ -135,7 +135,7 @@ I recommend installing MacVim with the [Homebrew](http://mxcl.github.com/homebre
 If you're not happy with the default icon, I like this one by [Miguel A. Cardona Jr.](http://sketchbooked.net/):
 
 <p class="center">
-  <a href="http://dl.dropbox.com/u/546793/blog/MacVim.icns"><img src="http://dl.dropbox.com/u/546793/blog/MacVim.icns.png" alt="Download"></a>
+  <a href="/images/content/MacVim.icns"><img src="/images/content/MacVim.icns.png" alt="Download"></a>
 </p>
 
 You'll find MacVim.app under `~/.homebrew/Cellar/macvim/HEAD`.

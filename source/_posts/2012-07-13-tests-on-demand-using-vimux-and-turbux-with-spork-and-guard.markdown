@@ -6,7 +6,7 @@ layout: post
 comments: true
 ---
 
-![Screenshot](https://dl.dropbox.com/u/546793/blog/vimux-spork.png)
+![Screenshot](/images/content/vimux-spork.png)
 
 My development environment these days is [Vim](http://henrik.nyh.se/2011/01/textmate-to-vim-with-training-wheels) inside [tmux](http://blog.hawkhost.com/2010/06/28/tmux-the-terminal-multiplexer/).
 

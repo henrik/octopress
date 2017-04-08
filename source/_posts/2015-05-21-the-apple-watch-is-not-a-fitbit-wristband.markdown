@@ -8,7 +8,7 @@ categories:
   - Health
 ---
 
-![](https://dl.dropboxusercontent.com/u/546793/blog/watch-pedometer.jpg)
+![](/images/content/watch-pedometer.jpg)
 
 I've previously blogged about [using the iPhone as a step counter together with the Fitbit app](http://thepugautomatic.com/2015/03/the-ten-thousand-steps/).
 
