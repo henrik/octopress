@@ -29,4 +29,6 @@ class FooClient
 end
 ```
 
+This applies to more than code. Maybe you looked for documentation in a 1Password note, but it was in the company wiki. Maybe you looked for documentation in the wiki, and it was in a coworker's head.
+
 I see this as one application of [The Golden Rule for programmers](/2014/07/golden-rule/).
