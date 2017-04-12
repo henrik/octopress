@@ -101,7 +101,7 @@ defmodule Run do
   import MyMacro
 
   def run do
-    IO.puts example
+    IO.puts example()
   end
 end
 
