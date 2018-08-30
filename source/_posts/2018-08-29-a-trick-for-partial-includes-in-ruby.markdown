@@ -84,4 +84,4 @@ This feels a bit dirtier to me, since `MyModule` stays extended forever, having 
 
 It's essentially the same as the first trick, but instead of dumping all those methods in a fresh new internal object made for the purpose, we dump them in the globally available module itself. For quick-and-dirty jobs, though, it can be handy.
 
-If you want to use this to for routes or view helpers in Ruby on Rails, you'll be pleased to know that Rails already provides objects with the methods mixed in: `Rails.application.routes.url_helpers` for routes and `ApplicationController.helpers` for helpers.
+If you want to use this to for routes or view helpers in Ruby on Rails, you'll be pleased to know that Rails already provides objects with the methods mixed in: `Rails.application.routes.url_helpers` for routes and `ApplicationController.helpers` for helpers. These have been known to move around a bit between Rails versions, so you may need to track down the right incantation for the one you're on.
