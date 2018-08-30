@@ -76,7 +76,7 @@ class MyClass
   def_delegator :MyModule, :the_method_i_want
 
   # In Ruby on Rails, you could instead delegate with:
-  delegate :the_method_i_want, to: MyModule
+  delegate :the_method_i_want, to: :MyModule
 end
 ```
 
